@@ -133,6 +133,26 @@ input::placeholder{
     background:rgba(255,255,255,.08);
 }
 
+.gst-menu .gst-manual-input-wrapper {
+    padding: 10px 15px;
+    border-top: 1px solid rgba(255,255,255,.05);
+}
+
+.gst-menu .gst-manual-input-wrapper input {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 8px;
+    background: rgba(255,255,255,.05);
+    color: white;
+    font-size: 14px;
+    outline: none;
+}
+
+.gst-menu .gst-manual-input-wrapper input::placeholder {
+    color: rgba(255,255,255,.4);
+}
+
 .btns{
     display:flex;
     gap:12px;
@@ -248,13 +268,16 @@ hr{
             </button>
 
             <div class="gst-menu" id="gstMenu">
-                <div onclick="setGST(3)">3% GST</div>
-                <div onclick="setGST(5)">5% GST</div>
-                <div onclick="setGST(12)">12% GST</div>
-                <div onclick="setGST(18)">18% GST</div>
-                <div onclick="setGST(28)">28% GST</div>
-            </div>
-
+                            <div onclick="setGST(3)">3% GST</div>
+                            <div onclick="setGST(5)">5% GST</div>
+                            <div onclick="setGST(12)">12% GST</div>
+                            <div onclick="setGST(18)">18% GST</div>
+                            <div onclick="setGST(28)">28% GST</div>
+                            <div class="gst-manual-input-wrapper">
+                                <input type="number" id="manualGSTInput" placeholder="Enter Custom GST" step="0.01">
+                            </div>
+                        </div>
+            
             <input type="hidden" id="gst" value="18">
 
         </div>
@@ -324,7 +347,22 @@ function setGST(value){
         value + "% GST ▼";
 
     gstMenu.classList.remove("show");
+    document.getElementById("manualGSTInput").value = ""; // Clear manual input
 }
+
+const manualGSTInput = document.getElementById("manualGSTInput");
+
+manualGSTInput.addEventListener("input", () => {
+    let customGST = parseFloat(manualGSTInput.value);
+    if (!isNaN(customGST) && customGST >= 0) {
+        document.getElementById("gst").value = customGST;
+        document.getElementById("selectedGST").innerHTML = customGST + "% GST ▼";
+    } else if (manualGSTInput.value === "") {
+        document.getElementById("selectedGST").innerHTML = "Custom GST ▼";
+    } else {
+        document.getElementById("selectedGST").innerHTML = "Invalid GST ▼";
+    }
+});
 
 window.addEventListener("click",(e)=>{
 
