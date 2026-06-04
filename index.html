@@ -274,25 +274,18 @@ hr{
     box-shadow: 0 10px 30px rgba(0,0,0,.4);
     border: 1px solid rgba(255,255,255,.1);
     z-index: 1002; /* Higher than GST menu (1000) */
-    display: none; /* Hidden by default */
     padding: 15px;
     transform-origin: top right;
-    animation: fadeInScale .2s ease-out forwards;
+    opacity: 0;
+    transform: scale(0.85) translateY(-10px);
+    pointer-events: none;
+    transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1), transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .mini-calculator-dialog.show {
-    display: block;
-}
-
-@keyframes fadeInScale {
-    from {
-        opacity: 0;
-        transform: scale(0.9);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    pointer-events: auto;
 }
 
 .calculator-display {
@@ -386,12 +379,12 @@ hr{
 <div class="subtitle">
         Add or Remove GST Instantly
     </div>
-    
+
     <!-- NEW: Calculator Icon Button -->
     <button id="openCalculatorBtn" class="calculator-icon-btn" aria-label="Open Calculator">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calculator"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M8 6h8"/><path d="M8 10h8"/><path d="M8 14h8"/><path d="M8 18h8"/></svg>
     </button>
-    
+
     <!-- NEW: Mini Calculator Dialog -->
     <div id="miniCalculatorDialog" class="mini-calculator-dialog">
         <div class="calculator-display">
@@ -399,7 +392,8 @@ hr{
             <div data-current-operand class="current-operand">0</div>
         </div>
         <div class="calculator-buttons">
-            <button data-all-clear class="span-two">AC</button>
+            <button data-all-clear>AC</button>
+            <button data-percent>%</button>
             <button data-delete>DEL</button>
             <button data-operation>÷</button>
             <button data-number>1</button>
@@ -419,7 +413,6 @@ hr{
             <button data-equals class="span-two">=</button>
         </div>
     </div>
-    
 
     <div class="row">
         <label>Amount</label>
@@ -528,7 +521,7 @@ function setGST(value){
     document.getElementById("manualGSTInput").value = ""; // Clear manual input
     miniCalculatorDialog.classList.remove('show'); // Close calculator if open
 }
-    
+
 const manualGSTInput = document.getElementById("manualGSTInput");
 
 manualGSTInput.addEventListener("input", () => {
@@ -543,7 +536,7 @@ manualGSTInput.addEventListener("input", () => {
     }
     miniCalculatorDialog.classList.remove('show'); // Close calculator if open
 });
-        
+
 // Global click listener for closing popups
 window.addEventListener("click",(e)=>{
     // Close GST menu
@@ -657,6 +650,7 @@ const operationButtons = document.querySelectorAll('[data-operation]');
 const equalsButton = document.querySelector('[data-equals]');
 const deleteButton = document.querySelector('[data-delete]');
 const allClearButton = document.querySelector('[data-all-clear]');
+const percentButton = document.querySelector('[data-percent]');
 const previousOperandTextElement = document.querySelector('[data-previous-operand]');
 const currentOperandTextElement = document.querySelector('[data-current-operand]');
 
@@ -671,6 +665,11 @@ class Calculator {
         this.currentOperand = '0'; // Start with 0
         this.previousOperand = '';
         this.operation = undefined;
+    }
+
+    percent() {
+        if (this.currentOperand === '' || this.currentOperand === '0') return;
+        this.currentOperand = (parseFloat(this.currentOperand) / 100).toString();
     }
 
     delete() {
@@ -787,6 +786,11 @@ allClearButton.addEventListener('click', button => {
 
 deleteButton.addEventListener('click', button => {
     calculator.delete();
+    calculator.updateDisplay();
+});
+
+percentButton.addEventListener('click', button => {
+    calculator.percent();
     calculator.updateDisplay();
 });
 
