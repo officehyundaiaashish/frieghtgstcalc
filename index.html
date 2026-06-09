@@ -1001,15 +1001,7 @@ document
     deferredPrompt = null;
 });
 
-if("serviceWorker" in navigator){
 
-    window.addEventListener("load",()=>{
-
-        navigator.serviceWorker.register(
-            "./service-worker.js"
-        );
-    });
-}
 
 // NEW: Mini Calculator Logic
 const numberButtons = document.querySelectorAll('[data-number]');
