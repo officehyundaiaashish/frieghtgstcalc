@@ -45,7 +45,7 @@ body {
     transition: all 0.3s ease;
 }
 
-/* header area with proper spacing for absolute icons */
+/* header area */
 .header-area {
     display: flex;
     justify-content: center;
@@ -75,14 +75,11 @@ h1 {
     margin-top: 6px;
 }
 
-/* light mode heading fix: high contrast gradient */
 body.light-mode h1 {
     background: linear-gradient(135deg, #0f172a, #1e3a8a, #0284c7);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
-    text-shadow: none;
-    font-weight: 700;
 }
 
 .subtitle {
@@ -92,7 +89,7 @@ body.light-mode h1 {
     margin-top: 4px;
 }
 
-/* icon buttons – no clash, placed absolutely on top right/left with offset */
+/* icon buttons */
 .icon-btn {
     position: absolute;
     top: 1.5rem;
@@ -120,7 +117,7 @@ body.light-mode h1 {
 #openCalculatorBtn { right: 1.5rem; }
 #openHistoryBtn { right: 5rem; }
 
-/* tab switcher modern */
+/* tab switcher */
 .tab-switcher {
     display: flex;
     gap: 12px;
@@ -269,7 +266,7 @@ hr {
 }
 
 /* dropdown menus */
-.gst-selector, .unit-selector, .discount-type-selector { position: relative; }
+.gst-selector, .unit-selector { position: relative; }
 .gst-menu, .unit-menu {
     position: absolute;
     width: 100%;
@@ -296,7 +293,7 @@ hr {
     width: calc(100% - 16px);
 }
 
-/* mini calculator & history dialogs - fixed overlapping */
+/* mini calculator & history dialogs */
 .mini-calculator-dialog, .history-dialog {
     position: absolute;
     top: 80px;
@@ -338,15 +335,41 @@ hr {
     color: white;
     font-weight: 600;
     cursor: pointer;
+    transition: 0.1s;
 }
 .calc-btn.operator { background: #2d3a5e; color: #7dd3fc; }
 .calc-btn.equals { background: #38bdf8; color: white; grid-column: span 2; }
 .history-item {
-    background: rgba(255,255,255,0.05);
+    background: rgba(255,255,255,0.08);
     border-radius: 1rem;
-    padding: 10px;
+    padding: 12px;
     margin-bottom: 10px;
     font-size: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+.history-item-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+}
+.history-item-header svg {
+    width: 16px;
+    height: 16px;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    fill: none;
+}
+.history-details {
+    padding-left: 24px;
+    opacity: 0.85;
+}
+.history-date {
+    font-size: 0.65rem;
+    opacity: 0.6;
+    margin-top: 4px;
 }
 .history-clear-btn {
     width: 100%;
@@ -357,6 +380,7 @@ hr {
     border: none;
     color: white;
     cursor: pointer;
+    margin-top: 8px;
 }
 
 /* discount type button group */
@@ -382,7 +406,7 @@ hr {
     color: white;
 }
 
-/* light mode overrides */
+/* LIGHT MODE OVERRIDES (fixes for history & mini calculator) */
 body.light-mode {
     background: linear-gradient(145deg, #eef2ff, #e0e7ff);
 }
@@ -396,17 +420,46 @@ body.light-mode input, body.light-mode .gst-btn, body.light-mode .unit-btn {
     color: #0f172a;
 }
 body.light-mode .gst-menu, body.light-mode .unit-menu { background: #ffffff; border: 1px solid #ddd; }
+body.light-mode .gst-menu div, body.light-mode .unit-menu div { color: #1e293b; }
 body.light-mode .result { background: rgba(0,0,0,0.02);}
 body.light-mode .total, body.light-mode .pg-total { color: #0284c7; }
 body.light-mode .tab-btn.active { background: #e2e8f0; color: #0f172a; box-shadow: none;}
 body.light-mode .icon-btn { background: rgba(0,0,0,0.06); color: #1e293b; }
 
-/* footer removed completely – no extra text */
-.footer {
-    display: none;
+/* light mode mini calculator & history */
+body.light-mode .mini-calculator-dialog, body.light-mode .history-dialog {
+    background: #f8fafc;
+    border: 1px solid rgba(0,0,0,0.1);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+body.light-mode .calculator-display {
+    background: #eef2ff;
+    color: #0f172a;
+}
+body.light-mode .calc-btn {
+    background: #e2e8f0;
+    color: #1e293b;
+}
+body.light-mode .calc-btn.operator {
+    background: #cbd5e1;
+    color: #0f172a;
+}
+body.light-mode .calc-btn.equals {
+    background: #0284c7;
+    color: white;
+}
+body.light-mode .history-item {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    color: #0f172a;
+}
+body.light-mode .history-clear-btn {
+    background: #dc2626;
 }
 
-/* responsive adjustments */
+/* footer removed */
+.footer { display: none; }
+
 @media (max-width: 640px) {
     .card { padding: 1.2rem; }
     .icon-btn { top: 1rem; width: 36px; height: 36px; }
@@ -423,7 +476,7 @@ body.light-mode .icon-btn { background: rgba(0,0,0,0.06); color: #1e293b; }
 <body>
 
 <div class="card">
-    <!-- absolute icon buttons -->
+    <!-- icon buttons -->
     <button id="themeToggleBtn" class="icon-btn" aria-label="Theme">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
             <circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>
@@ -442,15 +495,15 @@ body.light-mode .icon-btn { background: rgba(0,0,0,0.06); color: #1e293b; }
         <div class="subtitle">GST · Per Gram · Smart Discount</div>
     </div>
 
-    <!-- mini calculator & history panels (hidden by default) -->
+    <!-- mini calculator & history panels -->
     <div id="miniCalculatorDialog" class="mini-calculator-dialog">
         <div class="calculator-display"><div class="previous-operand" style="font-size:12px; opacity:0.7"></div><div class="current-operand" style="font-size:26px; font-weight:600">0</div></div>
         <div class="calculator-buttons" id="miniCalcGrid"></div>
     </div>
     <div id="historyDialog" class="history-dialog">
-        <h4 style="margin-bottom:12px; font-weight:600;">📋 History</h4>
+        <h4 style="margin-bottom:12px; font-weight:600; display:flex; align-items:center; gap:6px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg> History</h4>
         <div id="historyList"></div>
-        <button id="clearHistoryBtn" class="history-clear-btn" style="margin-top:12px;">Clear All</button>
+        <button id="clearHistoryBtn" class="history-clear-btn">Clear All</button>
     </div>
 
     <!-- tab bar -->
@@ -464,25 +517,8 @@ body.light-mode .icon-btn { background: rgba(0,0,0,0.06); color: #1e293b; }
     <div id="panel-gst" class="tab-panel active">
         <div class="two-columns">
             <div class="calc-col-left">
-                <div class="row">
-                    <label><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/><circle cx="12" cy="12" r="3"/></svg> Amount (₹)</label>
-                    <div class="amount-input-wrapper"><input type="number" id="amount" placeholder="Enter amount" inputmode="decimal"><button id="clearAmountBtn" class="clear-input-btn">✕</button></div>
-                </div>
-                <div class="row">
-                    <label><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 6h18M8 12h8M12 18h0"/></svg> GST Rate</label>
-                    <div class="gst-selector" id="gstSelector">
-                        <button class="gst-btn" id="selectedGST">18% GST ▼</button>
-                        <div class="gst-menu" id="gstMenu">
-                            <div class="gst-manual-input-wrapper"><input type="number" id="manualGSTInput" placeholder="Custom GST %" step="any"></div>
-                            <div onclick="setGST(3)">3% GST</div>
-                            <div onclick="setGST(5)">5% GST</div>
-                            <div onclick="setGST(12)">12% GST</div>
-                            <div onclick="setGST(18)">18% GST</div>
-                            <div onclick="setGST(28)">28% GST</div>
-                        </div>
-                        <input type="hidden" id="gst" value="18">
-                    </div>
-                </div>
+                <div class="row"><label><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/><circle cx="12" cy="12" r="3"/></svg> Amount (₹)</label><div class="amount-input-wrapper"><input type="number" id="amount" placeholder="Enter amount"><button id="clearAmountBtn" class="clear-input-btn">✕</button></div></div>
+                <div class="row"><label><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 6h18M8 12h8M12 18h0"/></svg> GST Rate</label><div class="gst-selector" id="gstSelector"><button class="gst-btn" id="selectedGST">18% GST ▼</button><div class="gst-menu" id="gstMenu"><div class="gst-manual-input-wrapper"><input type="number" id="manualGSTInput" placeholder="Custom GST %"></div><div onclick="setGST(3)">3% GST</div><div onclick="setGST(5)">5% GST</div><div onclick="setGST(12)">12% GST</div><div onclick="setGST(18)">18% GST</div><div onclick="setGST(28)">28% GST</div></div><input type="hidden" id="gst" value="18"></div></div>
                 <div class="action-btns"><button class="action add" onclick="addGST()">Add GST</button><button class="action remove" onclick="removeGST()">Remove GST</button></div>
             </div>
             <div class="calc-col-right"><div class="result"><div class="result-item"><span>Base Amount</span><span id="base">₹0.00</span></div><div class="result-item"><span>GST Amount</span><span id="gstAmount">₹0.00</span></div><hr><div class="result-item"><span>Total (incl. GST)</span><span class="total" id="total">₹0.00</span></div></div></div>
@@ -500,12 +536,12 @@ body.light-mode .icon-btn { background: rgba(0,0,0,0.06); color: #1e293b; }
         </div>
     </div>
 
-    <!-- Panel 3: Discount Calculator -->
+    <!-- Panel 3: Discount -->
     <div id="panel-discount" class="tab-panel" style="display:none">
         <div class="two-columns">
             <div><div class="row"><label><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 3h18v18H3z"/><circle cx="8.5" cy="8.5" r="1.5"/><circle cx="15.5" cy="15.5" r="1.5"/></svg> Original Price (₹)</label><input type="number" id="discountPrice" placeholder="0.00"></div>
-            <div class="row"><label>Discount Type</label><div class="discount-group" id="discountTypeGroup"><button data-type="percent" class="discount-type-btn active">% Percentage</button><button data-type="fixed" class="discount-type-btn">₹ Fixed</button></div></div>
-            <div class="row"><label id="discountValueLabel">Discount (%)</label><input type="number" id="discountValue" placeholder="e.g. 15" step="any"></div>
+            <div class="row"><label>Discount Type</label><div class="discount-group"><button data-type="percent" class="discount-type-btn active">% Percentage</button><button data-type="fixed" class="discount-type-btn">₹ Fixed</button></div></div>
+            <div class="row"><label id="discountValueLabel">Discount (%)</label><input type="number" id="discountValue" placeholder="e.g. 15"></div>
             <div class="action-btns"><button class="action add" onclick="calcDiscount()">Apply Discount</button><button class="action secondary" onclick="clearDiscount()">Reset</button></div></div>
             <div class="result"><div class="result-item"><span>Original Price</span><span id="originalDisplay">₹0.00</span></div><div class="result-item"><span>You Save</span><span id="savedAmount" style="color:#f97316; font-weight:700">₹0.00</span></div><hr><div class="result-item"><span>Final Price</span><span class="total" id="finalPrice">₹0.00</span></div><div class="result-item"><span>Discount %</span><span id="effectivePercent">0%</span></div></div>
         </div>
@@ -517,78 +553,46 @@ body.light-mode .icon-btn { background: rgba(0,0,0,0.06); color: #1e293b; }
 const themeBtn = document.getElementById('themeToggleBtn');
 const themeSvg = themeBtn.querySelector('svg');
 function setThemeIcons(isLight) {
-    if(isLight) {
-        themeSvg.innerHTML = '<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>';
-    } else {
-        themeSvg.innerHTML = '<circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>';
-    }
+    if(isLight) themeSvg.innerHTML = '<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>';
+    else themeSvg.innerHTML = '<circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>';
 }
-if(localStorage.getItem('theme') === 'light') { document.body.classList.add('light-mode'); setThemeIcons(true); }
-else setThemeIcons(false);
-themeBtn.addEventListener('click',()=>{
-    const isLight = document.body.classList.toggle('light-mode');
-    localStorage.setItem('theme', isLight ? 'light' : 'dark');
-    setThemeIcons(isLight);
-});
+if(localStorage.getItem('theme') === 'light') { document.body.classList.add('light-mode'); setThemeIcons(true); } else setThemeIcons(false);
+themeBtn.addEventListener('click',()=>{ const isLight = document.body.classList.toggle('light-mode'); localStorage.setItem('theme', isLight ? 'light' : 'dark'); setThemeIcons(isLight); });
 
-// ---------- GLOBAL DROPDOWN CLOSE HANDLER (fixes the issue) ----------
-function closeAllDropdowns() {
-    document.getElementById('gstMenu')?.classList.remove('show');
-    document.getElementById('unitMenu')?.classList.remove('show');
+// ---------- UNIFIED HISTORY (SVG only, no emojis) ----------
+let unifiedHistory = JSON.parse(localStorage.getItem('calcSuiteHistory') || '[]');
+function renderHistory() {
+    const container = document.getElementById('historyList');
+    if(!container) return;
+    if(unifiedHistory.length === 0) { container.innerHTML = '<div style="text-align:center; padding:20px; opacity:0.6;">No calculations yet</div>'; return; }
+    container.innerHTML = unifiedHistory.map(entry => {
+        let iconSvg = '', title = '';
+        if(entry.type === 'gst_add') { iconSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 5v14M5 12h14"/><circle cx="12" cy="12" r="10"/></svg>`; title = `Add GST (${entry.gstRate}%)`; }
+        else if(entry.type === 'gst_remove') { iconSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 12h14"/><circle cx="12" cy="12" r="10"/></svg>`; title = `Remove GST (${entry.gstRate}%)`; }
+        else if(entry.type === 'pergram') { iconSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 12H4M12 4v16M8 8l4-4 4 4M8 16l4 4 4-4"/></svg>`; title = `Per Gram · ${entry.unit}`; }
+        else if(entry.type === 'discount') { iconSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 15l6-6"/><circle cx="9" cy="9" r="1"/><circle cx="15" cy="15" r="1"/></svg>`; title = `Discount (${entry.discountType === 'percent' ? entry.discountValue+'%' : '₹'+entry.discountValue})`; }
+        let details = '';
+        if(entry.type === 'gst_add' || entry.type === 'gst_remove') details = `Base: ₹${entry.amount.toFixed(2)} → Total: ₹${entry.total.toFixed(2)} (GST: ₹${entry.gstAmount.toFixed(2)})`;
+        else if(entry.type === 'pergram') details = `${entry.priceLabel}: ₹${entry.price} | ${entry.weight} ${entry.unitLabel} → ${entry.perUnitLabel}: ₹${entry.perUnit}`;
+        else if(entry.type === 'discount') details = `Original: ₹${entry.original} | Saved: ₹${entry.saved} → Final: ₹${entry.final}`;
+        return `<div class="history-item"><div class="history-item-header">${iconSvg}<span>${title}</span></div><div class="history-details">${details}</div><div class="history-date">${entry.date}</div></div>`;
+    }).join('');
 }
-// click outside any dropdown closes them
-document.addEventListener('click', function(event) {
-    const gstSelector = document.getElementById('gstSelector');
-    const unitSelector = document.getElementById('unitSelector');
-    const isClickInsideGst = gstSelector && gstSelector.contains(event.target);
-    const isClickInsideUnit = unitSelector && unitSelector.contains(event.target);
-    if (!isClickInsideGst) {
-        document.getElementById('gstMenu')?.classList.remove('show');
-    }
-    if (!isClickInsideUnit) {
-        document.getElementById('unitMenu')?.classList.remove('show');
-    }
-    // also close mini calculator and history if clicking outside
-    const miniDialog = document.getElementById('miniCalculatorDialog');
-    const historyDialog = document.getElementById('historyDialog');
-    const openCalc = document.getElementById('openCalculatorBtn');
-    const openHistory = document.getElementById('openHistoryBtn');
-    if (miniDialog && !miniDialog.contains(event.target) && event.target !== openCalc) {
-        miniDialog.classList.remove('show');
-    }
-    if (historyDialog && !historyDialog.contains(event.target) && event.target !== openHistory) {
-        historyDialog.classList.remove('show');
-    }
-});
+function addHistoryEntry(entry) { unifiedHistory.unshift({ id: Date.now(), ...entry, date: new Date().toLocaleString() }); if(unifiedHistory.length > 50) unifiedHistory.pop(); localStorage.setItem('calcSuiteHistory', JSON.stringify(unifiedHistory)); renderHistory(); }
 
-// toggle GST menu on button click (stop propagation to avoid immediate close)
-const gstBtn = document.getElementById('selectedGST');
-const gstMenu = document.getElementById('gstMenu');
-if (gstBtn) {
-    gstBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        gstMenu.classList.toggle('show');
-        // close unit menu if open
-        document.getElementById('unitMenu')?.classList.remove('show');
-    });
-}
-// toggle unit menu
-const unitBtn = document.getElementById('selectedUnit');
-const unitMenu = document.getElementById('unitMenu');
-if (unitBtn) {
-    unitBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        unitMenu.classList.toggle('show');
-        gstMenu?.classList.remove('show');
-    });
-}
+// clear history
+document.getElementById('clearHistoryBtn')?.addEventListener('click',()=>{ if(confirm('Delete all history?')){ unifiedHistory = []; localStorage.setItem('calcSuiteHistory', '[]'); renderHistory(); document.getElementById('historyDialog')?.classList.remove('show'); } });
+
+// ---------- DROPDOWN CLOSE ----------
+function closeAllDropdowns() { document.getElementById('gstMenu')?.classList.remove('show'); document.getElementById('unitMenu')?.classList.remove('show'); }
+document.addEventListener('click',(e)=>{ if(!document.getElementById('gstSelector')?.contains(e.target)) document.getElementById('gstMenu')?.classList.remove('show'); if(!document.getElementById('unitSelector')?.contains(e.target)) document.getElementById('unitMenu')?.classList.remove('show'); });
+document.getElementById('selectedGST')?.addEventListener('click',(e)=>{ e.stopPropagation(); document.getElementById('gstMenu')?.classList.toggle('show'); });
+document.getElementById('selectedUnit')?.addEventListener('click',(e)=>{ e.stopPropagation(); document.getElementById('unitMenu')?.classList.toggle('show'); });
 
 // ---------- MINI CALCULATOR ----------
-const miniDialog = document.getElementById('miniCalculatorDialog');
-const openCalcBtn = document.getElementById('openCalculatorBtn');
-let curr = '0', prev = '', op = null;
-const prevElem = document.querySelector('.previous-operand');
-const currElem = document.querySelector('.current-operand');
+const miniDialog = document.getElementById('miniCalculatorDialog'), openCalc = document.getElementById('openCalculatorBtn');
+let curr='0', prev='', op=null;
+const prevElem = document.querySelector('.previous-operand'), currElem = document.querySelector('.current-operand');
 function updateMini() { currElem.innerText = curr; prevElem.innerText = prev + (op || ''); }
 function numHandler(n) { if(n==='.' && curr.includes('.')) return; if(curr==='0' && n!=='.') curr=n; else curr+=n; updateMini(); }
 function opHandler(o) { if(curr==='') return; if(prev!=='') computeMini(); op=o; prev=curr; curr=''; updateMini(); }
@@ -596,65 +600,76 @@ function computeMini() { let p=parseFloat(prev), c=parseFloat(curr); if(isNaN(p)
 function allClearMini() { curr='0'; prev=''; op=null; updateMini(); }
 function delMini() { if(curr.length===1||curr==='0') curr='0'; else curr=curr.slice(0,-1); updateMini(); }
 function percentMini() { let v=parseFloat(curr); if(!isNaN(v)) curr=(v/100).toString(); updateMini(); }
-function buildGrid() { const grid = document.getElementById('miniCalcGrid'); const btns=[['AC','C'],['%','%'],['DEL','D'],['÷','/'],['7','7'],['8','8'],['9','9'],['*','*'],['4','4'],['5','5'],['6','6'],['-','-'],['1','1'],['2','2'],['3','3'],['+','+'],['0','0'],['.','.'],['=','=']]; grid.innerHTML=''; btns.forEach(([label,val])=>{ const b=document.createElement('button'); b.innerText=label; b.classList.add('calc-btn'); if(['+','-','*','÷'].includes(val)) b.classList.add('operator'); if(val==='=') b.classList.add('equals'); b.onclick=()=>{ if(val==='C') allClearMini(); else if(val==='D') delMini(); else if(val==='%') percentMini(); else if(val==='=') computeMini(); else if(['+','-','*','÷'].includes(val)) opHandler(val); else numHandler(val); }; grid.appendChild(b); }); }
-buildGrid(); updateMini();
-openCalcBtn.addEventListener('click', (e) => { e.stopPropagation(); miniDialog.classList.toggle('show'); closeAllDropdowns(); });
+function buildMiniGrid() { const grid = document.getElementById('miniCalcGrid'); const btns=[['AC','C'],['%','%'],['DEL','D'],['÷','/'],['7','7'],['8','8'],['9','9'],['*','*'],['4','4'],['5','5'],['6','6'],['-','-'],['1','1'],['2','2'],['3','3'],['+','+'],['0','0'],['.','.'],['=','=']]; grid.innerHTML=''; btns.forEach(([label,val])=>{ const b=document.createElement('button'); b.innerText=label; b.classList.add('calc-btn'); if(['+','-','*','÷'].includes(val)) b.classList.add('operator'); if(val==='=') b.classList.add('equals'); b.onclick=()=>{ if(val==='C') allClearMini(); else if(val==='D') delMini(); else if(val==='%') percentMini(); else if(val==='=') computeMini(); else if(['+','-','*','÷'].includes(val)) opHandler(val); else numHandler(val); }; grid.appendChild(b); }); }
+buildMiniGrid(); updateMini();
+openCalc.addEventListener('click',(e)=>{ e.stopPropagation(); miniDialog.classList.toggle('show'); closeAllDropdowns(); document.getElementById('historyDialog')?.classList.remove('show'); });
+document.addEventListener('click',(e)=>{ if(!miniDialog.contains(e.target) && e.target!==openCalc) miniDialog.classList.remove('show'); });
 
-// ---------- HISTORY (GST) ----------
-let gstHistory = JSON.parse(localStorage.getItem('gstHistory') || '[]');
-function renderHistory() {
-    const container = document.getElementById('historyList'); if(!container) return;
-    if(gstHistory.length===0){ container.innerHTML='<div class="history-empty" style="text-align:center; padding:16px;">No GST history</div>'; return; }
-    container.innerHTML = gstHistory.map(h=>`<div class="history-item"><strong>${h.type==='add'?'➕ Add GST':'➖ Remove GST'}</strong><br>Base: ₹${h.amount.toFixed(2)} | ${h.gstRate}% → ₹${h.gstAmount.toFixed(2)}<br><strong>Total: ₹${h.total.toFixed(2)}</strong><div style="font-size:9px; margin-top:4px;">${h.date}</div></div>`).join('');
-}
-function saveHistory(type,amount,gstRate,gstAmount,total){
-    if(amount<=0) return;
-    gstHistory.unshift({id:Date.now(),type,amount,gstRate,gstAmount,total,date:new Date().toLocaleString()});
-    if(gstHistory.length>40) gstHistory.pop();
-    localStorage.setItem('gstHistory',JSON.stringify(gstHistory));
-    renderHistory();
-}
-document.getElementById('clearHistoryBtn')?.addEventListener('click',()=>{ if(confirm('Delete all GST history?')){ gstHistory=[]; localStorage.setItem('gstHistory','[]'); renderHistory(); document.getElementById('historyDialog')?.classList.remove('show'); } });
-const openHistoryBtn = document.getElementById('openHistoryBtn');
-const historyDialog = document.getElementById('historyDialog');
-openHistoryBtn?.addEventListener('click',(e)=>{ e.stopPropagation(); renderHistory(); historyDialog.classList.toggle('show'); closeAllDropdowns(); miniDialog.classList.remove('show'); });
-
-// ---------- GST CORE ----------
-window.setGST = (v)=>{ document.getElementById('gst').value=v; document.getElementById('selectedGST').innerHTML=`${v}% GST ▼`; localStorage.setItem('gstRate',v); gstMenu.classList.remove('show'); document.getElementById('manualGSTInput').value=''; };
-document.getElementById('manualGSTInput')?.addEventListener('input',function(e){ e.stopPropagation(); let val=parseFloat(this.value); if(!isNaN(val)&&val>=0){ document.getElementById('gst').value=val; document.getElementById('selectedGST').innerHTML=`${val}% GST ▼`; localStorage.setItem('gstRate',val); } });
+// ---------- GST LOGIC WITH HISTORY ----------
+window.setGST = (v)=>{ document.getElementById('gst').value=v; document.getElementById('selectedGST').innerHTML=`${v}% GST ▼`; localStorage.setItem('gstRate',v); document.getElementById('gstMenu')?.classList.remove('show'); };
 if(localStorage.getItem('gstRate')){ let r=parseFloat(localStorage.getItem('gstRate')); document.getElementById('gst').value=r; document.getElementById('selectedGST').innerHTML=`${r}% GST ▼`; }
-window.addGST = ()=>{ let amt=parseFloat(document.getElementById('amount').value)||0; let gst=parseFloat(document.getElementById('gst').value); let gstAmt=amt*gst/100; let total=amt+gstAmt; document.getElementById('base').innerText='₹'+amt.toFixed(2); document.getElementById('gstAmount').innerText='₹'+gstAmt.toFixed(2); document.getElementById('total').innerText='₹'+total.toFixed(2); saveHistory('add',amt,gst,gstAmt,total); };
-window.removeGST = ()=>{ let amt=parseFloat(document.getElementById('amount').value)||0; let gst=parseFloat(document.getElementById('gst').value); let base=amt/(1+gst/100); let gstAmt=amt-base; document.getElementById('base').innerText='₹'+base.toFixed(2); document.getElementById('gstAmount').innerText='₹'+gstAmt.toFixed(2); document.getElementById('total').innerText='₹'+amt.toFixed(2); saveHistory('remove',base,gst,gstAmt,amt); };
+document.getElementById('manualGSTInput')?.addEventListener('input',function(){ let val=parseFloat(this.value); if(!isNaN(val)&&val>=0){ document.getElementById('gst').value=val; document.getElementById('selectedGST').innerHTML=`${val}% GST ▼`; localStorage.setItem('gstRate',val); } });
+window.addGST = ()=>{ let amt=parseFloat(document.getElementById('amount').value)||0; let gst=parseFloat(document.getElementById('gst').value); let gstAmt=amt*gst/100; let total=amt+gstAmt; document.getElementById('base').innerText='₹'+amt.toFixed(2); document.getElementById('gstAmount').innerText='₹'+gstAmt.toFixed(2); document.getElementById('total').innerText='₹'+total.toFixed(2); if(amt>0) addHistoryEntry({ type:'gst_add', amount:amt, gstRate:gst, gstAmount:gstAmt, total:total }); };
+window.removeGST = ()=>{ let amt=parseFloat(document.getElementById('amount').value)||0; let gst=parseFloat(document.getElementById('gst').value); let base=amt/(1+gst/100); let gstAmt=amt-base; document.getElementById('base').innerText='₹'+base.toFixed(2); document.getElementById('gstAmount').innerText='₹'+gstAmt.toFixed(2); document.getElementById('total').innerText='₹'+amt.toFixed(2); if(amt>0) addHistoryEntry({ type:'gst_remove', amount:base, gstRate:gst, gstAmount:gstAmt, total:amt }); };
 const clearAmount = document.getElementById('clearAmountBtn'), amountInput = document.getElementById('amount');
 amountInput?.addEventListener('input',()=>{ clearAmount.style.display = amountInput.value ? 'block' : 'none'; });
 clearAmount?.addEventListener('click',()=>{ amountInput.value=''; clearAmount.style.display='none'; amountInput.focus(); });
 
-// ---------- PER GRAM ----------
-window.setUnit = function(val,label){ document.getElementById('pgUnit').value=val; document.getElementById('selectedUnit').innerHTML=label+' ▼'; unitMenu.classList.remove('show'); };
-window.calcPerGram = ()=>{ let price=parseFloat(document.getElementById('pgPrice').value)||0, weight=parseFloat(document.getElementById('pgWeight').value)||0, unit=document.getElementById('pgUnit').value; if(price<=0||weight<=0){ alert('Valid price and weight required'); return; } let weightInGrams = unit==='kg' ? weight*1000 : weight; let perUnit = price/weightInGrams; document.getElementById('pgResultPrice').innerText='₹'+price.toFixed(2); let wtLabel = weight+' '+(unit==='kg'?'kg':unit==='piece'?(weight===1?'piece':'pieces'):'g'); document.getElementById('pgResultWeight').innerText=wtLabel; if(unit==='piece'){ document.getElementById('pgResultLabel').innerText='Price per Piece'; document.getElementById('pgResultPerUnit').innerText='₹'+perUnit.toFixed(2); document.getElementById('pgPer100Row').style.display='none'; document.getElementById('pgPer1kgRow').style.display='none'; } else { document.getElementById('pgResultLabel').innerText='Price per Gram'; document.getElementById('pgResultPerUnit').innerText='₹'+perUnit.toFixed(4); document.getElementById('pgPer100Row').style.display='flex'; document.getElementById('pgResultPer100').innerText='₹'+(perUnit*100).toFixed(2); document.getElementById('pgPer1kgRow').style.display='flex'; document.getElementById('pgResultPer1kg').innerText='₹'+(perUnit*1000).toFixed(2); } };
+// ---------- PER GRAM WITH HISTORY ----------
+window.setUnit = (val,label)=>{ document.getElementById('pgUnit').value=val; document.getElementById('selectedUnit').innerHTML=label+' ▼'; document.getElementById('unitMenu')?.classList.remove('show'); };
+window.calcPerGram = ()=>{
+    let price=parseFloat(document.getElementById('pgPrice').value)||0, weight=parseFloat(document.getElementById('pgWeight').value)||0, unit=document.getElementById('pgUnit').value;
+    if(price<=0||weight<=0){ alert('Valid price and weight required'); return; }
+    let weightInGrams = unit==='kg' ? weight*1000 : weight;
+    let perUnit = price/weightInGrams;
+    document.getElementById('pgResultPrice').innerText='₹'+price.toFixed(2);
+    let wtLabel = weight+' '+(unit==='kg'?'kg':unit==='piece'?(weight===1?'piece':'pieces'):'g');
+    document.getElementById('pgResultWeight').innerText=wtLabel;
+    if(unit==='piece'){
+        document.getElementById('pgResultLabel').innerText='Price per Piece';
+        document.getElementById('pgResultPerUnit').innerText='₹'+perUnit.toFixed(2);
+        document.getElementById('pgPer100Row').style.display='none';
+        document.getElementById('pgPer1kgRow').style.display='none';
+        addHistoryEntry({ type:'pergram', price:price.toFixed(2), weight:weight, unitLabel:wtLabel, perUnitLabel:'Price per Piece', perUnit:perUnit.toFixed(2), priceLabel:'Total Price' });
+    } else {
+        document.getElementById('pgResultLabel').innerText='Price per Gram';
+        document.getElementById('pgResultPerUnit').innerText='₹'+perUnit.toFixed(4);
+        document.getElementById('pgPer100Row').style.display='flex';
+        document.getElementById('pgResultPer100').innerText='₹'+(perUnit*100).toFixed(2);
+        document.getElementById('pgPer1kgRow').style.display='flex';
+        document.getElementById('pgResultPer1kg').innerText='₹'+(perUnit*1000).toFixed(2);
+        addHistoryEntry({ type:'pergram', price:price.toFixed(2), weight:weight, unitLabel:wtLabel, perUnitLabel:'Price per Gram', perUnit:perUnit.toFixed(4), priceLabel:'Total Price' });
+    }
+};
 window.clearPGCalc = ()=>{ document.getElementById('pgPrice').value=''; document.getElementById('pgWeight').value=''; document.getElementById('pgResultPrice').innerText='₹0.00'; document.getElementById('pgResultWeight').innerText='0'; document.getElementById('pgResultPerUnit').innerText='₹0.00'; document.getElementById('pgResultPer100').innerText='₹0.00'; document.getElementById('pgResultPer1kg').innerText='₹0.00'; document.getElementById('pgPer100Row').style.display='none'; document.getElementById('pgPer1kgRow').style.display='none'; };
 
-// ---------- DISCOUNT ----------
+// ---------- DISCOUNT WITH HISTORY ----------
 let discountMode = 'percent';
 document.querySelectorAll('.discount-type-btn').forEach(btn=>{ btn.addEventListener('click',()=>{ discountMode=btn.getAttribute('data-type'); document.querySelectorAll('.discount-type-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); document.getElementById('discountValueLabel').innerHTML = discountMode==='percent' ? 'Discount (%)' : 'Discount Amount (₹)'; }); });
-window.calcDiscount = ()=>{ let orig=parseFloat(document.getElementById('discountPrice').value)||0; let val=parseFloat(document.getElementById('discountValue').value)||0; if(orig<=0){ alert('Enter original price'); return; } let saved=0, final=orig, eff=0; if(discountMode==='percent'){ saved=orig*val/100; final=orig-saved; eff=val; } else { saved=Math.min(val,orig); final=orig-saved; eff=(saved/orig)*100; } document.getElementById('originalDisplay').innerText='₹'+orig.toFixed(2); document.getElementById('savedAmount').innerText='₹'+saved.toFixed(2); document.getElementById('finalPrice').innerText='₹'+final.toFixed(2); document.getElementById('effectivePercent').innerText=eff.toFixed(2)+'%'; };
+window.calcDiscount = ()=>{
+    let orig=parseFloat(document.getElementById('discountPrice').value)||0, val=parseFloat(document.getElementById('discountValue').value)||0;
+    if(orig<=0){ alert('Enter original price'); return; }
+    let saved=0, final=orig, eff=0;
+    if(discountMode==='percent'){ saved=orig*val/100; final=orig-saved; eff=val; } else { saved=Math.min(val,orig); final=orig-saved; eff=(saved/orig)*100; }
+    document.getElementById('originalDisplay').innerText='₹'+orig.toFixed(2);
+    document.getElementById('savedAmount').innerText='₹'+saved.toFixed(2);
+    document.getElementById('finalPrice').innerText='₹'+final.toFixed(2);
+    document.getElementById('effectivePercent').innerText=eff.toFixed(2)+'%';
+    addHistoryEntry({ type:'discount', original:orig.toFixed(2), discountValue:val, discountType:discountMode, saved:saved.toFixed(2), final:final.toFixed(2) });
+};
 window.clearDiscount = ()=>{ document.getElementById('discountPrice').value=''; document.getElementById('discountValue').value=''; document.getElementById('originalDisplay').innerText='₹0.00'; document.getElementById('savedAmount').innerText='₹0.00'; document.getElementById('finalPrice').innerText='₹0.00'; document.getElementById('effectivePercent').innerText='0%'; };
 
-// ---------- TAB SWITCHING (also closes dropdowns) ----------
+// ---------- TAB SWITCH ----------
 window.switchTab = function(tab){
     document.getElementById('panel-gst').style.display = tab==='gst' ? 'block' : 'none';
     document.getElementById('panel-pergram').style.display = tab==='pergram' ? 'block' : 'none';
     document.getElementById('panel-discount').style.display = tab==='discount' ? 'block' : 'none';
     document.querySelectorAll('.tab-btn').forEach((btn,i)=>{ if((tab==='gst' && i===0)||(tab==='pergram'&&i===1)||(tab==='discount'&&i===2)) btn.classList.add('active'); else btn.classList.remove('active'); });
-    closeAllDropdowns();
-    miniDialog.classList.remove('show');
-    historyDialog?.classList.remove('show');
+    closeAllDropdowns(); miniDialog.classList.remove('show'); document.getElementById('historyDialog')?.classList.remove('show');
 };
-// initial active
-switchTab('gst');
-renderHistory();
-
-// service worker for PWA (optional)
+switchTab('gst'); renderHistory();
+document.getElementById('openHistoryBtn')?.addEventListener('click',(e)=>{ e.stopPropagation(); renderHistory(); document.getElementById('historyDialog')?.classList.toggle('show'); closeAllDropdowns(); miniDialog.classList.remove('show'); });
+document.addEventListener('click',(e)=>{ if(!document.getElementById('historyDialog')?.contains(e.target) && e.target !== document.getElementById('openHistoryBtn')) document.getElementById('historyDialog')?.classList.remove('show'); });
 if('serviceWorker' in navigator) navigator.serviceWorker.register('./service-worker.js').catch(e=>console);
 </script>
 </body>
