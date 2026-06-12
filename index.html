@@ -406,7 +406,91 @@ hr {
     color: white;
 }
 
-/* LIGHT MODE OVERRIDES (fixes for history & mini calculator) */
+/* CUSTOM CLEAR DIALOG MODAL */
+.custom-clear-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.75);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s ease;
+}
+.custom-clear-modal.show {
+    opacity: 1;
+    visibility: visible;
+}
+.clear-modal-content {
+    background: #1e293b;
+    border-radius: 1.5rem;
+    padding: 1.8rem;
+    width: 90%;
+    max-width: 340px;
+    text-align: center;
+    border: 1px solid rgba(255,255,255,0.1);
+    box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+    transform: scale(0.95);
+    transition: transform 0.2s;
+}
+.custom-clear-modal.show .clear-modal-content {
+    transform: scale(1);
+}
+body.light-mode .clear-modal-content {
+    background: #ffffff;
+    color: #0f172a;
+    border: 1px solid rgba(0,0,0,0.1);
+}
+.clear-modal-content h3 {
+    margin-bottom: 12px;
+    font-size: 1.3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+.clear-modal-content p {
+    margin-bottom: 24px;
+    opacity: 0.8;
+    font-size: 0.9rem;
+}
+.clear-buttons {
+    display: flex;
+    gap: 12px;
+}
+.clear-buttons button {
+    flex: 1;
+    padding: 12px;
+    border-radius: 1rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.clear-buttons .cancel-clear {
+    background: rgba(255,255,255,0.15);
+    color: inherit;
+}
+body.light-mode .clear-buttons .cancel-clear {
+    background: rgba(0,0,0,0.08);
+}
+.clear-buttons .cancel-clear:hover {
+    background: rgba(255,255,255,0.25);
+}
+.clear-buttons .confirm-clear {
+    background: #ef4444;
+    color: white;
+}
+.clear-buttons .confirm-clear:hover {
+    background: #dc2626;
+}
+
+/* LIGHT MODE OVERRIDES */
 body.light-mode {
     background: linear-gradient(145deg, #eef2ff, #e0e7ff);
 }
@@ -425,8 +509,6 @@ body.light-mode .result { background: rgba(0,0,0,0.02);}
 body.light-mode .total, body.light-mode .pg-total { color: #0284c7; }
 body.light-mode .tab-btn.active { background: #e2e8f0; color: #0f172a; box-shadow: none;}
 body.light-mode .icon-btn { background: rgba(0,0,0,0.06); color: #1e293b; }
-
-/* light mode mini calculator & history */
 body.light-mode .mini-calculator-dialog, body.light-mode .history-dialog {
     background: #f8fafc;
     border: 1px solid rgba(0,0,0,0.1);
@@ -457,9 +539,7 @@ body.light-mode .history-clear-btn {
     background: #dc2626;
 }
 
-/* footer removed */
 .footer { display: none; }
-
 @media (max-width: 640px) {
     .card { padding: 1.2rem; }
     .icon-btn { top: 1rem; width: 36px; height: 36px; }
@@ -504,6 +584,18 @@ body.light-mode .history-clear-btn {
         <h4 style="margin-bottom:12px; font-weight:600; display:flex; align-items:center; gap:6px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg> History</h4>
         <div id="historyList"></div>
         <button id="clearHistoryBtn" class="history-clear-btn">Clear All</button>
+    </div>
+
+    <!-- Custom Clear Confirmation Modal -->
+    <div id="customClearModal" class="custom-clear-modal">
+        <div class="clear-modal-content">
+            <h3><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 6h18M9 6v12M15 6v12M5 6h14a1 1 0 0 1 1 1v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a1 1 0 0 1 1-1z"/></svg> Clear History?</h3>
+            <p>All calculation records will be permanently deleted. This action cannot be undone.</p>
+            <div class="clear-buttons">
+                <button class="cancel-clear" id="cancelClearModal">Cancel</button>
+                <button class="confirm-clear" id="confirmClearModal">Yes, Clear All</button>
+            </div>
+        </div>
     </div>
 
     <!-- tab bar -->
@@ -559,7 +651,7 @@ function setThemeIcons(isLight) {
 if(localStorage.getItem('theme') === 'light') { document.body.classList.add('light-mode'); setThemeIcons(true); } else setThemeIcons(false);
 themeBtn.addEventListener('click',()=>{ const isLight = document.body.classList.toggle('light-mode'); localStorage.setItem('theme', isLight ? 'light' : 'dark'); setThemeIcons(isLight); });
 
-// ---------- UNIFIED HISTORY (SVG only, no emojis) ----------
+// ---------- UNIFIED HISTORY (SVG only) ----------
 let unifiedHistory = JSON.parse(localStorage.getItem('calcSuiteHistory') || '[]');
 function renderHistory() {
     const container = document.getElementById('historyList');
@@ -573,15 +665,24 @@ function renderHistory() {
         else if(entry.type === 'discount') { iconSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 15l6-6"/><circle cx="9" cy="9" r="1"/><circle cx="15" cy="15" r="1"/></svg>`; title = `Discount (${entry.discountType === 'percent' ? entry.discountValue+'%' : '₹'+entry.discountValue})`; }
         let details = '';
         if(entry.type === 'gst_add' || entry.type === 'gst_remove') details = `Base: ₹${entry.amount.toFixed(2)} → Total: ₹${entry.total.toFixed(2)} (GST: ₹${entry.gstAmount.toFixed(2)})`;
-        else if(entry.type === 'pergram') details = `${entry.priceLabel}: ₹${entry.price} | ${entry.weight} ${entry.unitLabel} → ${entry.perUnitLabel}: ₹${entry.perUnit}`;
+        else if(entry.type === 'pergram') details = `${entry.priceLabel}: ₹${entry.price} | ${entry.weightDisplay} → ${entry.perUnitLabel}: ₹${entry.perUnit}`;
         else if(entry.type === 'discount') details = `Original: ₹${entry.original} | Saved: ₹${entry.saved} → Final: ₹${entry.final}`;
         return `<div class="history-item"><div class="history-item-header">${iconSvg}<span>${title}</span></div><div class="history-details">${details}</div><div class="history-date">${entry.date}</div></div>`;
     }).join('');
 }
 function addHistoryEntry(entry) { unifiedHistory.unshift({ id: Date.now(), ...entry, date: new Date().toLocaleString() }); if(unifiedHistory.length > 50) unifiedHistory.pop(); localStorage.setItem('calcSuiteHistory', JSON.stringify(unifiedHistory)); renderHistory(); }
 
-// clear history
-document.getElementById('clearHistoryBtn')?.addEventListener('click',()=>{ if(confirm('Delete all history?')){ unifiedHistory = []; localStorage.setItem('calcSuiteHistory', '[]'); renderHistory(); document.getElementById('historyDialog')?.classList.remove('show'); } });
+// Custom clear modal logic
+const clearModal = document.getElementById('customClearModal');
+const clearHistoryBtn = document.getElementById('clearHistoryBtn');
+const cancelClearModal = document.getElementById('cancelClearModal');
+const confirmClearModal = document.getElementById('confirmClearModal');
+
+clearHistoryBtn?.addEventListener('click', () => { clearModal.classList.add('show'); });
+cancelClearModal?.addEventListener('click', () => { clearModal.classList.remove('show'); });
+confirmClearModal?.addEventListener('click', () => { unifiedHistory = []; localStorage.setItem('calcSuiteHistory', '[]'); renderHistory(); clearModal.classList.remove('show'); document.getElementById('historyDialog')?.classList.remove('show'); });
+// close modal on backdrop click
+clearModal?.addEventListener('click', (e) => { if(e.target === clearModal) clearModal.classList.remove('show'); });
 
 // ---------- DROPDOWN CLOSE ----------
 function closeAllDropdowns() { document.getElementById('gstMenu')?.classList.remove('show'); document.getElementById('unitMenu')?.classList.remove('show'); }
@@ -615,7 +716,7 @@ const clearAmount = document.getElementById('clearAmountBtn'), amountInput = doc
 amountInput?.addEventListener('input',()=>{ clearAmount.style.display = amountInput.value ? 'block' : 'none'; });
 clearAmount?.addEventListener('click',()=>{ amountInput.value=''; clearAmount.style.display='none'; amountInput.focus(); });
 
-// ---------- PER GRAM WITH HISTORY ----------
+// ---------- PER GRAM WITH FIXED HISTORY (no duplicate, no undefined) ----------
 window.setUnit = (val,label)=>{ document.getElementById('pgUnit').value=val; document.getElementById('selectedUnit').innerHTML=label+' ▼'; document.getElementById('unitMenu')?.classList.remove('show'); };
 window.calcPerGram = ()=>{
     let price=parseFloat(document.getElementById('pgPrice').value)||0, weight=parseFloat(document.getElementById('pgWeight').value)||0, unit=document.getElementById('pgUnit').value;
@@ -623,14 +724,14 @@ window.calcPerGram = ()=>{
     let weightInGrams = unit==='kg' ? weight*1000 : weight;
     let perUnit = price/weightInGrams;
     document.getElementById('pgResultPrice').innerText='₹'+price.toFixed(2);
-    let wtLabel = weight+' '+(unit==='kg'?'kg':unit==='piece'?(weight===1?'piece':'pieces'):'g');
-    document.getElementById('pgResultWeight').innerText=wtLabel;
+    let weightDisplay = weight + ' ' + (unit==='kg'?'kg':unit==='piece'?(weight===1?'piece':'pieces'):'g');
+    document.getElementById('pgResultWeight').innerText=weightDisplay;
     if(unit==='piece'){
         document.getElementById('pgResultLabel').innerText='Price per Piece';
         document.getElementById('pgResultPerUnit').innerText='₹'+perUnit.toFixed(2);
         document.getElementById('pgPer100Row').style.display='none';
         document.getElementById('pgPer1kgRow').style.display='none';
-        addHistoryEntry({ type:'pergram', price:price.toFixed(2), weight:weight, unitLabel:wtLabel, perUnitLabel:'Price per Piece', perUnit:perUnit.toFixed(2), priceLabel:'Total Price' });
+        addHistoryEntry({ type:'pergram', price:price.toFixed(2), weightDisplay:weightDisplay, perUnitLabel:'Price per Piece', perUnit:perUnit.toFixed(2), priceLabel:'Total Price', unit: 'Piece' });
     } else {
         document.getElementById('pgResultLabel').innerText='Price per Gram';
         document.getElementById('pgResultPerUnit').innerText='₹'+perUnit.toFixed(4);
@@ -638,7 +739,7 @@ window.calcPerGram = ()=>{
         document.getElementById('pgResultPer100').innerText='₹'+(perUnit*100).toFixed(2);
         document.getElementById('pgPer1kgRow').style.display='flex';
         document.getElementById('pgResultPer1kg').innerText='₹'+(perUnit*1000).toFixed(2);
-        addHistoryEntry({ type:'pergram', price:price.toFixed(2), weight:weight, unitLabel:wtLabel, perUnitLabel:'Price per Gram', perUnit:perUnit.toFixed(4), priceLabel:'Total Price' });
+        addHistoryEntry({ type:'pergram', price:price.toFixed(2), weightDisplay:weightDisplay, perUnitLabel:'Price per Gram', perUnit:perUnit.toFixed(4), priceLabel:'Total Price', unit: unit==='kg'?'Kilogram':'Gram' });
     }
 };
 window.clearPGCalc = ()=>{ document.getElementById('pgPrice').value=''; document.getElementById('pgWeight').value=''; document.getElementById('pgResultPrice').innerText='₹0.00'; document.getElementById('pgResultWeight').innerText='0'; document.getElementById('pgResultPerUnit').innerText='₹0.00'; document.getElementById('pgResultPer100').innerText='₹0.00'; document.getElementById('pgResultPer1kg').innerText='₹0.00'; document.getElementById('pgPer100Row').style.display='none'; document.getElementById('pgPer1kgRow').style.display='none'; };
