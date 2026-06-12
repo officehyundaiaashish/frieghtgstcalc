@@ -3,1641 +3,659 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-
-<title>Basic GSTCalc</title>
-
+<title>Calc Suite | GST + PerGram + Discount</title>
 <link rel="manifest" href="manifest.json">
-
 <meta name="theme-color" content="#0f172a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Basic GSTCalc">
-<meta name="description" content="Professional GST Calculator PWA">
-
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
+<meta name="apple-mobile-web-app-title" content="Calc Suite">
+<meta name="description" content="All-in-one toolkit: GST, Per Gram pricing, Discount calculator — PWA ready.">
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
 <style>
-
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:'Poppins',sans-serif;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
-body{
-    min-height:100vh;
-    background:linear-gradient(135deg,#0f172a,#1e293b);
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    padding:20px;
+body {
+    min-height: 100vh;
+    background: linear-gradient(145deg, #0b1120 0%, #111827 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    transition: background 0.3s ease;
 }
 
-.card{
-    position: relative; /* Added for absolute positioning of calculator */
-    width:100%;
-    max-width:430px;
-    background:rgba(255,255,255,0.08);
-    backdrop-filter:blur(25px);
-    border:1px solid rgba(255,255,255,0.1);
-    border-radius:28px;
-    padding:28px;
-    color:#fff;
-    box-shadow:0 25px 60px rgba(0,0,0,.35);
-}
-
-.logo{
-    font-size:52px;
-    text-align:center;
-}
-
-h1{
-    text-align:center;
-    margin-top:10px;
-    font-size:28px;
-}
-
-.subtitle{
-    text-align:center;
-    opacity:.75;
-    margin-top:5px;
-    margin-bottom:25px;
-}
-
-label{
-    display:block;
-    margin-bottom:8px;
-    font-size:14px;
-}
-
-input{
-    width:100%;
-    padding:15px;
-    border:none;
-    outline:none;
-    border-radius:16px;
-    background:rgba(255,255,255,.12);
-    color:white;
-    font-size:16px;
-}
-
-input::placeholder{
-    color:rgba(255,255,255,.5);
-}
-
-.row{
-    margin-bottom:18px;
-}
-
-/* NEW: Amount Clear Button */
-.amount-input-wrapper {
+/* modern glass card */
+.card {
     position: relative;
     width: 100%;
+    max-width: 1000px;
+    background: rgba(18, 25, 45, 0.75);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 2rem;
+    padding: 1.8rem 1.8rem 1.5rem;
+    color: #f1f5f9;
+    box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.5);
+    transition: all 0.3s ease;
 }
 
-.clear-input-btn {
-    position: absolute;
-    right: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: none;
-    border: none;
-    color: rgba(255,255,255,.6);
-    font-size: 20px;
-    cursor: pointer;
-    padding: 4px 6px;
-    display: none;
-    z-index: 10;
-    line-height: 1;
-    pointer-events: auto;
-}
-
-body.light-mode .clear-input-btn {
-    color: rgba(0,0,0,.5);
-}
-
-.clear-input-btn:hover {
-    color: rgba(255,255,255,.9);
-}
-
-body.light-mode .clear-input-btn:hover {
-    color: rgba(0,0,0,.8);
-}
-
-/* Remove up/down arrows from number input */
-#amount::-webkit-outer-spin-button,
-#amount::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-}
-
-#amount {
-    -moz-appearance: textfield;
-    padding-right: 48px !important;   /* Extra space for × button */
-}
-
-body.light-mode .clear-input-btn {
-    color: rgba(0,0,0,.5);
-}
-
-.clear-input-btn:hover {
-    color: rgba(255,255,255,.9);
-}
-
-body.light-mode .clear-input-btn:hover {
-    color: rgba(0,0,0,.8);
-}
-
-.gst-selector{
-    position:relative;
-}
-
-.gst-btn{
-    width:100%;
-    padding:15px;
-    border:none;
-    border-radius:16px;
-    background:rgba(255,255,255,.12);
-    color:white;
-    cursor:pointer;
-    font-size:16px;
-    text-align:left;
-}
-
-.gst-menu{
-    position:absolute;
-    width:100%;
-    top:60px;
-    left:0;
-    background:#1e293b;
-    border-radius:16px;
-    overflow-y:auto; /* Enable vertical scrolling */
-    max-height:170px; /* Ensure at least 3 options are fully visible */
-        display:none;
-        z-index:1000;
-    border:1px solid rgba(255,255,255,.1);
-}
-
-.gst-menu.show{
-    display:block;
-}
-
-.gst-menu div{
-    padding:15px;
-    cursor:pointer;
-    transition:.2s;
-}
-
-.gst-menu div:hover{
-    background:rgba(255,255,255,.08);
-}
-
-.gst-menu .gst-manual-input-wrapper {
-    padding: 10px 15px;
-    border-top: 1px solid rgba(255,255,255,.05);
-}
-
-.gst-menu .gst-manual-input-wrapper input {
-    width: 100%;
-    padding: 8px 10px;
-    border: 1px solid rgba(255,255,255,.1);
-    border-radius: 8px;
-    background: rgba(255,255,255,.05);
-    color: white;
-    font-size: 14px;
-    outline: none;
-}
-
-.gst-menu .gst-manual-input-wrapper input::placeholder {
-    color: rgba(255,255,255,.4);
-}
-
-.btns{
-    display:flex;
-    gap:12px;
-}
-
-button.action{
-    flex:1;
-    padding:15px;
-    border:none;
-    border-radius:16px;
-    cursor:pointer;
-    font-weight:600;
-    font-size:15px;
-    transition:.25s;
-}
-
-button.action:hover{
-    transform:translateY(-2px);
-}
-
-.add{
-    background:#22c55e;
-    color:white;
-}
-
-.remove{
-    background:#ef4444;
-    color:white;
-}
-
-.result{
-    margin-top:25px;
-    background:rgba(255,255,255,.08);
-    border-radius:20px;
-    padding:20px;
-}
-
-.result-item{
-    display:flex;
-    justify-content:space-between;
-    margin:12px 0;
-}
-
-.result-item span:last-child{
-    font-weight:600;
-}
-
-.total{
-    font-size:24px;
-    font-weight:700;
-    color:#38bdf8;
-}
-
-hr{
-    border:none;
-    border-top:1px solid rgba(255,255,255,.1);
-    margin:14px 0;
-}
-
-.install-btn{
-    width:100%;
-    margin-top:15px;
-    padding:14px;
-    border:none;
-    border-radius:16px;
-    background:#f59e0b;
-    color:#fff;
-    font-weight:600;
-    cursor:pointer;
-    display:none;
-}
-
-.footer{
-    margin-top:18px;
-    text-align:center;
-    font-size:12px;
-    opacity:.5;
-}
-
-/* NEW: Styles for Mini Calculator */
-.calculator-icon-btn {
-    position: absolute;
-    top: 28px; /* Padding of the card */
-    right: 28px; /* Padding of the card */
-    background: rgba(255,255,255,.12);
-    border: none;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
+/* header area with proper spacing for absolute icons */
+.header-area {
     display: flex;
     justify-content: center;
     align-items: center;
-    cursor: pointer;
-    color: white;
-    box-shadow: 0 4px 10px rgba(0,0,0,.2); /* Same as history button */
-    transition: .2s;
-    z-index: 1001; /* Above other elements */
-}
-
-.calculator-icon-btn:hover {
-    background: rgba(255,255,255,.2);
-    transform: translateY(-1px);
-}
-
-.calculator-icon-btn svg {
-    width: 20px;
-    height: 20px;
-}
-
-.mini-calculator-dialog {
-    position: absolute;
-    top: 78px; /* Below the icon button (28px top + 40px height + 10px gap) */
-    right: 28px; /* Align with the icon button */
-    width: 210px; /* More compact */
-    background: #1e293b; /* Darker background */
-    border-radius: 16px;
-    box-shadow: 0 10px 30px rgba(0,0,0,.4);
-    border: 1px solid rgba(255,255,255,.1);
-    z-index: 1002; /* Higher than GST menu (1000) */
-    padding: 10px;
-    transform-origin: top right;
-    opacity: 0;
-    transform: scale(0.85) translateY(-10px);
-    pointer-events: none;
-    transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1), transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.mini-calculator-dialog.show {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-    pointer-events: auto;
-}
-
-.calculator-display {
-    background: rgba(0,0,0,.2);
-    border-radius: 10px;
-    padding: 8px 12px;
-    margin-bottom: 12px;
-    text-align: right;
-    word-wrap: break-word;
-    word-break: break-all;
-    min-height: 52px;
-    display: flex;
     flex-direction: column;
-    justify-content: space-around;
+    margin-top: 0.25rem;
+    margin-bottom: 1.2rem;
+    position: relative;
 }
 
-.calculator-display .previous-operand {
-    color: rgba(255,255,255,.7);
-    font-size: 0.9em;
-    min-height: 1.2em;
+.logo-svg {
+    width: 42px;
+    height: 42px;
+    stroke: #38bdf8;
+    stroke-width: 1.6;
+    fill: none;
 }
 
-.calculator-display .current-operand {
-    color: white;
-    font-size: 1.55em;
-    font-weight: 500;
+h1 {
+    font-size: 1.9rem;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    background: linear-gradient(135deg, #ffffff, #a5f3fc);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    margin-top: 6px;
 }
 
-.calculator-buttons {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
+/* light mode heading fix: high contrast gradient */
+body.light-mode h1 {
+    background: linear-gradient(135deg, #0f172a, #1e3a8a, #0284c7);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: none;
+    font-weight: 700;
 }
 
-.calculator-buttons button {
-    background: rgba(255,255,255,.1);
-    border: none;
-    border-radius: 10px;
-    padding: 12px 0;
-    font-size: 1em;
-    color: white;
-    cursor: pointer;
-    transition: .2s;
-    font-weight: 500;
+.subtitle {
+    text-align: center;
+    opacity: 0.65;
+    font-size: 0.8rem;
+    margin-top: 4px;
 }
 
-.calculator-buttons button:hover {
-    background: rgba(255,255,255,.2);
-}
-
-.calculator-buttons button.span-two {
-    grid-column: span 2;
-}
-
-.calculator-buttons button[data-operation],
-.calculator-buttons button[data-equals] {
-    background: #38bdf8; /* Accent color */
-}
-
-.calculator-buttons button[data-operation]:hover,
-.calculator-buttons button[data-equals]:hover {
-    background: #0ea5e9; /* Darker accent */
-}
-
-.calculator-buttons button[data-all-clear] {
-    background: #ef4444; /* Red for clear */
-}
-
-.calculator-buttons button[data-all-clear]:hover {
-    background: #dc2626;
-}
-
-.calculator-buttons button[data-delete] {
-    background: #f59e0b; /* Orange for delete */
-}
-
-.calculator-buttons button[data-delete]:hover {
-    background: #d97706;
-}
-
-/* NEW: Styles for Theme Toggle Button */
-.theme-toggle-btn {
+/* icon buttons – no clash, placed absolutely on top right/left with offset */
+.icon-btn {
     position: absolute;
-    top: 28px; /* Padding of the card */
-    left: 28px; /* Padding of the card */
-    background: rgba(255,255,255,.12);
+    top: 1.5rem;
+    background: rgba(255, 255, 255, 0.08);
     border: none;
     border-radius: 50%;
     width: 40px;
     height: 40px;
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
     cursor: pointer;
-    color: white;
-    box-shadow: 0 4px 10px rgba(0,0,0,.2); /* Same as history button */
-    transition: .2s;
-    z-index: 1001; /* Above other elements */
+    color: #e2e8f0;
+    transition: 0.2s;
+    z-index: 150;
+    backdrop-filter: blur(4px);
 }
 
-.theme-toggle-btn:hover {
-    background: rgba(255,255,255,.2);
-    transform: translateY(-1px);
+.icon-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
 }
 
-.theme-toggle-btn svg {
-    width: 20px;
-    height: 20px;
-}
+#themeToggleBtn { left: 1.5rem; }
+#openCalculatorBtn { right: 1.5rem; }
+#openHistoryBtn { right: 5rem; }
 
-/* NEW: Greeting Title Styles */
-.greeting-title {
+/* tab switcher modern */
+.tab-switcher {
+    display: flex;
+    gap: 12px;
+    margin: 1rem 0 1.8rem 0;
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 60px;
+    padding: 6px;
+    backdrop-filter: blur(4px);
+}
+.tab-btn {
+    flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
-    height: 40px;
-    margin-bottom: 10px;
-    font-size: 18px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-    background: linear-gradient(270deg, #38bdf8, #c084fc, #f43f5e, #38bdf8);
-    background-size: 300% 300%;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    animation: gradient-shift 8s ease infinite;
-}
-
-.greeting-title .wave {
-    -webkit-text-fill-color: initial;
-    display: inline-block;
-    animation: wave-animation 2.5s infinite;
-    transform-origin: 70% 70%;
-    font-size: 20px;
-}
-
-@keyframes wave-animation {
-    0% { transform: rotate( 0.0deg) }
-    10% { transform: rotate(14.0deg) }
-    20% { transform: rotate(-8.0deg) }
-    30% { transform: rotate(14.0deg) }
-    40% { transform: rotate(-4.0deg) }
-    50% { transform: rotate(10.0deg) }
-    60% { transform: rotate( 0.0deg) }
-    100% { transform: rotate( 0.0deg) }
-}
-
-@keyframes gradient-shift {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-}
-
-/* NEW: Light Mode Overrides */
-body, .card, input, .gst-btn, .gst-menu, .result, .mini-calculator-dialog, .calculator-display, .calculator-buttons button, .theme-toggle-btn, .calculator-icon-btn {
-    transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
-}
-
-/* Custom Scrollbar for GST Menu */
-.gst-menu::-webkit-scrollbar {
-    width: 6px;
-}
-.gst-menu::-webkit-scrollbar-track {
+    padding: 10px 8px;
+    border: none;
+    border-radius: 44px;
+    font-weight: 600;
+    font-size: 0.85rem;
     background: transparent;
-}
-.gst-menu::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 10px;
-}
-
-/* Light Mode Overrides */
-body.light-mode {
-    background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
-}
-
-body.light-mode .card {
-    background: rgba(255, 255, 255, 0.75);
-    backdrop-filter: blur(25px);
-    border: 1px solid rgba(0, 0, 0, 0.08);
-    color: #1e293b;
-    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.1);
-}
-
-body.light-mode .theme-toggle-btn,
-body.light-mode .calculator-icon-btn {
-    background: rgba(0, 0, 0, 0.06);
-    color: #1e293b;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-}
-
-body.light-mode .theme-toggle-btn:hover,
-body.light-mode .calculator-icon-btn:hover {
-    background: rgba(0, 0, 0, 0.12);
-}
-
-body.light-mode input {
-    background: rgba(0, 0, 0, 0.05);
-    color: #1e293b;
-    border: 1px solid rgba(0, 0, 0, 0.02);
-}
-
-body.light-mode input::placeholder {
-    color: rgba(0, 0, 0, 0.4);
-}
-
-body.light-mode .gst-btn {
-    background: rgba(0, 0, 0, 0.05);
-    color: #1e293b;
-}
-
-body.light-mode .gst-menu {
-    background: #ffffff;
-    border: 1px solid rgba(0, 0, 0, 0.08);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-}
-
-body.light-mode .gst-menu div {
-    color: #1e293b;
-}
-
-body.light-mode .gst-menu div:hover {
-    background: rgba(0, 0, 0, 0.05);
-}
-
-body.light-mode .gst-menu::-webkit-scrollbar-thumb {
-    background: rgba(0, 0, 0, 0.15);
-}
-
-body.light-mode .gst-menu .gst-manual-input-wrapper {
-    border-top: 1px solid rgba(0, 0, 0, 0.05);
-}
-
-body.light-mode .gst-menu .gst-manual-input-wrapper input {
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    background: rgba(0, 0, 0, 0.02);
-    color: #1e293b;
-}
-
-body.light-mode .gst-menu .gst-manual-input-wrapper input::placeholder {
-    color: rgba(0, 0, 0, 0.4);
-}
-
-body.light-mode .result {
-    background: rgba(0, 0, 0, 0.03);
-}
-body.light-mode .greeting-title {
-    background: linear-gradient(270deg, #0284c7, #7c3aed, #db2777, #0284c7);
-    background-size: 300% 300%;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-shadow: none;
-    animation: gradient-shift 8s ease infinite;
-}
-
-body.light-mode .total {
-    color: #0284c7; /* High contrast blue for light mode */
-}
-
-body.light-mode hr {
-    border-top: 1px solid rgba(0, 0, 0, 0.08);
-}
-
-body.light-mode .mini-calculator-dialog {
-    background: #ffffff;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-}
-
-body.light-mode .calculator-display {
-    background: rgba(0, 0, 0, 0.04);
-}
-
-body.light-mode .calculator-display .previous-operand {
-    color: rgba(0, 0, 0, 0.5);
-}
-
-body.light-mode .calculator-display .current-operand {
-    color: #1e293b;
-}
-
-body.light-mode .calculator-buttons button {
-    background: rgba(0, 0, 0, 0.05);
-    color: #1e293b;
-}
-
-body.light-mode .calculator-buttons button:hover {
-    background: rgba(0, 0, 0, 0.1);
-}
-
-body.light-mode .calculator-buttons button[data-operation],
-body.light-mode .calculator-buttons button[data-equals] {
-    background: #0284c7;
-    color: white;
-}
-
-body.light-mode .calculator-buttons button[data-operation]:hover,
-body.light-mode .calculator-buttons button[data-equals]:hover {
-    background: #0369a1;
-}
-
-body.light-mode .calculator-buttons button[data-all-clear] {
-    background: #ef4444;
-    color: white;
-}
-
-body.light-mode .calculator-buttons button[data-all-clear]:hover {
-    background: #dc2626;
-}
-
-body.light-mode .calculator-buttons button[data-delete] {
-    background: #f59e0b;
-    color: white;
-}
-
-body.light-mode .calculator-buttons button[data-delete]:hover {
-    background: #d97706;
-}
-
-/* NEW: History Button & Dialog Styles */
-.history-icon-btn {
-    position: absolute;
-    top: 28px;
-    right: 78px;
-    background: rgba(255,255,255,.12);
-    border: none;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    color: #cbd5e1;
     cursor: pointer;
-    color: white;
-    box-shadow: 0 4px 10px rgba(0,0,0,.2);
-    transition: .2s;
-    z-index: 1001;
+    transition: all 0.2s ease;
 }
-
-.history-icon-btn:hover {
-    background: rgba(255,255,255,.2);
-    transform: translateY(-1px);
+.tab-btn svg {
+    width: 18px;
+    height: 18px;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    fill: none;
 }
-
-.history-icon-btn svg {
-    width: 20px;
-    height: 20px;
-}
-
-.history-dialog {
-    position: absolute;
-    top: 78px;
-    right: 28px;
-    width: 300px;
+.tab-btn.active {
     background: #1e293b;
-    border-radius: 16px;
-    box-shadow: 0 10px 30px rgba(0,0,0,.4);
-    border: 1px solid rgba(255,255,255,.1);
-    z-index: 1003;
-    padding: 15px;
-    max-height: 420px;
-    overflow-y: auto;
-    transform-origin: top right;
-    opacity: 0;
-    transform: scale(0.85) translateY(-10px);
-    pointer-events: none;
-    transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1), transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.history-dialog.show {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-    pointer-events: auto;
-}
-
-.history-item {
-    background: rgba(255,255,255,.08);
-    border-radius: 12px;
-    padding: 12px;
-    margin-bottom: 10px;
-    font-size: 14px;
-    border: 1px solid rgba(255,255,255,.1);
-}
-
-.history-item:last-child {
-    margin-bottom: 0;
-}
-
-.history-clear-btn {
-    width: 100%;
-    padding: 12px;
-    background: #ef4444;
     color: white;
-    border: none;
-    border-radius: 12px;
-    cursor: pointer;
-    font-weight: 600;
-    margin-top: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+.tab-btn:hover:not(.active) {
+    background: rgba(255, 255, 255, 0.08);
+    color: #e2e8f0;
 }
 
-.history-clear-btn:hover {
-    background: #dc2626;
-}
-
-.history-empty {
-    text-align: center;
-    padding: 30px 10px;
-    opacity: 0.7;
-}
-
-/* Light mode for history */
-body.light-mode .history-icon-btn {
-    background: rgba(0, 0, 0, 0.06);
-    color: #1e293b;
-}
-
-body.light-mode .history-icon-btn:hover {
-    background: rgba(0, 0, 0, 0.12);
-}
-
-body.light-mode .history-dialog {
-    background: #ffffff;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-}
-
-body.light-mode .history-item {
-    background: rgba(0, 0, 0, 0.03);
-    border: 1px solid rgba(0, 0, 0, 0.08);
-    color: #1e293b;
-}
-
-body.light-mode .history-clear-btn {
-    background: #ef4444;
-    color: white;
-}
-
-/* NEW: Custom Clear Dialog - Fully matched with app UI */
-.clear-dialog {
-    
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.75);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    z-index: 2000;
-}
-
-.clear-dialog.show {
-    display: flex;
-}
-
-.clear-dialog-content {
-    background: #1e293b;
-    border-radius: 20px;
-    padding: 28px;
-    width: 90%;
-    max-width: 340px;
-    text-align: center;
-    border: 1px solid rgba(255,255,255,.1);
-    box-shadow: 0 25px 60px rgba(0,0,0,.45);
-}
-
-body.light-mode .clear-dialog-content {
-    background: rgba(255,255,255,0.95);
-    border: 1px solid rgba(0,0,0,.1);
-    color: #1e293b;
-    box-shadow: 0 25px 60px rgba(0,0,0,.15);
-}
-
-.clear-dialog-content h3 {
-    margin-bottom: 12px;
-    font-size: 20px;
-}
-
-.clear-dialog-content p {
-    margin-bottom: 28px;
-    opacity: 0.85;
-    line-height: 1.4;
-}
-
-.clear-dialog-buttons {
-    display: flex;
-    gap: 12px;
-}
-
-.clear-dialog-buttons button {
-    flex: 1;
-    padding: 15px;
-    border: none;
-    border-radius: 16px;
-    cursor: pointer;
-    font-weight: 600;
-    font-size: 15px;
-    transition: .2s;
-}
-
-.clear-dialog-buttons .cancel-btn {
-    background: rgba(255,255,255,.15);
-    color: white;
-}
-
-body.light-mode .clear-dialog-buttons .cancel-btn {
-    background: rgba(0,0,0,.08);
-    color: #1e293b;
-}
-
-.clear-dialog-buttons .cancel-btn:hover {
-    background: rgba(255,255,255,.25);
-}
-
-body.light-mode .clear-dialog-buttons .cancel-btn:hover {
-    background: rgba(0,0,0,.15);
-}
-
-.clear-dialog-buttons .confirm-btn {
-    background: #ef4444;
-    color: white;
-}
-
-.clear-dialog-buttons .confirm-btn:hover {
-    background: #dc2626;
-}
-
-.calc-body {
+/* two column responsive */
+.two-columns {
     display: flex;
     flex-direction: column;
+    gap: 1.5rem;
 }
-
-/* Desktop View Overrides */
-@media (min-width: 768px) {
-    .card {
-        max-width: 850px;
-        width: 90%;
-        padding: 35px 40px;
-    }
-
-    .theme-toggle-btn {
-        top: 35px;
-        left: 40px;
-    }
-
-    .calculator-icon-btn {
-        top: 35px;
-        right: 40px;
-    }
-
-    .history-icon-btn {
-        top: 25px;
-        right: 88px; /* Adjusted for exact level alignment with calculator icon */
-    }
-
-    .mini-calculator-dialog {
-        top: 90px;
-        right: 40px;
-        width: 230px; /* Compact on desktop too */
-    }
-
-    .history-dialog {
-        top: 90px;
-        right: 40px;
-        width: 320px;
-    }
-
-    .calc-body {
+@media (min-width: 720px) {
+    .two-columns {
         display: grid;
-        grid-template-columns: 1.1fr 0.9fr;
-        gap: 32px;
-        align-items: stretch;
-        margin-top: 10px;
-    }
-
-    .calc-col-left {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-    }
-
-    .calc-col-right {
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-    }
-
-    .result {
-        margin-top: 0;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        padding: 28px;
-    }
-
-    .result-item {
-        margin: 16px 0;
-    }
-
-    .logo {
-        font-size: 52px;
-    }
-
-    h1 {
-        font-size: 28px;
-    }
-
-    .subtitle {
-        margin-bottom: 20px;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.8rem;
+        align-items: start;
     }
 }
 
-/* Extra optimization for shorter screens / laptops */
-@media (min-width: 768px) and (max-height: 800px) {
-    .card {
-        padding: 25px 35px;
-    }
-    .theme-toggle-btn, .calculator-icon-btn {
-        top: 25px;
-    }
-    .mini-calculator-dialog {
-        top: 80px;
-    }
-    .logo {
-        font-size: 40px;
-    }
-    h1 {
-        font-size: 24px;
-        margin-top: 5px;
-    }
-    .subtitle {
-        margin-bottom: 15px;
-    }
-    .calc-body {
-        gap: 24px;
-    }
-    .result {
-        padding: 20px;
-    }
-    .result-item {
-        margin: 10px 0;
-    }
+.row {
+    margin-bottom: 1.2rem;
+}
+label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    opacity: 0.7;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+label svg {
+    width: 14px;
+    height: 14px;
+    stroke: currentColor;
+}
+input, .gst-btn, .unit-btn {
+    width: 100%;
+    padding: 13px 16px;
+    border: none;
+    border-radius: 1.2rem;
+    background: rgba(255, 255, 255, 0.07);
+    color: #f8fafc;
+    font-size: 0.95rem;
+    outline: none;
+    transition: all 0.2s;
+}
+input:focus {
+    background: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.3);
+}
+.amount-input-wrapper {
+    position: relative;
+}
+.clear-input-btn {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #94a3b8;
+    font-size: 22px;
+    cursor: pointer;
+    display: none;
+    font-weight: 500;
+}
+.action-btns {
+    display: flex;
+    gap: 14px;
+    margin-top: 8px;
+}
+.action {
+    flex: 1;
+    padding: 13px;
+    border-radius: 1.2rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.add { background: #10b981; color: white; box-shadow: 0 4px 10px rgba(16,185,129,0.2);}
+.remove { background: #ef4444; color: white; box-shadow: 0 4px 10px rgba(239,68,68,0.2);}
+.secondary { background: #475569; color: white; }
+.action:hover { transform: translateY(-2px); filter: brightness(1.05);}
+
+.result {
+    background: rgba(0, 0, 0, 0.25);
+    border-radius: 1.5rem;
+    padding: 1.3rem;
+    backdrop-filter: blur(4px);
+}
+.result-item {
+    display: flex;
+    justify-content: space-between;
+    margin: 12px 0;
+}
+.total, .pg-total, .discount-saved {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #38bdf8;
+}
+hr {
+    border: 0.5px solid rgba(255,255,255,0.1);
+    margin: 14px 0;
+}
+
+/* dropdown menus */
+.gst-selector, .unit-selector, .discount-type-selector { position: relative; }
+.gst-menu, .unit-menu {
+    position: absolute;
+    width: 100%;
+    top: 58px;
+    background: #1e293b;
+    border-radius: 1.2rem;
+    overflow: hidden;
+    display: none;
+    z-index: 210;
+    border: 1px solid rgba(255,255,255,0.08);
+    backdrop-filter: blur(12px);
+}
+.gst-menu.show, .unit-menu.show { display: block; }
+.gst-menu div, .unit-menu div {
+    padding: 12px 16px;
+    cursor: pointer;
+    transition: 0.1s;
+}
+.gst-menu div:hover, .unit-menu div:hover { background: rgba(56,189,248,0.2);}
+.gst-manual-input-wrapper input {
+    background: #0f172a;
+    border-radius: 12px;
+    margin: 8px;
+    width: calc(100% - 16px);
+}
+
+/* mini calculator & history dialogs - fixed overlapping */
+.mini-calculator-dialog, .history-dialog {
+    position: absolute;
+    top: 80px;
+    right: 1.2rem;
+    width: 270px;
+    background: #111827;
+    border-radius: 1.5rem;
+    border: 1px solid rgba(255,255,255,0.1);
+    z-index: 1000;
+    padding: 14px;
+    opacity: 0;
+    transform: scale(0.92);
+    pointer-events: none;
+    transition: all 0.2s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+    box-shadow: 0 20px 35px -10px black;
+}
+.mini-calculator-dialog.show, .history-dialog.show {
+    opacity: 1;
+    transform: scale(1);
+    pointer-events: auto;
+}
+.calculator-display {
+    background: #0f172a;
+    border-radius: 1rem;
+    padding: 12px;
+    text-align: right;
+    margin-bottom: 12px;
+}
+.calculator-buttons {
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    gap: 8px;
+}
+.calc-btn {
+    background: #1e293b;
+    border: none;
+    padding: 10px 0;
+    border-radius: 12px;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+}
+.calc-btn.operator { background: #2d3a5e; color: #7dd3fc; }
+.calc-btn.equals { background: #38bdf8; color: white; grid-column: span 2; }
+.history-item {
+    background: rgba(255,255,255,0.05);
+    border-radius: 1rem;
+    padding: 10px;
+    margin-bottom: 10px;
+    font-size: 0.75rem;
+}
+.history-clear-btn {
+    width: 100%;
+    background: #ef4444;
+    padding: 10px;
+    border-radius: 1rem;
+    font-weight: 600;
+    border: none;
+    color: white;
+    cursor: pointer;
+}
+
+/* discount type button group */
+.discount-group {
+    display: flex;
+    gap: 12px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 2rem;
+    padding: 5px;
+}
+.discount-type-btn {
+    flex: 1;
+    padding: 10px;
+    border-radius: 2rem;
+    background: transparent;
+    border: none;
+    color: inherit;
+    font-weight: 500;
+    cursor: pointer;
+}
+.discount-type-btn.active {
+    background: #38bdf8;
+    color: white;
+}
+
+/* light mode overrides */
+body.light-mode {
+    background: linear-gradient(145deg, #eef2ff, #e0e7ff);
+}
+body.light-mode .card {
+    background: rgba(255, 255, 255, 0.85);
+    color: #0f172a;
+    border: 1px solid rgba(0,0,0,0.05);
+}
+body.light-mode input, body.light-mode .gst-btn, body.light-mode .unit-btn {
+    background: rgba(0,0,0,0.04);
+    color: #0f172a;
+}
+body.light-mode .gst-menu, body.light-mode .unit-menu { background: #ffffff; border: 1px solid #ddd; }
+body.light-mode .result { background: rgba(0,0,0,0.02);}
+body.light-mode .total, body.light-mode .pg-total { color: #0284c7; }
+body.light-mode .tab-btn.active { background: #e2e8f0; color: #0f172a; box-shadow: none;}
+body.light-mode .icon-btn { background: rgba(0,0,0,0.06); color: #1e293b; }
+
+/* footer removed completely – no extra text */
+.footer {
+    display: none;
+}
+
+/* responsive adjustments */
+@media (max-width: 640px) {
+    .card { padding: 1.2rem; }
+    .icon-btn { top: 1rem; width: 36px; height: 36px; }
+    #themeToggleBtn { left: 1rem; }
+    #openCalculatorBtn { right: 1rem; }
+    #openHistoryBtn { right: 3.8rem; }
+    .tab-btn span { display: none; }
+    .tab-btn svg { margin: 0; }
+    .tab-btn { padding: 10px 0; }
+    .mini-calculator-dialog, .history-dialog { right: 0.8rem; width: 260px; top: 70px; }
 }
 </style>
 </head>
 <body>
 
 <div class="card">
+    <!-- absolute icon buttons -->
+    <button id="themeToggleBtn" class="icon-btn" aria-label="Theme">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>
+        </svg>
+    </button>
+    <button id="openCalculatorBtn" class="icon-btn" aria-label="Calculator">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M8 6h8"/><path d="M8 10h8"/><path d="M8 14h8"/><path d="M8 18h8"/></svg>
+    </button>
+    <button id="openHistoryBtn" class="icon-btn" aria-label="History">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>
+    </button>
 
-    <!-- Fixed spacing so logo stays below buttons -->
-    <div style="margin-top: 72px; text-align: center;">
-        <div class="logo">🧾</div>
-        <h1>Basic GSTCalc</h1>
-        <div class="subtitle">
-            Add or Remove GST Instantly
-        </div>
+    <div class="header-area">
+        <svg class="logo-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 7h6"/><path d="M12 3v18"/><path d="M5 12h14"/><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+        <h1>Calc Suite</h1>
+        <div class="subtitle">GST · Per Gram · Smart Discount</div>
     </div>
 
-    <!-- NEW: Theme Toggle Button -->
-        <button id="themeToggleBtn" class="theme-toggle-btn" aria-label="Toggle Theme">
-            <svg id="themeIcon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></svg>
-        </button>
-
-        <!-- NEW: History Icon Button -->
-        <button id="openHistoryBtn" class="history-icon-btn" aria-label="Open History">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>
-        </button>
-
-        <!-- NEW: Calculator Icon Button -->
-        <button id="openCalculatorBtn" class="calculator-icon-btn" aria-label="Open Calculator">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calculator"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M8 6h8"/><path d="M8 10h8"/><path d="M8 14h8"/><path d="M8 18h8"/></svg>
-        </button>
-
-    <!-- NEW: Mini Calculator Dialog -->
+    <!-- mini calculator & history panels (hidden by default) -->
     <div id="miniCalculatorDialog" class="mini-calculator-dialog">
-        <div class="calculator-display">
-            <div data-previous-operand class="previous-operand"></div>
-            <div data-current-operand class="current-operand">0</div>
-        </div>
-        <div class="calculator-buttons">
-            <button data-all-clear>AC</button>
-            <button data-percent>%</button>
-            <button data-delete>DEL</button>
-            <button data-operation>÷</button>
-            <button data-number>1</button>
-            <button data-number>2</button>
-            <button data-number>3</button>
-            <button data-operation>*</button>
-            <button data-number>4</button>
-            <button data-number>5</button>
-            <button data-number>6</button>
-            <button data-operation>+</button>
-            <button data-number>7</button>
-            <button data-number>8</button>
-            <button data-number>9</button>
-            <button data-operation>-</button>
-            <button data-number>.</button>
-            <button data-number>0</button>
-            <button data-equals class="span-two">=</button>
-        </div>
+        <div class="calculator-display"><div class="previous-operand" style="font-size:12px; opacity:0.7"></div><div class="current-operand" style="font-size:26px; font-weight:600">0</div></div>
+        <div class="calculator-buttons" id="miniCalcGrid"></div>
     </div>
-
-    <!-- NEW: History Dialog -->
     <div id="historyDialog" class="history-dialog">
-        <h3 style="margin-bottom: 15px; text-align: center; color: inherit;">Calculation History</h3>
+        <h4 style="margin-bottom:12px; font-weight:600;">📋 History</h4>
         <div id="historyList"></div>
-        <button id="clearHistoryBtn" class="history-clear-btn">Clear All</button>
+        <button id="clearHistoryBtn" class="history-clear-btn" style="margin-top:12px;">Clear All</button>
     </div>
 
-    <!-- NEW: Custom Clear Dialog -->
-    <div id="clearConfirmDialog" class="clear-dialog">
-        <div class="clear-dialog-content">
-            <h3>Clear All History?</h3>
-            <p>This action cannot be undone.<br>All previous GST calculations will be deleted.</p>
-            <div class="clear-dialog-buttons">
-                <button class="cancel-btn" id="cancelClearBtn">Cancel</button>
-                <button class="confirm-btn" id="confirmClearBtn">Yes, Clear All</button>
-            </div>
-        </div>
+    <!-- tab bar -->
+    <div class="tab-switcher">
+        <button class="tab-btn active" onclick="switchTab('gst')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/><circle cx="12" cy="12" r="3"/></svg><span>GST</span></button>
+        <button class="tab-btn" onclick="switchTab('pergram')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 12H4M12 4v16M8 8l4-4 4 4M8 16l4 4 4-4"/></svg><span>Per Gram</span></button>
+        <button class="tab-btn" onclick="switchTab('discount')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 15l6-6"/><circle cx="9" cy="9" r="1"/><circle cx="15" cy="15" r="1"/><path d="M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/></svg><span>Discount</span></button>
     </div>
 
-    <div class="calc-body">
-        <div class="calc-col-left">
-            <div class="row">
-                <label>Amount</label>
-                <div class="amount-input-wrapper">
-                    <input
-                        type="number"
-                        id="amount"
-                        placeholder="Enter Amount"
-                        inputmode="decimal">
-                    <button id="clearAmountBtn" class="clear-input-btn" aria-label="Clear amount">×</button>
+    <!-- Panel 1: GST -->
+    <div id="panel-gst" class="tab-panel active">
+        <div class="two-columns">
+            <div class="calc-col-left">
+                <div class="row">
+                    <label><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/><circle cx="12" cy="12" r="3"/></svg> Amount (₹)</label>
+                    <div class="amount-input-wrapper"><input type="number" id="amount" placeholder="Enter amount" inputmode="decimal"><button id="clearAmountBtn" class="clear-input-btn">✕</button></div>
                 </div>
-            </div>
-
-            <div class="row">
-                <label>GST Rate</label>
-
-                <div class="gst-selector">
-
-                    <button
-                        class="gst-btn"
-                        id="selectedGST"
-                        type="button">
-                        18% GST ▼
-                    </button>
-
-                    <div class="gst-menu" id="gstMenu">
-                        <div class="gst-manual-input-wrapper">
-                            <input type="number" id="manualGSTInput" placeholder="Enter Custom GST" step="0.01">
+                <div class="row">
+                    <label><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 6h18M8 12h8M12 18h0"/></svg> GST Rate</label>
+                    <div class="gst-selector" id="gstSelector">
+                        <button class="gst-btn" id="selectedGST">18% GST ▼</button>
+                        <div class="gst-menu" id="gstMenu">
+                            <div class="gst-manual-input-wrapper"><input type="number" id="manualGSTInput" placeholder="Custom GST %" step="any"></div>
+                            <div onclick="setGST(3)">3% GST</div>
+                            <div onclick="setGST(5)">5% GST</div>
+                            <div onclick="setGST(12)">12% GST</div>
+                            <div onclick="setGST(18)">18% GST</div>
+                            <div onclick="setGST(28)">28% GST</div>
                         </div>
-                        <div onclick="setGST(3)">3% GST</div>
-                        <div onclick="setGST(5)">5% GST</div>
-                        <div onclick="setGST(12)">12% GST</div>
-                        <div onclick="setGST(18)">18% GST</div>
-                        <div onclick="setGST(28)">28% GST</div>
+                        <input type="hidden" id="gst" value="18">
                     </div>
-
-                    <input type="hidden" id="gst" value="18">
-
                 </div>
+                <div class="action-btns"><button class="action add" onclick="addGST()">Add GST</button><button class="action remove" onclick="removeGST()">Remove GST</button></div>
             </div>
-
-            <div class="btns">
-
-                <button
-                    class="action add"
-                    onclick="addGST()">
-                    Add GST
-                </button>
-
-                <button
-                    class="action remove"
-                    onclick="removeGST()">
-                    Remove GST
-                </button>
-
-            </div>
-        </div>
-
-        <div class="calc-col-right">
-            <div class="result">
-
-                <div class="result-item">
-                    <span>Base Amount</span>
-                    <span id="base">₹0.00</span>
-                </div>
-
-                <div class="result-item">
-                    <span>GST Amount</span>
-                    <span id="gstAmount">₹0.00</span>
-                </div>
-
-                <hr>
-
-                <div class="result-item">
-                    <span>Total</span>
-                    <span class="total" id="total">₹0.00</span>
-                </div>
-
-            </div>
-
-            <button id="installBtn" class="install-btn">
-                Install App
-            </button>
+            <div class="calc-col-right"><div class="result"><div class="result-item"><span>Base Amount</span><span id="base">₹0.00</span></div><div class="result-item"><span>GST Amount</span><span id="gstAmount">₹0.00</span></div><hr><div class="result-item"><span>Total (incl. GST)</span><span class="total" id="total">₹0.00</span></div></div></div>
         </div>
     </div>
-    <div class="footer">
-        </div>
 
+    <!-- Panel 2: Per Gram -->
+    <div id="panel-pergram" class="tab-panel" style="display:none">
+        <div class="two-columns">
+            <div><div class="row"><label><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 3h18v18H3z"/><path d="M9 9h6v6H9z"/></svg> Total Price (₹)</label><input type="number" id="pgPrice" placeholder="e.g. 250"></div>
+            <div class="row"><label><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 2v20M4 12h16"/></svg> Weight / Quantity</label><input type="number" id="pgWeight" placeholder="e.g. 500"></div>
+            <div class="row"><label>📏 Unit</label><div class="unit-selector" id="unitSelector"><button class="unit-btn" id="selectedUnit">Gram (g) ▼</button><div class="unit-menu" id="unitMenu"><div onclick="setUnit('g','Gram (g)')">Gram (g)</div><div onclick="setUnit('kg','Kilogram (kg)')">Kilogram (kg)</div><div onclick="setUnit('piece','Piece (unit)')">Piece (unit)</div></div><input type="hidden" id="pgUnit" value="g"></div></div>
+            <div class="action-btns"><button class="action add" onclick="calcPerGram()">Calculate</button><button class="action secondary" onclick="clearPGCalc()">Clear</button></div></div>
+            <div class="result"><div class="result-item"><span>Total Price</span><span id="pgResultPrice">₹0.00</span></div><div class="result-item"><span>Total Qty</span><span id="pgResultWeight">0</span></div><hr><div class="result-item"><span id="pgResultLabel">Price per Gram</span><span class="pg-total" id="pgResultPerUnit">₹0.00</span></div><div id="pgPer100Row" class="result-item" style="display:none"><span>Price per 100g</span><span id="pgResultPer100">₹0.00</span></div><div id="pgPer1kgRow" class="result-item" style="display:none"><span>Price per 1kg</span><span id="pgResultPer1kg">₹0.00</span></div></div>
+        </div>
+    </div>
+
+    <!-- Panel 3: Discount Calculator -->
+    <div id="panel-discount" class="tab-panel" style="display:none">
+        <div class="two-columns">
+            <div><div class="row"><label><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 3h18v18H3z"/><circle cx="8.5" cy="8.5" r="1.5"/><circle cx="15.5" cy="15.5" r="1.5"/></svg> Original Price (₹)</label><input type="number" id="discountPrice" placeholder="0.00"></div>
+            <div class="row"><label>Discount Type</label><div class="discount-group" id="discountTypeGroup"><button data-type="percent" class="discount-type-btn active">% Percentage</button><button data-type="fixed" class="discount-type-btn">₹ Fixed</button></div></div>
+            <div class="row"><label id="discountValueLabel">Discount (%)</label><input type="number" id="discountValue" placeholder="e.g. 15" step="any"></div>
+            <div class="action-btns"><button class="action add" onclick="calcDiscount()">Apply Discount</button><button class="action secondary" onclick="clearDiscount()">Reset</button></div></div>
+            <div class="result"><div class="result-item"><span>Original Price</span><span id="originalDisplay">₹0.00</span></div><div class="result-item"><span>You Save</span><span id="savedAmount" style="color:#f97316; font-weight:700">₹0.00</span></div><hr><div class="result-item"><span>Final Price</span><span class="total" id="finalPrice">₹0.00</span></div><div class="result-item"><span>Discount %</span><span id="effectivePercent">0%</span></div></div>
+        </div>
+    </div>
 </div>
 
 <script>
-
-const gstMenu = document.getElementById("gstMenu");
-const openCalculatorBtn = document.getElementById('openCalculatorBtn');
-const miniCalculatorDialog = document.getElementById('miniCalculatorDialog');
-
-document
-.getElementById("selectedGST")
-.addEventListener("click",()=>{
-    gstMenu.classList.toggle("show");
-    miniCalculatorDialog.classList.remove('show'); // Close calculator if GST menu opens
-});
-
-function setGST(value){
-
-    document.getElementById("gst").value=value;
-
-    document.getElementById("selectedGST").innerHTML=
-        value + "% GST ▼";
-
-    localStorage.setItem('gstRate', value); // Save preference
-    gstMenu.classList.remove("show");
-    document.getElementById("manualGSTInput").value = ""; // Clear manual input
-    miniCalculatorDialog.classList.remove('show'); // Close calculator if open
-}
-
-const manualGSTInput = document.getElementById("manualGSTInput");
-
-manualGSTInput.addEventListener("input", () => {
-    let customGST = parseFloat(manualGSTInput.value);
-    if (!isNaN(customGST) && customGST >= 0) {
-        document.getElementById("gst").value = customGST;
-        document.getElementById("selectedGST").innerHTML = customGST + "% GST ▼";
-        localStorage.setItem('gstRate', customGST); // Save custom preference
-    } else if (manualGSTInput.value === "") {
-        document.getElementById("selectedGST").innerHTML = "Custom GST ▼";
+// ---------- THEME ----------
+const themeBtn = document.getElementById('themeToggleBtn');
+const themeSvg = themeBtn.querySelector('svg');
+function setThemeIcons(isLight) {
+    if(isLight) {
+        themeSvg.innerHTML = '<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>';
     } else {
-        document.getElementById("selectedGST").innerHTML = "Invalid GST ▼";
+        themeSvg.innerHTML = '<circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>';
     }
-    miniCalculatorDialog.classList.remove('show'); // Close calculator if open
+}
+if(localStorage.getItem('theme') === 'light') { document.body.classList.add('light-mode'); setThemeIcons(true); }
+else setThemeIcons(false);
+themeBtn.addEventListener('click',()=>{
+    const isLight = document.body.classList.toggle('light-mode');
+    localStorage.setItem('theme', isLight ? 'light' : 'dark');
+    setThemeIcons(isLight);
 });
 
-// Load saved GST rate preference on page load
-const savedGSTRate = localStorage.getItem('gstRate');
-if (savedGSTRate !== null) {
-    document.getElementById("gst").value = savedGSTRate;
-    document.getElementById("selectedGST").innerHTML = savedGSTRate + "% GST ▼";
+// ---------- GLOBAL DROPDOWN CLOSE HANDLER (fixes the issue) ----------
+function closeAllDropdowns() {
+    document.getElementById('gstMenu')?.classList.remove('show');
+    document.getElementById('unitMenu')?.classList.remove('show');
 }
-
-// Global click listener for closing popups
-window.addEventListener("click",(e)=>{
-    // Close GST menu
-    if(!e.target.closest(".gst-selector")){
-        gstMenu.classList.remove("show");
+// click outside any dropdown closes them
+document.addEventListener('click', function(event) {
+    const gstSelector = document.getElementById('gstSelector');
+    const unitSelector = document.getElementById('unitSelector');
+    const isClickInsideGst = gstSelector && gstSelector.contains(event.target);
+    const isClickInsideUnit = unitSelector && unitSelector.contains(event.target);
+    if (!isClickInsideGst) {
+        document.getElementById('gstMenu')?.classList.remove('show');
     }
-    // Close mini calculator
-    if (miniCalculatorDialog && openCalculatorBtn && !e.target.closest('.mini-calculator-dialog') && !e.target.closest('#openCalculatorBtn')) {
-        miniCalculatorDialog.classList.remove('show');
+    if (!isClickInsideUnit) {
+        document.getElementById('unitMenu')?.classList.remove('show');
     }
-    // Close history dialog
-    if (historyDialog && openHistoryBtn && !e.target.closest('.history-dialog') && !e.target.closest('#openHistoryBtn')) {
+    // also close mini calculator and history if clicking outside
+    const miniDialog = document.getElementById('miniCalculatorDialog');
+    const historyDialog = document.getElementById('historyDialog');
+    const openCalc = document.getElementById('openCalculatorBtn');
+    const openHistory = document.getElementById('openHistoryBtn');
+    if (miniDialog && !miniDialog.contains(event.target) && event.target !== openCalc) {
+        miniDialog.classList.remove('show');
+    }
+    if (historyDialog && !historyDialog.contains(event.target) && event.target !== openHistory) {
         historyDialog.classList.remove('show');
     }
-    // Close custom clear dialog
-    if (clearConfirmDialog && !e.target.closest('.clear-dialog-content')) {
-        clearConfirmDialog.classList.remove('show');
-    }
 });
 
-function addGST(){
-
-    let amount =
-        parseFloat(
-            document.getElementById("amount").value
-        ) || 0;
-
-    let gst =
-        parseFloat(
-            document.getElementById("gst").value
-        );
-
-    let gstAmount =
-        (amount * gst) / 100;
-
-    let total =
-        amount + gstAmount;
-
-    document.getElementById("base").innerText =
-        "₹" + amount.toFixed(2);
-
-    document.getElementById("gstAmount").innerText =
-        "₹" + gstAmount.toFixed(2);
-
-    document.getElementById("total").innerText =
-        "₹" + total.toFixed(2);
-
-    // Save to history - amount is now always Base Amount
-    saveToHistory('add', amount, gst, gstAmount, total);
+// toggle GST menu on button click (stop propagation to avoid immediate close)
+const gstBtn = document.getElementById('selectedGST');
+const gstMenu = document.getElementById('gstMenu');
+if (gstBtn) {
+    gstBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        gstMenu.classList.toggle('show');
+        // close unit menu if open
+        document.getElementById('unitMenu')?.classList.remove('show');
+    });
 }
-
-function removeGST(){
-
-    let amount =
-        parseFloat(
-            document.getElementById("amount").value
-        ) || 0;
-
-    let gst =
-        parseFloat(
-            document.getElementById("gst").value
-        );
-
-    let base =
-        amount / (1 + gst/100);
-
-    let gstAmount =
-        amount - base;
-
-    document.getElementById("base").innerText =
-        "₹" + base.toFixed(2);
-
-    document.getElementById("gstAmount").innerText =
-        "₹" + gstAmount.toFixed(2);
-
-    document.getElementById("total").innerText =
-        "₹" + amount.toFixed(2);
-
-    // Save to history - amount is now always Base Amount
-    saveToHistory('remove', base, gst, gstAmount, amount);
-}
-
-let deferredPrompt;
-
-window.addEventListener(
-    "beforeinstallprompt",
-    (e)=>{
-
-        e.preventDefault();
-
-        deferredPrompt = e;
-
-        document.getElementById(
-            "installBtn"
-        ).style.display="block";
-    }
-);
-
-document
-.getElementById("installBtn")
-.addEventListener("click",async()=>{
-
-    if(!deferredPrompt) return;
-
-    deferredPrompt.prompt();
-
-    await deferredPrompt.userChoice;
-
-    deferredPrompt = null;
-});
-
-// Service worker registration with cache busting for updates
-if("serviceWorker" in navigator){
-    window.addEventListener("load",()=>{
-        navigator.serviceWorker.register(
-            "./service-worker.js"
-        ).then(reg => {
-            // Force update check on every load
-            reg.update();
-        }).catch(err => {
-            console.log("Service worker registration failed:", err);
-        });
+// toggle unit menu
+const unitBtn = document.getElementById('selectedUnit');
+const unitMenu = document.getElementById('unitMenu');
+if (unitBtn) {
+    unitBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        unitMenu.classList.toggle('show');
+        gstMenu?.classList.remove('show');
     });
 }
 
-// NEW: Mini Calculator Logic
-const numberButtons = document.querySelectorAll('[data-number]');
-const operationButtons = document.querySelectorAll('[data-operation]');
-const equalsButton = document.querySelector('[data-equals]');
-const deleteButton = document.querySelector('[data-delete]');
-const allClearButton = document.querySelector('[data-all-clear]');
-const percentButton = document.querySelector('[data-percent]');
-const previousOperandTextElement = document.querySelector('[data-previous-operand]');
-const currentOperandTextElement = document.querySelector('[data-current-operand]');
+// ---------- MINI CALCULATOR ----------
+const miniDialog = document.getElementById('miniCalculatorDialog');
+const openCalcBtn = document.getElementById('openCalculatorBtn');
+let curr = '0', prev = '', op = null;
+const prevElem = document.querySelector('.previous-operand');
+const currElem = document.querySelector('.current-operand');
+function updateMini() { currElem.innerText = curr; prevElem.innerText = prev + (op || ''); }
+function numHandler(n) { if(n==='.' && curr.includes('.')) return; if(curr==='0' && n!=='.') curr=n; else curr+=n; updateMini(); }
+function opHandler(o) { if(curr==='') return; if(prev!=='') computeMini(); op=o; prev=curr; curr=''; updateMini(); }
+function computeMini() { let p=parseFloat(prev), c=parseFloat(curr); if(isNaN(p)||isNaN(c)) return; let res; switch(op){ case '+': res=p+c; break; case '-': res=p-c; break; case '*': res=p*c; break; case '÷': res=p/c; break; default: return; } curr=res.toString(); op=null; prev=''; updateMini(); }
+function allClearMini() { curr='0'; prev=''; op=null; updateMini(); }
+function delMini() { if(curr.length===1||curr==='0') curr='0'; else curr=curr.slice(0,-1); updateMini(); }
+function percentMini() { let v=parseFloat(curr); if(!isNaN(v)) curr=(v/100).toString(); updateMini(); }
+function buildGrid() { const grid = document.getElementById('miniCalcGrid'); const btns=[['AC','C'],['%','%'],['DEL','D'],['÷','/'],['7','7'],['8','8'],['9','9'],['*','*'],['4','4'],['5','5'],['6','6'],['-','-'],['1','1'],['2','2'],['3','3'],['+','+'],['0','0'],['.','.'],['=','=']]; grid.innerHTML=''; btns.forEach(([label,val])=>{ const b=document.createElement('button'); b.innerText=label; b.classList.add('calc-btn'); if(['+','-','*','÷'].includes(val)) b.classList.add('operator'); if(val==='=') b.classList.add('equals'); b.onclick=()=>{ if(val==='C') allClearMini(); else if(val==='D') delMini(); else if(val==='%') percentMini(); else if(val==='=') computeMini(); else if(['+','-','*','÷'].includes(val)) opHandler(val); else numHandler(val); }; grid.appendChild(b); }); }
+buildGrid(); updateMini();
+openCalcBtn.addEventListener('click', (e) => { e.stopPropagation(); miniDialog.classList.toggle('show'); closeAllDropdowns(); });
 
-// NEW: History elements
+// ---------- HISTORY (GST) ----------
+let gstHistory = JSON.parse(localStorage.getItem('gstHistory') || '[]');
+function renderHistory() {
+    const container = document.getElementById('historyList'); if(!container) return;
+    if(gstHistory.length===0){ container.innerHTML='<div class="history-empty" style="text-align:center; padding:16px;">No GST history</div>'; return; }
+    container.innerHTML = gstHistory.map(h=>`<div class="history-item"><strong>${h.type==='add'?'➕ Add GST':'➖ Remove GST'}</strong><br>Base: ₹${h.amount.toFixed(2)} | ${h.gstRate}% → ₹${h.gstAmount.toFixed(2)}<br><strong>Total: ₹${h.total.toFixed(2)}</strong><div style="font-size:9px; margin-top:4px;">${h.date}</div></div>`).join('');
+}
+function saveHistory(type,amount,gstRate,gstAmount,total){
+    if(amount<=0) return;
+    gstHistory.unshift({id:Date.now(),type,amount,gstRate,gstAmount,total,date:new Date().toLocaleString()});
+    if(gstHistory.length>40) gstHistory.pop();
+    localStorage.setItem('gstHistory',JSON.stringify(gstHistory));
+    renderHistory();
+}
+document.getElementById('clearHistoryBtn')?.addEventListener('click',()=>{ if(confirm('Delete all GST history?')){ gstHistory=[]; localStorage.setItem('gstHistory','[]'); renderHistory(); document.getElementById('historyDialog')?.classList.remove('show'); } });
 const openHistoryBtn = document.getElementById('openHistoryBtn');
 const historyDialog = document.getElementById('historyDialog');
-const historyList = document.getElementById('historyList');
-const clearHistoryBtn = document.getElementById('clearHistoryBtn');
+openHistoryBtn?.addEventListener('click',(e)=>{ e.stopPropagation(); renderHistory(); historyDialog.classList.toggle('show'); closeAllDropdowns(); miniDialog.classList.remove('show'); });
 
-// NEW: Custom clear dialog elements
-const clearConfirmDialog = document.getElementById('clearConfirmDialog');
-const cancelClearBtn = document.getElementById('cancelClearBtn');
-const confirmClearBtn = document.getElementById('confirmClearBtn');
+// ---------- GST CORE ----------
+window.setGST = (v)=>{ document.getElementById('gst').value=v; document.getElementById('selectedGST').innerHTML=`${v}% GST ▼`; localStorage.setItem('gstRate',v); gstMenu.classList.remove('show'); document.getElementById('manualGSTInput').value=''; };
+document.getElementById('manualGSTInput')?.addEventListener('input',function(e){ e.stopPropagation(); let val=parseFloat(this.value); if(!isNaN(val)&&val>=0){ document.getElementById('gst').value=val; document.getElementById('selectedGST').innerHTML=`${val}% GST ▼`; localStorage.setItem('gstRate',val); } });
+if(localStorage.getItem('gstRate')){ let r=parseFloat(localStorage.getItem('gstRate')); document.getElementById('gst').value=r; document.getElementById('selectedGST').innerHTML=`${r}% GST ▼`; }
+window.addGST = ()=>{ let amt=parseFloat(document.getElementById('amount').value)||0; let gst=parseFloat(document.getElementById('gst').value); let gstAmt=amt*gst/100; let total=amt+gstAmt; document.getElementById('base').innerText='₹'+amt.toFixed(2); document.getElementById('gstAmount').innerText='₹'+gstAmt.toFixed(2); document.getElementById('total').innerText='₹'+total.toFixed(2); saveHistory('add',amt,gst,gstAmt,total); };
+window.removeGST = ()=>{ let amt=parseFloat(document.getElementById('amount').value)||0; let gst=parseFloat(document.getElementById('gst').value); let base=amt/(1+gst/100); let gstAmt=amt-base; document.getElementById('base').innerText='₹'+base.toFixed(2); document.getElementById('gstAmount').innerText='₹'+gstAmt.toFixed(2); document.getElementById('total').innerText='₹'+amt.toFixed(2); saveHistory('remove',base,gst,gstAmt,amt); };
+const clearAmount = document.getElementById('clearAmountBtn'), amountInput = document.getElementById('amount');
+amountInput?.addEventListener('input',()=>{ clearAmount.style.display = amountInput.value ? 'block' : 'none'; });
+clearAmount?.addEventListener('click',()=>{ amountInput.value=''; clearAmount.style.display='none'; amountInput.focus(); });
 
-class Calculator {
-    constructor(previousOperandTextElement, currentOperandTextElement) {
-        this.previousOperandTextElement = previousOperandTextElement;
-        this.currentOperandTextElement = currentOperandTextElement;
-        this.clear();
-    }
+// ---------- PER GRAM ----------
+window.setUnit = function(val,label){ document.getElementById('pgUnit').value=val; document.getElementById('selectedUnit').innerHTML=label+' ▼'; unitMenu.classList.remove('show'); };
+window.calcPerGram = ()=>{ let price=parseFloat(document.getElementById('pgPrice').value)||0, weight=parseFloat(document.getElementById('pgWeight').value)||0, unit=document.getElementById('pgUnit').value; if(price<=0||weight<=0){ alert('Valid price and weight required'); return; } let weightInGrams = unit==='kg' ? weight*1000 : weight; let perUnit = price/weightInGrams; document.getElementById('pgResultPrice').innerText='₹'+price.toFixed(2); let wtLabel = weight+' '+(unit==='kg'?'kg':unit==='piece'?(weight===1?'piece':'pieces'):'g'); document.getElementById('pgResultWeight').innerText=wtLabel; if(unit==='piece'){ document.getElementById('pgResultLabel').innerText='Price per Piece'; document.getElementById('pgResultPerUnit').innerText='₹'+perUnit.toFixed(2); document.getElementById('pgPer100Row').style.display='none'; document.getElementById('pgPer1kgRow').style.display='none'; } else { document.getElementById('pgResultLabel').innerText='Price per Gram'; document.getElementById('pgResultPerUnit').innerText='₹'+perUnit.toFixed(4); document.getElementById('pgPer100Row').style.display='flex'; document.getElementById('pgResultPer100').innerText='₹'+(perUnit*100).toFixed(2); document.getElementById('pgPer1kgRow').style.display='flex'; document.getElementById('pgResultPer1kg').innerText='₹'+(perUnit*1000).toFixed(2); } };
+window.clearPGCalc = ()=>{ document.getElementById('pgPrice').value=''; document.getElementById('pgWeight').value=''; document.getElementById('pgResultPrice').innerText='₹0.00'; document.getElementById('pgResultWeight').innerText='0'; document.getElementById('pgResultPerUnit').innerText='₹0.00'; document.getElementById('pgResultPer100').innerText='₹0.00'; document.getElementById('pgResultPer1kg').innerText='₹0.00'; document.getElementById('pgPer100Row').style.display='none'; document.getElementById('pgPer1kgRow').style.display='none'; };
 
-    clear() {
-        this.currentOperand = '0'; // Start with 0
-        this.previousOperand = '';
-        this.operation = undefined;
-    }
+// ---------- DISCOUNT ----------
+let discountMode = 'percent';
+document.querySelectorAll('.discount-type-btn').forEach(btn=>{ btn.addEventListener('click',()=>{ discountMode=btn.getAttribute('data-type'); document.querySelectorAll('.discount-type-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); document.getElementById('discountValueLabel').innerHTML = discountMode==='percent' ? 'Discount (%)' : 'Discount Amount (₹)'; }); });
+window.calcDiscount = ()=>{ let orig=parseFloat(document.getElementById('discountPrice').value)||0; let val=parseFloat(document.getElementById('discountValue').value)||0; if(orig<=0){ alert('Enter original price'); return; } let saved=0, final=orig, eff=0; if(discountMode==='percent'){ saved=orig*val/100; final=orig-saved; eff=val; } else { saved=Math.min(val,orig); final=orig-saved; eff=(saved/orig)*100; } document.getElementById('originalDisplay').innerText='₹'+orig.toFixed(2); document.getElementById('savedAmount').innerText='₹'+saved.toFixed(2); document.getElementById('finalPrice').innerText='₹'+final.toFixed(2); document.getElementById('effectivePercent').innerText=eff.toFixed(2)+'%'; };
+window.clearDiscount = ()=>{ document.getElementById('discountPrice').value=''; document.getElementById('discountValue').value=''; document.getElementById('originalDisplay').innerText='₹0.00'; document.getElementById('savedAmount').innerText='₹0.00'; document.getElementById('finalPrice').innerText='₹0.00'; document.getElementById('effectivePercent').innerText='0%'; };
 
-    percent() {
-        if (this.currentOperand === '' || this.currentOperand === '0') return;
-        this.currentOperand = (parseFloat(this.currentOperand) / 100).toString();
-    }
-
-    delete() {
-        if (this.currentOperand === '0' || this.currentOperand === '') return;
-        this.currentOperand = this.currentOperand.toString().slice(0, -1);
-        if (this.currentOperand === '') {
-            this.currentOperand = '0';
-        }
-    }
-
-    appendNumber(number) {
-        if (number === '.' && this.currentOperand.includes('.')) return;
-        if (this.currentOperand === '0' && number !== '.') {
-            this.currentOperand = number.toString();
-        } else {
-            this.currentOperand = this.currentOperand.toString() + number.toString();
-        }
-    }
-
-    chooseOperation(operation) {
-        if (this.currentOperand === '') return;
-        if (this.previousOperand !== '') {
-            this.compute();
-        }
-        this.operation = operation;
-        this.previousOperand = this.currentOperand;
-        this.currentOperand = '';
-    }
-
-    compute() {
-        let computation;
-        const prev = parseFloat(this.previousOperand);
-        const current = parseFloat(this.currentOperand);
-        if (isNaN(prev) || isNaN(current)) return;
-        switch (this.operation) {
-            case '+':
-                computation = prev + current;
-                break;
-            case '-':
-                computation = prev - current;
-                break;
-            case '*':
-                computation = prev * current;
-                break;
-            case '÷':
-                computation = prev / current;
-                break;
-            default:
-                return;
-        }
-        this.currentOperand = computation.toString();
-        this.operation = undefined;
-        this.previousOperand = '';
-    }
-
-    getDisplayNumber(number) {
-        const stringNumber = number.toString();
-        const integerDigits = parseFloat(stringNumber.split('.')[0]);
-        const decimalDigits = stringNumber.split('.')[1];
-        let integerDisplay;
-        if (isNaN(integerDigits)) {
-            integerDisplay = '';
-        } else {
-            integerDisplay = integerDigits.toLocaleString('en', { maximumFractionDigits: 0 });
-        }
-        if (decimalDigits != null) {
-            return `${integerDisplay}.${decimalDigits}`;
-        } else {
-            return integerDisplay;
-        }
-    }
-
-    updateDisplay() {
-        this.currentOperandTextElement.innerText = this.getDisplayNumber(this.currentOperand);
-        if (this.operation != null) {
-            this.previousOperandTextElement.innerText =
-                `${this.getDisplayNumber(this.previousOperand)} ${this.operation}`;
-        } else {
-            this.previousOperandTextElement.innerText = '';
-        }
-    }
-}
-
-const calculator = new Calculator(previousOperandTextElement, currentOperandTextElement);
-
-openCalculatorBtn.addEventListener('click', () => {
-    miniCalculatorDialog.classList.toggle('show');
-    gstMenu.classList.remove('show'); // Close GST menu if calculator opens
-});
-
-numberButtons.forEach(button => {
-    button.addEventListener('click', () => {
-        calculator.appendNumber(button.innerText);
-        calculator.updateDisplay();
-    });
-});
-
-operationButtons.forEach(button => {
-    button.addEventListener('click', () => {
-        calculator.chooseOperation(button.innerText);
-        calculator.updateDisplay();
-    });
-});
-
-equalsButton.addEventListener('click', button => {
-    calculator.compute();
-    calculator.updateDisplay();
-});
-
-allClearButton.addEventListener('click', button => {
-    calculator.clear();
-    calculator.updateDisplay();
-});
-
-deleteButton.addEventListener('click', button => {
-    calculator.delete();
-    calculator.updateDisplay();
-});
-
-percentButton.addEventListener('click', button => {
-    calculator.percent();
-    calculator.updateDisplay();
-});
-
-// Initialize display
-calculator.updateDisplay();
-
-// History functions
-function saveToHistory(type, amount, gstRate, gstAmount, total) {
-    if (amount <= 0) return;
-    
-    let history = JSON.parse(localStorage.getItem('gstHistory') || '[]');
-    
-    const entry = {
-        id: Date.now(),
-        type: type,
-        amount: amount,
-        gstRate: gstRate,
-        gstAmount: gstAmount,
-        total: total,
-        date: new Date().toLocaleString()
-    };
-    
-    history.unshift(entry);
-    if (history.length > 50) history.pop();
-    
-    localStorage.setItem('gstHistory', JSON.stringify(history));
-    renderHistory();
-}
-
-function renderHistory() {
-    const history = JSON.parse(localStorage.getItem('gstHistory') || '[]');
-    historyList.innerHTML = '';
-    
-    if (history.length === 0) {
-        historyList.innerHTML = '<div class="history-empty">No calculations yet</div>';
-        return;
-    }
-    
-    history.forEach(item => {
-        const div = document.createElement('div');
-        div.className = 'history-item';
-        div.innerHTML = `
-            <div><strong>${item.type === 'add' ? '✅ Added GST' : '❌ Removed GST'}</strong></div>
-            <div>Base Amount: ₹${item.amount.toFixed(2)}</div>
-            <div>GST: ${item.gstRate}% → ₹${item.gstAmount.toFixed(2)}</div>
-            <div><strong>Total: ₹${item.total.toFixed(2)}</strong></div>
-            <div style="font-size:12px; opacity:0.7; margin-top:4px;">${item.date}</div>
-        `;
-        historyList.appendChild(div);
-    });
-}
-
-function clearHistory() {
-    clearConfirmDialog.classList.add('show');
-}
-
-// Open history
-openHistoryBtn.addEventListener('click', () => {
-    historyDialog.classList.toggle('show');
-    miniCalculatorDialog.classList.remove('show');
-    gstMenu.classList.remove("show");
-    renderHistory();
-});
-
-clearHistoryBtn.addEventListener('click', (e) => {
-    e.stopPropagation();   // <-- This fixes the issue
-    clearHistory();
-});
-
-// Load history on start
+// ---------- TAB SWITCHING (also closes dropdowns) ----------
+window.switchTab = function(tab){
+    document.getElementById('panel-gst').style.display = tab==='gst' ? 'block' : 'none';
+    document.getElementById('panel-pergram').style.display = tab==='pergram' ? 'block' : 'none';
+    document.getElementById('panel-discount').style.display = tab==='discount' ? 'block' : 'none';
+    document.querySelectorAll('.tab-btn').forEach((btn,i)=>{ if((tab==='gst' && i===0)||(tab==='pergram'&&i===1)||(tab==='discount'&&i===2)) btn.classList.add('active'); else btn.classList.remove('active'); });
+    closeAllDropdowns();
+    miniDialog.classList.remove('show');
+    historyDialog?.classList.remove('show');
+};
+// initial active
+switchTab('gst');
 renderHistory();
 
-// Custom clear dialog handlers
-cancelClearBtn.addEventListener('click', () => {
-    clearConfirmDialog.classList.remove('show');
-});
-
-confirmClearBtn.addEventListener('click', () => {
-    localStorage.removeItem('gstHistory');
-    renderHistory();
-    clearConfirmDialog.classList.remove('show');
-    // Extra safety: force close any open history dialog
-    historyDialog.classList.remove('show');
-});
-
-// NEW: Theme Toggle Logic
-const themeToggleBtn = document.getElementById('themeToggleBtn');
-const themeIcon = document.getElementById('themeIcon');
-
-const sunIcon = `<circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>`;
-const moonIcon = `<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>`;
-
-// Check saved theme preference
-if (localStorage.getItem('theme') === 'light') {
-    document.body.classList.add('light-mode');
-    themeIcon.innerHTML = moonIcon;
-} else {
-    themeIcon.innerHTML = sunIcon;
-}
-
-themeToggleBtn.addEventListener('click', () => {
-    document.body.classList.toggle('light-mode');
-    if (document.body.classList.contains('light-mode')) {
-        themeIcon.innerHTML = moonIcon;
-        localStorage.setItem('theme', 'light');
-    } else {
-        themeIcon.innerHTML = sunIcon;
-        localStorage.setItem('theme', 'dark');
-    }
-});
-
-// Force fresh load for development/updates (removes old cache on mobile)
-window.addEventListener('load', () => {
-    if ('caches' in window) {
-        caches.keys().then(keys => {
-            keys.forEach(key => {
-                if (key.includes('gstcalc')) {
-                    caches.delete(key);
-                }
-            });
-        });
-    }
-});
-
-// NEW: Clear Amount Button
-const amountInput = document.getElementById('amount');
-const clearAmountBtn = document.getElementById('clearAmountBtn');
-
-function toggleClearButton() {
-    if (amountInput.value.length > 0) {
-        clearAmountBtn.style.display = 'block';
-    } else {
-        clearAmountBtn.style.display = 'none';
-    }
-}
-
-amountInput.addEventListener('input', toggleClearButton);
-clearAmountBtn.addEventListener('click', () => {
-    amountInput.value = '';
-    toggleClearButton();
-    amountInput.focus();
-});
-
-// Initial check
-toggleClearButton();
-
+// service worker for PWA (optional)
+if('serviceWorker' in navigator) navigator.serviceWorker.register('./service-worker.js').catch(e=>console);
 </script>
-
 </body>
 </html>
