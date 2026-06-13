@@ -117,7 +117,7 @@ body.light-mode h1 {
 #themeToggleBtn { left: 1.5rem; }
 #openCalculatorBtn { right: 1.2rem; }
 #openHistoryBtn { right: 3.8rem; }
-#openComparisonBtn { right: 5.2rem; }
+#openComparisonBtn { right: 6rem; left: 3.7rem; }
 
 /* tab switcher */
 .tab-switcher {
@@ -572,32 +572,42 @@ body.light-mode .history-clear-btn {
     color: #0f172a;
     transform: scale(1.1);
 }
+#tooltip-portal {
+    position: fixed;
+    top: 0; left: 0;
+    width: 0; height: 0;
+    z-index: 999999;
+    pointer-events: none;
+}
 .tooltip-box {
-    position: absolute;
-    top: calc(100% + 8px);
-    left: 50%;
-    transform: translateX(-50%) scale(0.9);
-    background: #1e293b;
-    border: 1px solid rgba(56, 189, 248, 0.3);
+    position: fixed;
+    background: #1a2744;
+    border: 2px solid #38bdf8;
     border-radius: 12px;
-    padding: 10px 14px;
+    padding: 12px 16px;
     font-size: 0.75rem;
-    color: #e2e8f0;
-    white-space: nowrap;
+    font-weight: 500;
+    color: #f1f5f9;
+    white-space: normal;
+    width: 230px;
+    text-align: left;
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-    z-index: 300;
-    backdrop-filter: blur(8px);
-    background: rgba(30, 41, 59, 0.95);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.85), 0 0 0 1px rgba(56,189,248,0.15);
+    transform: translateY(4px);
+}
+.tooltip-box.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
 }
 .tooltip-box::before {
     content: '';
-    position: absolute;    bottom: 100%;
-    left: 50%;
-    transform: translateX(-50%);
+    position: absolute;
+    bottom: 100%;
+    left: 20px;
     border: 6px solid transparent;
     border-bottom-color: #38bdf8;
 }
@@ -605,22 +615,10 @@ body.light-mode .history-clear-btn {
     content: '';
     position: absolute;
     bottom: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    border: 5px solid transparent;
-    border-bottom-color: #1e293b;
+    left: 22px;
+    border: 4px solid transparent;
+    border-bottom-color: #1a2744;
     margin-bottom: -1px;
-}
-.tooltip-wrapper:hover .tooltip-box,
-.tooltip-wrapper.show-tooltip .tooltip-box {
-    opacity: 1;
-    visibility: visible;
-    transform: translateX(-50%) scale(1);
-}
-.tooltip-box.multi-line {
-    white-space: normal;
-    width: 220px;
-    text-align: left;
 }
 body.light-mode .tooltip-icon {
     background: rgba(2, 132, 199, 0.15);
@@ -631,43 +629,23 @@ body.light-mode .tooltip-icon:hover {
     background: #0284c7;
     color: white;
 }
-body.light-mode .tooltip-box {
-    background: rgba(255, 255, 255, 0.95);
-    border-color: rgba(2, 132, 199, 0.3);
-    color: #1e293b;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-    backdrop-filter: blur(8px);
+body.light-mode .tooltip-box,
+.tooltip-box.light-mode {
+    background: #ffffff;
+    border-color: #0284c7;
+    color: #0f172a;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
 }
-body.light-mode .tooltip-box::before {
+body.light-mode .tooltip-box::before,
+.tooltip-box.light-mode::before {
     border-bottom-color: #0284c7;
 }
-body.light-mode .tooltip-box::after {
+body.light-mode .tooltip-box::after,
+.tooltip-box.light-mode::after {
     border-bottom-color: #ffffff;
 }
 
-/* COMPARISON TOOL STYLES */.comparison-btn {
-    position: absolute;
-    top: 1.0rem;
-    right: 6rem;
-    left : 3.7rem;
-    background: rgba(255, 255, 255, 0.08);
-    border: none;
-    border-radius: 50%;
-    width: 38px;
-    height: 38px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    color: #e2e8f0;
-    transition: 0.2s;
-    z-index: 150;
-    backdrop-filter: blur(4px);
-}
-.comparison-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
-    transform: translateY(-2px);
-}
+/* COMPARISON TOOL STYLES */
 .comparison-btn.has-items {
     background: rgba(56, 189, 248, 0.25);
     color: #38bdf8;
@@ -804,15 +782,15 @@ body.light-mode .tooltip-box::after {
     border-color: #10b981;
     color: #10b981;
 }
-body.light-mode .comparison-btn {
+body.light-mode #openComparisonBtn {
     background: rgba(0, 0, 0, 0.06);
     color: #1e293b;
     right: 7.2rem;
 }
-body.light-mode .comparison-btn:hover {
+body.light-mode #openComparisonBtn:hover {
     background: rgba(0, 0, 0, 0.12);
 }
-body.light-mode .comparison-btn.has-items {
+body.light-mode #openComparisonBtn.has-items {
     background: rgba(2, 132, 199, 0.2);
     color: #0284c7;
 }
@@ -896,7 +874,7 @@ body.light-mode .history-share-btn:hover {
     <button id="openHistoryBtn" class="icon-btn" aria-label="History">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>
     </button>
-    <button id="openComparisonBtn" class="comparison-btn" aria-label="Comparison" data-count="0">
+    <button id="openComparisonBtn" class="icon-btn" aria-label="Comparison" data-count="0">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 18V6M15 18v-8M3 21h18"/></svg>
     </button>
 
@@ -950,8 +928,8 @@ body.light-mode .history-share-btn:hover {
 
     <!-- tab bar -->
     <div class="tab-switcher">
-        <button class="tab-btn active" onclick="switchTab('gst')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/><circle cx="12" cy="12" r="3"/></svg><span>GST</span></button>
-        <button class="tab-btn" onclick="switchTab('pergram')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 12H4M12 4v16M8 8l4-4 4 4M8 16l4 4 4-4"/></svg><span>Per Gram</span></button>
+        <button class="tab-btn" onclick="switchTab('gst')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/><circle cx="12" cy="12" r="3"/></svg><span>GST</span></button>
+        <button class="tab-btn active" onclick="switchTab('pergram')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 12H4M12 4v16M8 8l4-4 4 4M8 16l4 4 4-4"/></svg><span>Per Gram</span></button>
         <button class="tab-btn" onclick="switchTab('discount')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 15l6-6"/><circle cx="9" cy="9" r="1"/><circle cx="15" cy="15" r="1"/><path d="M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/></svg><span>Discount</span></button>
     </div>
 
@@ -1002,7 +980,7 @@ function setThemeIcons(isLight) {
     else themeSvg.innerHTML = '<circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>';
 }
 if(localStorage.getItem('theme') === 'light') { document.body.classList.add('light-mode'); setThemeIcons(true); } else setThemeIcons(false);
-themeBtn.addEventListener('click',()=>{ const isLight = document.body.classList.toggle('light-mode'); localStorage.setItem('theme', isLight ? 'light' : 'dark'); setThemeIcons(isLight); });
+themeBtn.addEventListener('click',()=>{ const isLight = document.body.classList.toggle('light-mode'); localStorage.setItem('theme', isLight ? 'light' : 'dark'); setThemeIcons(isLight); hideAllTooltips(); });
 
 // ---------- UNIFIED HISTORY (SVG only) ----------
 let unifiedHistory = JSON.parse(localStorage.getItem('calcSuiteHistory') || '[]');
@@ -1014,16 +992,19 @@ function renderHistory() {
         let iconSvg = '', title = '', shareText = '';
         if(entry.type === 'gst_add') { iconSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 5v14M5 12h14"/><circle cx="12" cy="12" r="10"/></svg>`; title = `Add GST (${entry.gstRate}%)`; shareText = `GST Calculation:\nBase: ₹${entry.amount.toFixed(2)}\nGST (${entry.gstRate}%): ₹${entry.gstAmount.toFixed(2)}\nTotal: ₹${entry.total.toFixed(2)}`; }
         else if(entry.type === 'gst_remove') { iconSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 12h14"/><circle cx="12" cy="12" r="10"/></svg>`; title = `Remove GST (${entry.gstRate}%)`; shareText = `GST Removal:\nTotal: ₹${entry.total.toFixed(2)}\nGST (${entry.gstRate}%): ₹${entry.gstAmount.toFixed(2)}\nBase: ₹${entry.amount.toFixed(2)}`; }
-        else if(entry.type === 'pergram') { iconSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 12H4M12 4v16M8 8l4-4 4 4M8 16l4 4 4-4"/></svg>`; title = `Per Gram · ${entry.unit}`; shareText = `Per Gram Calculation:\n${entry.priceLabel}: ₹${entry.price}\n${entry.weightDisplay}\n${entry.perUnitLabel}: ₹${entry.perUnit}`; }
+        else if(entry.type === 'pergram') { iconSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 12H4M12 4v16M8 8l4-4 4 4M8 16l4 4 4-4"/></svg>`; title = `Per Gram · ${entry.unit}`; shareText = `Per Gram Calculation:\n${entry.priceLabel}: ₹${entry.price}\n${entry.weightDisplay}\n${entry.perUnitLabel}: ₹${entry.perUnit}` + (entry.per100g ? `\nPer 100g: ₹${entry.per100g}\nPer 1kg: ₹${entry.per1kg}` : ''); }
         else if(entry.type === 'discount') { iconSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 15l6-6"/><circle cx="9" cy="9" r="1"/><circle cx="15" cy="15" r="1"/></svg>`; title = `Discount (${entry.discountType === 'percent' ? entry.discountValue+'%' : '₹'+entry.discountValue})`; shareText = `Discount Calculation:\nOriginal: ₹${entry.original}\nDiscount: ${entry.discountType === 'percent' ? entry.discountValue+'%' : '₹'+entry.discountValue}\nSaved: ₹${entry.saved}\nFinal: ₹${entry.final}`; }
         let details = '';
         if(entry.type === 'gst_add' || entry.type === 'gst_remove') details = `Base: ₹${entry.amount.toFixed(2)} → Total: ₹${entry.total.toFixed(2)} (GST: ₹${entry.gstAmount.toFixed(2)})`;
-        else if(entry.type === 'pergram') details = `${entry.priceLabel}: ₹${entry.price} | ${entry.weightDisplay} → ${entry.perUnitLabel}: ₹${entry.perUnit}`;
+        else if(entry.type === 'pergram') {
+            details = `${entry.priceLabel}: ₹${entry.price} | ${entry.weightDisplay} → ${entry.perUnitLabel}: ₹${entry.perUnit}`;
+            if(entry.per100g) details += ` | Per 100g: ₹${entry.per100g} | Per 1kg: ₹${entry.per1kg}`;
+        }
         else if(entry.type === 'discount') details = `Original: ₹${entry.original} | Saved: ₹${entry.saved} → Final: ₹${entry.final}`;
         return `<div class="history-item" data-share="${encodeURIComponent(shareText)}"><div class="history-item-header">${iconSvg}<span>${title}</span></div><div class="history-details">${details}</div><button class="history-share-btn" onclick="shareHistoryItem(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.59 13.51l6.83 3.98M15.41 6.51l-6.82 3.98"/></svg> Share</button><div class="history-date">${entry.date}</div></div>`;
     }).join('');
 }
-function addHistoryEntry(entry) { unifiedHistory.unshift({ id: Date.now(), ...entry, date: new Date().toLocaleString() }); if(unifiedHistory.length > 50) unifiedHistory.pop(); localStorage.setItem('calcSuiteHistory', JSON.stringify(unifiedHistory)); renderHistory(); }
+function addHistoryEntry(entry) { unifiedHistory.unshift({ id: Date.now(), ...entry, date: new Date().toLocaleString() }); if(unifiedHistory.length > 500) unifiedHistory.pop(); localStorage.setItem('calcSuiteHistory', JSON.stringify(unifiedHistory)); renderHistory(); }
 
 // Custom clear modal logic
 const clearModal = document.getElementById('customClearModal');
@@ -1045,6 +1026,8 @@ document.getElementById('selectedUnit')?.addEventListener('click',(e)=>{ e.stopP
 
 // ---------- MINI CALCULATOR ----------
 const miniDialog = document.getElementById('miniCalculatorDialog'), openCalc = document.getElementById('openCalculatorBtn');
+const comparisonDialog = document.getElementById('comparisonDialog');
+const openComparisonBtn = document.getElementById('openComparisonBtn');
 let curr='0', prev='', op=null;
 const prevElem = document.querySelector('.previous-operand'), currElem = document.querySelector('.current-operand');
 function updateMini() { currElem.innerText = curr; prevElem.innerText = prev + (op || ''); }
@@ -1056,7 +1039,7 @@ function delMini() { if(curr.length===1||curr==='0') curr='0'; else curr=curr.sl
 function percentMini() { let v=parseFloat(curr); if(!isNaN(v)) curr=(v/100).toString(); updateMini(); }
 function buildMiniGrid() { const grid = document.getElementById('miniCalcGrid'); const btns=[['AC','C'],['%','%'],['DEL','D'],['÷','/'],['7','7'],['8','8'],['9','9'],['*','*'],['4','4'],['5','5'],['6','6'],['-','-'],['1','1'],['2','2'],['3','3'],['+','+'],['0','0'],['.','.'],['=','=']]; grid.innerHTML=''; btns.forEach(([label,val])=>{ const b=document.createElement('button'); b.innerText=label; b.classList.add('calc-btn'); if(['+','-','*','÷'].includes(val)) b.classList.add('operator'); if(val==='=') b.classList.add('equals'); b.onclick=()=>{ if(val==='C') allClearMini(); else if(val==='D') delMini(); else if(val==='%') percentMini(); else if(val==='=') computeMini(); else if(['+','-','*','÷'].includes(val)) opHandler(val); else numHandler(val); }; grid.appendChild(b); }); }
 buildMiniGrid(); updateMini();
-openCalc.addEventListener('click',(e)=>{ e.stopPropagation(); miniDialog.classList.toggle('show'); closeAllDropdowns(); document.getElementById('historyDialog')?.classList.remove('show'); });
+openCalc.addEventListener('click',(e)=>{ e.stopPropagation(); miniDialog.classList.toggle('show'); closeAllDropdowns(); document.getElementById('historyDialog')?.classList.remove('show'); comparisonDialog?.classList.remove('show'); hideAllTooltips(); });
 document.addEventListener('click',(e)=>{ if(!miniDialog.contains(e.target) && e.target!==openCalc) miniDialog.classList.remove('show'); });
 
 // ---------- GST LOGIC WITH HISTORY ----------
@@ -1092,7 +1075,7 @@ window.calcPerGram = ()=>{
         document.getElementById('pgResultPer100').innerText='₹'+(perUnit*100).toFixed(2);
         document.getElementById('pgPer1kgRow').style.display='flex';
         document.getElementById('pgResultPer1kg').innerText='₹'+(perUnit*1000).toFixed(2);
-        addHistoryEntry({ type:'pergram', price:price.toFixed(2), weightDisplay:weightDisplay, perUnitLabel:'Price per Gram', perUnit:perUnit.toFixed(4), priceLabel:'Total Price', unit: unit==='kg'?'Kilogram':'Gram' });
+        addHistoryEntry({ type:'pergram', price:price.toFixed(2), weightDisplay:weightDisplay, perUnitLabel:'Price per Gram', perUnit:perUnit.toFixed(4), per100g:(perUnit*100).toFixed(2), per1kg:(perUnit*1000).toFixed(2), priceLabel:'Total Price', unit: unit==='kg'?'Kilogram':'Gram' });
     }
 };
 window.clearPGCalc = ()=>{ document.getElementById('pgPrice').value=''; document.getElementById('pgWeight').value=''; document.getElementById('pgResultPrice').innerText='₹0.00'; document.getElementById('pgResultWeight').innerText='0'; document.getElementById('pgResultPerUnit').innerText='₹0.00'; document.getElementById('pgResultPer100').innerText='₹0.00'; document.getElementById('pgResultPer1kg').innerText='₹0.00'; document.getElementById('pgPer100Row').style.display='none'; document.getElementById('pgPer1kgRow').style.display='none'; };
@@ -1119,45 +1102,85 @@ window.switchTab = function(tab){
     document.getElementById('panel-pergram').style.display = tab==='pergram' ? 'block' : 'none';
     document.getElementById('panel-discount').style.display = tab==='discount' ? 'block' : 'none';
     document.querySelectorAll('.tab-btn').forEach((btn,i)=>{ if((tab==='gst' && i===0)||(tab==='pergram'&&i===1)||(tab==='discount'&&i===2)) btn.classList.add('active'); else btn.classList.remove('active'); });
-    closeAllDropdowns(); miniDialog.classList.remove('show'); document.getElementById('historyDialog')?.classList.remove('show');
+    closeAllDropdowns(); miniDialog.classList.remove('show'); document.getElementById('historyDialog')?.classList.remove('show'); comparisonDialog?.classList.remove('show');
 };
-switchTab('gst'); renderHistory();
-document.getElementById('openHistoryBtn')?.addEventListener('click',(e)=>{ e.stopPropagation(); renderHistory(); document.getElementById('historyDialog')?.classList.toggle('show'); closeAllDropdowns(); miniDialog.classList.remove('show'); });
+switchTab('pergram'); renderHistory();
+document.getElementById('openHistoryBtn')?.addEventListener('click',(e)=>{ e.stopPropagation(); renderHistory(); document.getElementById('historyDialog')?.classList.toggle('show'); closeAllDropdowns(); miniDialog.classList.remove('show'); comparisonDialog?.classList.remove('show'); hideAllTooltips(); });
 document.addEventListener('click',(e)=>{ if(!document.getElementById('historyDialog')?.contains(e.target) && e.target !== document.getElementById('openHistoryBtn')) document.getElementById('historyDialog')?.classList.remove('show'); });
 
-// ---------- TOOLTIP FIRST-TIME INTERACTION ----------
+// ---------- TOOLTIP PORTAL SYSTEM ----------
+const tooltipPortal = document.createElement('div');
+tooltipPortal.id = 'tooltip-portal';
+document.body.appendChild(tooltipPortal);
+let _activeTooltipBox = null;
+
+// GLOBAL — called by other dialogs + ESC + closeAllDialogs
+window.hideAllTooltips = function() {
+    tooltipPortal.innerHTML = '';
+    _activeTooltipBox = null;
+};
+
+function showTooltip(icon) {
+    hideAllTooltips();
+    const srcBox = icon.closest('.tooltip-wrapper').querySelector('.tooltip-box');
+    if (!srcBox) return;
+
+    const box = srcBox.cloneNode(true);
+    // Sync current theme onto cloned box
+    if (document.body.classList.contains('light-mode')) box.classList.add('light-mode');
+    tooltipPortal.appendChild(box);
+    _activeTooltipBox = box;
+
+    const rect = icon.getBoundingClientRect();
+    const vw = window.innerWidth;
+    let left = rect.left + rect.width / 2 - 20;
+    const boxW = 230;
+    if (left + boxW > vw - 8) left = vw - boxW - 8;
+    if (left < 8) left = 8;
+
+    box.style.top = (rect.bottom + window.scrollY + 10) + 'px';
+    box.style.left = left + 'px';
+
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => { box.classList.add('visible'); });
+    });
+}
+
 function initTooltips() {
-    const hasSeenTooltips = localStorage.getItem('calcSuiteSeenTooltips');
-    if(!hasSeenTooltips) {
-        const tooltipWrappers = document.querySelectorAll('.tooltip-wrapper');
-        tooltipWrappers.forEach((wrapper, index) => {
-            setTimeout(() => {
-                wrapper.classList.add('show-tooltip');
-                setTimeout(() => wrapper.classList.remove('show-tooltip'), 3000);
-            }, index * 400);
-        });
-        localStorage.setItem('calcSuiteSeenTooltips', 'true');
-    }
     document.querySelectorAll('.tooltip-icon').forEach(icon => {
         icon.addEventListener('click', (e) => {
             e.preventDefault();
             e.stopPropagation();
-            const wrapper = icon.closest('.tooltip-wrapper');
-            wrapper.classList.toggle('show-tooltip');
+            const isOpen = _activeTooltipBox && tooltipPortal.contains(_activeTooltipBox);
+            hideAllTooltips();
+            if (!isOpen) {
+                // close all other dialogs first
+                miniDialog?.classList.remove('show');
+                document.getElementById('historyDialog')?.classList.remove('show');
+                comparisonDialog?.classList.remove('show');
+                showTooltip(icon);
+            }
         });
     });
+
     document.addEventListener('click', (e) => {
-        if(!e.target.closest('.tooltip-wrapper')) {
-            document.querySelectorAll('.tooltip-wrapper').forEach(w => w.classList.remove('show-tooltip'));
-        }
+        if (!e.target.closest('.tooltip-wrapper')) hideAllTooltips();
     });
+
+    // First-time auto-show
+    const hasSeenTooltips = localStorage.getItem('calcSuiteSeenTooltips');
+    if (!hasSeenTooltips) {
+        const firstIcon = document.querySelector('.tooltip-icon');
+        if (firstIcon) {
+            setTimeout(() => { showTooltip(firstIcon); setTimeout(hideAllTooltips, 3000); }, 800);
+        }
+        localStorage.setItem('calcSuiteSeenTooltips', 'true');
+    }
 }
 initTooltips();
 
 // ---------- COMPARISON TOOL ----------
 let comparisonItems = JSON.parse(localStorage.getItem('calcSuiteComparison') || '[]');
-const comparisonDialog = document.getElementById('comparisonDialog');
-const openComparisonBtn = document.getElementById('openComparisonBtn');
 const clearComparisonBtn = document.getElementById('clearComparisonBtn');
 const comparisonList = document.getElementById('comparisonList');
 
@@ -1261,6 +1284,7 @@ openComparisonBtn?.addEventListener('click', (e) => {
     closeAllDropdowns();
     miniDialog.classList.remove('show');
     document.getElementById('historyDialog')?.classList.remove('show');
+    hideAllTooltips();
 });
 
 document.addEventListener('click', (e) => {
@@ -1274,23 +1298,67 @@ renderComparison();
 
 // ---------- SHARE HISTORY ITEM ----------
 window.shareHistoryItem = function(btn) {
-    const historyItem = btn.closest('.history-item');    const shareText = decodeURIComponent(historyItem.getAttribute('data-share') || '');
-    const shareData = {
-        title: 'Calc Suite Result',
-        text: shareText + '\n\n— Shared via Calc Suite'
-    };
-    if(navigator.share) {
-        navigator.share(shareData).catch(() => {
-            navigator.clipboard.writeText(shareData.text);
-            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Copied!';
-            setTimeout(() => { btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.59 13.51l6.83 3.98M15.41 6.51l-6.82 3.98"/></svg> Share'; }, 1500);
-        });
-    } else {
-        navigator.clipboard.writeText(shareData.text);
+    const historyItem = btn.closest('.history-item');
+    const shareText = decodeURIComponent(historyItem.getAttribute('data-share') || '');
+    const copyText = shareText + '\n\n— Shared via Calc Suite';
+    navigator.clipboard.writeText(copyText).then(() => {
         btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Copied!';
-        setTimeout(() => { btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.59 13.51l6.83 3.98M15.41 6.51l-6.82 3.98"/></svg> Share'; }, 1500);
-    }
+        setTimeout(() => { btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.59 13.51l6.83 3.98M15.41 6.51l-6.82 3.98"/></svg> Copy'; }, 1500);
+    }).catch(() => {
+        btn.innerHTML = 'Failed';
+        setTimeout(() => { btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.59 13.51l6.83 3.98M15.41 6.51l-6.82 3.98"/></svg> Copy'; }, 1500);
+    });
 };
+
+
+// ---------- KEYBOARD & MOBILE BACK BUTTON SUPPORT ----------
+function closeAllDialogs() {
+    miniDialog?.classList.remove('show');
+    document.getElementById('historyDialog')?.classList.remove('show');
+    comparisonDialog?.classList.remove('show');
+    document.getElementById('gstMenu')?.classList.remove('show');
+    document.getElementById('unitMenu')?.classList.remove('show');
+    hideAllTooltips();
+}
+
+function anyDialogOpen() {
+    return miniDialog?.classList.contains('show') ||
+           document.getElementById('historyDialog')?.classList.contains('show') ||
+           comparisonDialog?.classList.contains('show') ||
+           document.getElementById('gstMenu')?.classList.contains('show') ||
+           document.getElementById('unitMenu')?.classList.contains('show');
+}
+
+// ESC key closes dialogs; Tab navigates inputs
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        closeAllDialogs();
+    }
+});
+
+// Mobile: push history state when any dialog opens, pop = close dialog
+function pushDialogState() {
+    if (!window.history.state?.dialogOpen) {
+        window.history.pushState({ dialogOpen: true }, '');
+    }
+}
+window.addEventListener('popstate', (e) => {
+    if (anyDialogOpen()) {
+        closeAllDialogs();
+    }
+});
+
+// Patch dialog open buttons to push history state
+['openCalculatorBtn','openHistoryBtn','openComparisonBtn'].forEach(id => {
+    document.getElementById(id)?.addEventListener('click', () => {
+        setTimeout(() => { if(anyDialogOpen()) pushDialogState(); }, 50);
+    });
+});
+document.querySelectorAll('.tooltip-icon').forEach(icon => {
+    icon.addEventListener('click', () => {
+        setTimeout(() => { if(anyDialogOpen()) pushDialogState(); }, 50);
+    });
+});
 
 if('serviceWorker' in navigator) navigator.serviceWorker.register('./service-worker.js').catch(e=>console);
 </script>
