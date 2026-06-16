@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Calc Suite | GST + PerGram + Discount</title>
+<title>CalcDeck | GST + PerGram + Discount</title>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#0f172a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Calc Suite">
+<meta name="apple-mobile-web-app-title" content="CalcDeck">
 <meta name="description" content="All-in-one toolkit: GST, Per Gram pricing, Discount calculator — PWA ready.">
 <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
 <style>
@@ -621,7 +621,8 @@ body.light-mode .history-clear-btn {
     content: '';
     position: absolute;
     bottom: 100%;
-    left: 20px;
+    left: 50%;
+    transform: translateX(-50%);
     border: 6px solid transparent;
     border-bottom-color: #38bdf8;
 }
@@ -629,7 +630,8 @@ body.light-mode .history-clear-btn {
     content: '';
     position: absolute;
     bottom: 100%;
-    left: 22px;
+    left: 50%;
+    transform: translateX(-50%);
     border: 4px solid transparent;
     border-bottom-color: #1a2744;
     margin-bottom: -1px;
@@ -893,7 +895,7 @@ body.light-mode .history-share-btn:hover {
     </button>
 
     <div class="header-area">
-        <h1>Calc Suite</h1>
+        <h1>CalcDeck</h1>
     </div>
 
     <!-- mini calculator & history panels -->
@@ -964,9 +966,10 @@ body.light-mode .history-share-btn:hover {
             <div><div class="row"><label><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 3h18v18H3z"/><path d="M9 9h6v6H9z"/></svg> Total Price (₹)<span class="tooltip-wrapper"><span class="tooltip-icon">?</span><span class="tooltip-box">Enter the total price of the item.</span></span></label><input type="number" id="pgPrice" placeholder="e.g. 250"></div>
             <div class="row"><label><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 2v20M4 12h16"/></svg> Weight / Quantity<span class="tooltip-wrapper"><span class="tooltip-icon">?</span><span class="tooltip-box multi-line">Enter the weight or quantity. The unit selector below lets you choose grams, kilograms, or pieces.</span></span></label><input type="number" id="pgWeight" placeholder="e.g. 500"></div>
             <div class="row"><label>📏 Unit<span class="tooltip-wrapper"><span class="tooltip-icon">?</span><span class="tooltip-box">Select the unit of measurement for accurate per-unit calculation.</span></span></label><div class="unit-selector" id="unitSelector"><button class="unit-btn" id="selectedUnit">Gram (g) ▼</button><div class="unit-menu" id="unitMenu"><div onclick="setUnit('g','Gram (g)')">Gram (g)</div><div onclick="setUnit('kg','Kilogram (kg)')">Kilogram (kg)</div><div onclick="setUnit('piece','Piece (unit)')">Piece (unit)</div></div><input type="hidden" id="pgUnit" value="g"></div></div>
+            <div class="row"><label>🛒 Desired Quantity<span class="tooltip-wrapper"><span class="tooltip-icon">?</span><span class="tooltip-box multi-line">Enter how much quantity you want to buy. The calculator will show the final amount for this quantity based on the per-unit rate.</span></span></label><input type="number" id="pgDesiredQty" placeholder="e.g. 150" oninput="calcDesiredAmount()"></div>
             <div class="action-btns"><button class="action add" onclick="calcPerGram()">Calculate</button><button class="action secondary" onclick="clearPGCalc()">Clear</button></div>
             <button class="add-to-comparison-btn" id="addPGToComparison" onclick="addToComparison('pergram')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg> Add to Comparison</button></div>
-            <div class="result"><div class="result-item"><span>Total Price</span><span id="pgResultPrice">₹0.00</span></div><div class="result-item"><span>Total Qty</span><span id="pgResultWeight">0</span></div><hr><div class="result-item"><span id="pgResultLabel">Price per Gram</span><span class="pg-total" id="pgResultPerUnit">₹0.00</span></div><div id="pgPer100Row" class="result-item" style="display:none"><span>Price per 100g</span><span id="pgResultPer100">₹0.00</span></div><div id="pgPer1kgRow" class="result-item" style="display:none"><span>Price per 1kg</span><span id="pgResultPer1kg">₹0.00</span></div></div>
+            <div class="result"><div class="result-item"><span>Total Price</span><span id="pgResultPrice">₹0.00</span></div><div class="result-item"><span>Total Qty</span><span id="pgResultWeight">0</span></div><hr><div class="result-item"><span id="pgResultLabel">Price per Gram</span><span class="pg-total" id="pgResultPerUnit">₹0.00</span></div><div id="pgPer100Row" class="result-item" style="display:none"><span>Price per 100g</span><span id="pgResultPer100">₹0.00</span></div><div id="pgPer1kgRow" class="result-item" style="display:none"><span>Price per 1kg</span><span id="pgResultPer1kg">₹0.00</span></div><hr id="desiredQtyDivider" style="display:none"><div id="desiredQtyRow" class="result-item" style="display:none"><span id="desiredQtyLabel">For 0g</span><span class="total" id="desiredQtyAmount">₹0.00</span></div></div>
         </div>
     </div>
 
@@ -1008,10 +1011,7 @@ function renderHistory() {
         else if(entry.type === 'discount') { iconSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 15l6-6"/><circle cx="9" cy="9" r="1"/><circle cx="15" cy="15" r="1"/></svg>`; title = `Discount (${entry.discountType === 'percent' ? entry.discountValue+'%' : '₹'+entry.discountValue})`; shareText = `Discount Calculation:\nOriginal: ₹${entry.original}\nDiscount: ${entry.discountType === 'percent' ? entry.discountValue+'%' : '₹'+entry.discountValue}\nSaved: ₹${entry.saved}\nFinal: ₹${entry.final}`; }
         let details = '';
         if(entry.type === 'gst_add' || entry.type === 'gst_remove') details = `Base: ₹${entry.amount.toFixed(2)} → Total: ₹${entry.total.toFixed(2)} (GST: ₹${entry.gstAmount.toFixed(2)})`;
-        else if(entry.type === 'pergram') {
-            details = `${entry.priceLabel}: ₹${entry.price} | ${entry.weightDisplay} → ${entry.perUnitLabel}: ₹${entry.perUnit}`;
-            if(entry.per100g) details += ` | Per 100g: ₹${entry.per100g} | Per 1kg: ₹${entry.per1kg}`;
-        }
+        else if(entry.type === 'pergram') { iconSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 12H4M12 4v16M8 8l4-4 4 4M8 16l4 4 4-4"/></svg>`; title = `Per Gram · ${entry.unit}`; shareText = `Per Gram Calculation:\n${entry.priceLabel}: ₹${entry.price}\n${entry.weightDisplay}\n${entry.perUnitLabel}: ₹${entry.perUnit}` + (entry.per100g ? `\nPer 100g: ₹${entry.per100g}\nPer 1kg: ₹${entry.per1kg}` : '') + (entry.desiredQty && entry.desiredAmount ? `\nFor ${entry.desiredQty}: ₹${entry.desiredAmount}` : ''); }
         else if(entry.type === 'discount') details = `Original: ₹${entry.original} | Saved: ₹${entry.saved} → Final: ₹${entry.final}`;
         return `<div class="history-item" data-share="${encodeURIComponent(shareText)}"><div class="history-item-header">${iconSvg}<span>${title}</span></div><div class="history-details">${details}</div><button class="history-share-btn" onclick="shareHistoryItem(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.59 13.51l6.83 3.98M15.41 6.51l-6.82 3.98"/></svg> Share</button><div class="history-date">${entry.date}</div></div>`;
     }).join('');
@@ -1079,7 +1079,12 @@ window.calcPerGram = ()=>{
         document.getElementById('pgResultPerUnit').innerText='₹'+perUnit.toFixed(2);
         document.getElementById('pgPer100Row').style.display='none';
         document.getElementById('pgPer1kgRow').style.display='none';
-        addHistoryEntry({ type:'pergram', price:price.toFixed(2), weightDisplay:weightDisplay, perUnitLabel:'Price per Piece', perUnit:perUnit.toFixed(2), priceLabel:'Total Price', unit: 'Piece' });
+        let desiredQty = parseFloat(document.getElementById('pgDesiredQty').value);
+        let desiredAmount = '';
+        if(!isNaN(desiredQty) && desiredQty > 0) {
+            desiredAmount = (perUnit * desiredQty).toFixed(2);
+        }
+        addHistoryEntry({ type:'pergram', price:price.toFixed(2), weightDisplay:weightDisplay, perUnitLabel:'Price per Piece', perUnit:perUnit.toFixed(2), priceLabel:'Total Price', unit: 'Piece', desiredQty: desiredQty ? desiredQty + ' pcs' : '', desiredAmount: desiredAmount });
     } else {
         document.getElementById('pgResultLabel').innerText='Price per Gram';
         document.getElementById('pgResultPerUnit').innerText='₹'+perUnit.toFixed(4);
@@ -1087,10 +1092,39 @@ window.calcPerGram = ()=>{
         document.getElementById('pgResultPer100').innerText='₹'+(perUnit*100).toFixed(2);
         document.getElementById('pgPer1kgRow').style.display='flex';
         document.getElementById('pgResultPer1kg').innerText='₹'+(perUnit*1000).toFixed(2);
-        addHistoryEntry({ type:'pergram', price:price.toFixed(2), weightDisplay:weightDisplay, perUnitLabel:'Price per Gram', perUnit:perUnit.toFixed(4), per100g:(perUnit*100).toFixed(2), per1kg:(perUnit*1000).toFixed(2), priceLabel:'Total Price', unit: unit==='kg'?'Kilogram':'Gram' });
+        let desiredQty = parseFloat(document.getElementById('pgDesiredQty').value);
+        let desiredAmount = '';
+        if(!isNaN(desiredQty) && desiredQty > 0) {
+            let desiredQtyInGrams = unit==='kg' ? desiredQty*1000 : desiredQty;
+            desiredAmount = (perUnit * desiredQtyInGrams).toFixed(2);
+        }
+        addHistoryEntry({ type:'pergram', price:price.toFixed(2), weightDisplay:weightDisplay, perUnitLabel:'Price per Gram', perUnit:perUnit.toFixed(4), per100g:(perUnit*100).toFixed(2), per1kg:(perUnit*1000).toFixed(2), priceLabel:'Total Price', unit: unit==='kg'?'Kilogram':'Gram', desiredQty: desiredQty ? desiredQty + ' ' + (unit==='kg'?'kg':unit==='piece'?'pcs':'g') : '', desiredAmount: desiredAmount });
     }
 };
-window.clearPGCalc = ()=>{ document.getElementById('pgPrice').value=''; document.getElementById('pgWeight').value=''; document.getElementById('pgResultPrice').innerText='₹0.00'; document.getElementById('pgResultWeight').innerText='0'; document.getElementById('pgResultPerUnit').innerText='₹0.00'; document.getElementById('pgResultPer100').innerText='₹0.00'; document.getElementById('pgResultPer1kg').innerText='₹0.00'; document.getElementById('pgPer100Row').style.display='none'; document.getElementById('pgPer1kgRow').style.display='none'; };
+window.clearPGCalc = ()=>{ document.getElementById('pgPrice').value=''; document.getElementById('pgWeight').value=''; document.getElementById('pgDesiredQty').value=''; document.getElementById('pgResultPrice').innerText='₹0.00'; document.getElementById('pgResultWeight').innerText='0'; document.getElementById('pgResultPerUnit').innerText='₹0.00'; document.getElementById('pgResultPer100').innerText='₹0.00'; document.getElementById('pgResultPer1kg').innerText='₹0.00'; document.getElementById('pgPer100Row').style.display='none'; document.getElementById('pgPer1kgRow').style.display='none'; document.getElementById('desiredQtyRow').style.display='none'; document.getElementById('desiredQtyDivider').style.display='none'; };
+
+window.calcDesiredAmount = ()=>{
+    let desiredQty = parseFloat(document.getElementById('pgDesiredQty').value);
+    let perUnitText = document.getElementById('pgResultPerUnit').innerText.replace('₹','');
+    let perUnit = parseFloat(perUnitText);
+    let unit = document.getElementById('pgUnit').value;
+    
+    if(isNaN(desiredQty) || desiredQty <= 0 || isNaN(perUnit)) {
+        document.getElementById('desiredQtyRow').style.display='none';
+        document.getElementById('desiredQtyDivider').style.display='none';
+        return;
+    }
+    
+    let desiredQtyInGrams = unit==='kg' ? desiredQty*1000 : desiredQty;
+    let finalAmount = perUnit * desiredQtyInGrams;
+    
+    let qtyDisplay = desiredQty + ' ' + (unit==='kg'?'kg':unit==='piece'?(desiredQty===1?'piece':'pieces'):'g');
+    
+    document.getElementById('desiredQtyLabel').innerText = 'For ' + qtyDisplay;
+    document.getElementById('desiredQtyAmount').innerText = '₹' + finalAmount.toFixed(2);
+    document.getElementById('desiredQtyRow').style.display='flex';
+    document.getElementById('desiredQtyDivider').style.display='block';
+};
 
 // ---------- DISCOUNT WITH HISTORY ----------
 let discountMode = 'percent';
@@ -1125,9 +1159,12 @@ const tooltipPortal = document.createElement('div');
 tooltipPortal.id = 'tooltip-portal';
 document.body.appendChild(tooltipPortal);
 let _activeTooltipBox = null;
+let _tooltipTimeout = null;
 
 // GLOBAL — called by other dialogs + ESC + closeAllDialogs
 window.hideAllTooltips = function() {
+    if (_tooltipTimeout) clearTimeout(_tooltipTimeout);
+    _tooltipTimeout = null;
     tooltipPortal.innerHTML = '';
     _activeTooltipBox = null;
 };
@@ -1155,7 +1192,7 @@ function showTooltip(icon) {
         const boxH = box.offsetHeight;
         const vw = window.innerWidth;
         const vh = window.innerHeight;
-        const gap = 10;
+        const gap = 6;
 
         // Horizontal: center on icon, clamp inside viewport with 8px padding
         let left = iconRect.left + iconRect.width / 2 - boxW / 2;
@@ -1178,6 +1215,10 @@ function showTooltip(icon) {
             box.style.visibility = '';
             box.style.opacity = '';
             box.classList.add('visible');
+            
+            _tooltipTimeout = setTimeout(() => {
+                hideAllTooltips();
+            }, 4000);
         });
     });
 }
@@ -1336,7 +1377,7 @@ renderComparison();
 window.shareHistoryItem = function(btn) {
     const historyItem = btn.closest('.history-item');
     const shareText = decodeURIComponent(historyItem.getAttribute('data-share') || '');
-    const copyText = shareText + '\n\n— Shared via Calc Suite';
+    const copyText = shareText + '\n\n— Shared via CalcDeck';
     navigator.clipboard.writeText(copyText).then(() => {
         btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Copied!';
         setTimeout(() => { btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.59 13.51l6.83 3.98M15.41 6.51l-6.82 3.98"/></svg> Copy'; }, 1500);
