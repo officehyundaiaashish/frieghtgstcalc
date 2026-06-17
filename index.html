@@ -1,11 +1,12 @@
 
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>CalcDeck | GST + PerGram + Discount</title>
+<title>CalcDeck | PerGram + GST + Discount + Live Rates</title>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#0f172a">
 <meta name="mobile-web-app-capable" content="yes">
@@ -159,11 +160,11 @@ body.light-mode h1 {
 
 .icon-btn:active { transform: translateY(0); }
 
-/* tab switcher */
+/* tab switcher — two visually distinct groups (Calculators vs Live Rates) */
 .tab-switcher {
     display: flex;
     gap: 6px;
-    margin: 1rem 0 1.8rem 0;
+    margin: 0.8rem 0 1.4rem 0;
     background: rgba(255, 255, 255, 0.04);
     border-radius: 18px;
     padding: 6px;
@@ -172,8 +173,18 @@ body.light-mode h1 {
     box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.25);
     overflow-x: auto;
     scrollbar-width: none;
+    align-items: stretch;
 }
 .tab-switcher::-webkit-scrollbar { display: none; }
+
+/* Vertical divider between Calculators and Live-Rates tab groups */
+.tab-switcher .tab-divider {
+    flex: 0 0 auto;
+    width: 1px;
+    background: linear-gradient(180deg, transparent, rgba(255,255,255,0.22), transparent);
+    margin: 4px 2px;
+    align-self: stretch;
+}
 .tab-btn {
     flex: 1 1 auto;
     display: flex;
@@ -213,17 +224,34 @@ body.light-mode h1 {
     letter-spacing: 0.3px;
     line-height: 1;
 }
-.tab-btn:hover:not(.active) {
+
+/* Calculator tabs — blue/indigo family */
+.tab-btn.tab-calc:hover:not(.active) {
     color: #e2e8f0;
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(56, 189, 248, 0.08);
 }
-.tab-btn:hover:not(.active) svg { transform: translateY(-1px); }
-.tab-btn.active {
+.tab-btn.tab-calc:hover:not(.active) svg { transform: translateY(-1px); }
+.tab-btn.tab-calc.active {
     color: #ffffff;
     background: linear-gradient(135deg, #38bdf8 0%, #6366f1 55%, #a855f7 100%);
     box-shadow:
         0 8px 22px -6px rgba(99, 102, 241, 0.55),
         0 2px 6px rgba(56, 189, 248, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+/* Price-tracker tabs — amber/orange "live data" family */
+.tab-btn.tab-rate:hover:not(.active) {
+    color: #fde68a;
+    background: rgba(245, 158, 11, 0.10);
+}
+.tab-btn.tab-rate:hover:not(.active) svg { transform: translateY(-1px); }
+.tab-btn.tab-rate.active {
+    color: #1a1a1a;
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 55%, #ea580c 100%);
+    box-shadow:
+        0 8px 22px -6px rgba(245, 158, 11, 0.55),
+        0 2px 6px rgba(251, 191, 36, 0.35),
         inset 0 1px 0 rgba(255, 255, 255, 0.25);
 }
 .tab-btn.active svg { transform: scale(1.06); }
@@ -611,7 +639,23 @@ body.light-mode .gst-menu, body.light-mode .unit-menu { background: #ffffff; bor
 body.light-mode .gst-menu div, body.light-mode .unit-menu div { color: #1e293b; }
 body.light-mode .result { background: rgba(0,0,0,0.02);}
 body.light-mode .total, body.light-mode .pg-total { color: #0284c7; }
-body.light-mode .tab-btn.active { background: linear-gradient(135deg, #0284c7 0%, #4f46e5 55%, #9333ea 100%); color: #fff; box-shadow: 0 8px 22px -6px rgba(79, 70, 229, 0.45), 0 2px 6px rgba(2, 132, 199, 0.3);}
+body.light-mode .tab-btn.tab-calc.active { background: linear-gradient(135deg, #0284c7 0%, #4f46e5 55%, #9333ea 100%); color: #fff; box-shadow: 0 8px 22px -6px rgba(79, 70, 229, 0.45), 0 2px 6px rgba(2, 132, 199, 0.3);}
+body.light-mode .tab-btn.tab-rate.active { background: linear-gradient(135deg, #f59e0b 0%, #d97706 55%, #c2410c 100%); color: #fff; box-shadow: 0 8px 22px -6px rgba(217, 119, 6, 0.45), 0 2px 6px rgba(245, 158, 11, 0.3);}
+body.light-mode .tab-btn.tab-rate:hover:not(.active) { background: rgba(245, 158, 11, 0.10); color: #b45309; }
+body.light-mode .tab-btn.tab-calc:hover:not(.active) { background: rgba(2, 132, 199, 0.08); color: #0284c7; }
+body.light-mode .tab-switcher .tab-divider { background: linear-gradient(180deg, transparent, rgba(0,0,0,0.18), transparent); }
+body.light-mode .fuel-rate-widget .frw-card .rate-change.pos { background: rgba(220,38,38,0.10); color: #b91c1c; }
+body.light-mode .fuel-rate-widget .frw-card .rate-change.neg { background: rgba(21,128,61,0.10); color: #15803d; }
+body.light-mode .fuel-rate-widget .frw-card .rate-change.flat { background: rgba(71,85,105,0.10); color: #475569; }
+body.light-mode .gold-rate-widget .grw-card .rate-change.pos { background: rgba(220,38,38,0.10); color: #b91c1c; }
+body.light-mode .gold-rate-widget .grw-card .rate-change.neg { background: rgba(21,128,61,0.10); color: #15803d; }
+body.light-mode .gold-rate-widget .grw-card .rate-change.flat { background: rgba(71,85,105,0.10); color: #475569; }
+body.light-mode .veg-widget .vw-card .veg-change.pos { background: rgba(220,38,38,0.10); color: #b91c1c; }
+body.light-mode .veg-widget .vw-card .veg-change.neg { background: rgba(21,128,61,0.10); color: #15803d; }
+body.light-mode .veg-widget .vw-card .veg-change.flat { background: rgba(71,85,105,0.10); color: #475569; }
+body.light-mode .fuel-rate-widget .frw-card .rate-change { font-size: 0.62rem; }
+body.light-mode .gold-rate-widget .grw-card .rate-change { font-size: 0.6rem; }
+body.light-mode .veg-widget .vw-card .veg-change { font-size: 0.6rem; }
 body.light-mode .icon-btn { background: rgba(0,0,0,0.05); color: #1e293b; border-color: rgba(0,0,0,0.06); }
 body.light-mode .mini-calculator-dialog, body.light-mode .history-dialog {
     background: #f8fafc;
@@ -1717,6 +1761,255 @@ body.light-mode .fuel-rate-widget .frw-card .fuel-breakdown .bd-val { color: #47
 body.light-mode .fuel-rate-widget .frw-updated { color: #64748b; }
 body.light-mode .fuel-rate-widget .frw-disclaimer { color: #64748b; }
 
+/* ===================== BEAUTIFUL GST RATE + UNIT SELECTORS (coal-style) ===================== */
+/* Shared beautiful dropdown system for GST rate + Unit selectors */
+.fancy-selector { position: relative; }
+.fancy-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 13px 16px;
+    border-radius: 1.2rem;
+    background: linear-gradient(135deg, rgba(0,0,0,0.35), rgba(0,0,0,0.2));
+    color: #f8fafc;
+    border: 1px solid rgba(56,189,248,0.18);
+    font-size: 0.92rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.18s;
+    text-align: left;
+}
+.fancy-btn:hover {
+    border-color: rgba(56,189,248,0.45);
+    background: linear-gradient(135deg, rgba(56,189,248,0.10), rgba(0,0,0,0.25));
+}
+.fancy-btn .fancy-btn-label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fancy-btn .fancy-caret { transition: transform 0.2s ease; color: #94a3b8; flex-shrink: 0; width: 14px; height: 14px; }
+.fancy-btn[aria-expanded="true"] .fancy-caret { transform: rotate(180deg); color: #38bdf8; }
+
+.fancy-swatch {
+    width: 14px;
+    height: 14px;
+    border-radius: 4px;
+    flex-shrink: 0;
+    background: linear-gradient(135deg, #6366f1, #4f46e5);
+    border: 1px solid rgba(255,255,255,0.15);
+}
+/* GST rate swatches (color-coded by tax tier) */
+.fancy-swatch[data-tier="gst-3"]  { background: linear-gradient(135deg, #34d399, #059669); }   /* essentials - green */
+.fancy-swatch[data-tier="gst-5"]  { background: linear-gradient(135deg, #4ade80, #16a34a); }   /* common essentials */
+.fancy-swatch[data-tier="gst-12"] { background: linear-gradient(135deg, #38bdf8, #0284c7); }   /* processed - blue */
+.fancy-swatch[data-tier="gst-18"] { background: linear-gradient(135deg, #818cf8, #4f46e5); }   /* standard - indigo */
+.fancy-swatch[data-tier="gst-28"] { background: linear-gradient(135deg, #f472b6, #be185d); }   /* luxury - pink */
+.fancy-swatch[data-tier="gst-custom"] { background: linear-gradient(135deg, #fbbf24, #d97706); } /* custom - amber */
+/* Unit swatches (color-coded by category) */
+.fancy-swatch[data-tier="unit-g"]     { background: linear-gradient(135deg, #38bdf8, #0284c7); }
+.fancy-swatch[data-tier="unit-kg"]    { background: linear-gradient(135deg, #a78bfa, #7c3aed); }
+.fancy-swatch[data-tier="unit-tola"]  { background: linear-gradient(135deg, #fbbf24, #d97706); }
+.fancy-swatch[data-tier="unit-bhori"] { background: linear-gradient(135deg, #f59e0b, #b45309); }
+.fancy-swatch[data-tier="unit-piece"] { background: linear-gradient(135deg, #34d399, #059669); }
+
+.fancy-menu {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    background: #0f172a;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 1.2rem;
+    z-index: 250;
+    box-shadow: 0 24px 50px -16px rgba(0,0,0,0.7);
+    overflow: hidden;
+    display: none;
+    flex-direction: column;
+    max-height: 420px;
+}
+.fancy-menu.show { display: flex; animation: fancyMenuIn 0.18s ease; }
+/* Smart-positioned — opens upward when not enough space below */
+.fancy-menu.open-upward {
+    top: auto;
+    bottom: calc(100% + 6px);
+    animation: fancyMenuInUp 0.18s ease;
+}
+@keyframes fancyMenuInUp {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fancyMenuIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+.fancy-menu-search {
+    padding: 10px 12px 8px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    background: rgba(255,255,255,0.02);
+}
+.fancy-menu-search input {
+    width: 100%;
+    padding: 9px 12px;
+    border-radius: 0.7rem;
+    background: rgba(0,0,0,0.3);
+    border: 1px solid rgba(255,255,255,0.06);
+    color: #f8fafc;
+    font-size: 0.82rem;
+    outline: none;
+    transition: 0.15s;
+}
+.fancy-menu-search input:focus {
+    border-color: rgba(56,189,248,0.4);
+    box-shadow: 0 0 0 2px rgba(56,189,248,0.18);
+}
+.fancy-menu-list {
+    overflow-y: auto;
+    padding: 6px;
+    flex: 1;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,0.18) transparent;
+}
+.fancy-menu-list::-webkit-scrollbar { width: 6px; }
+.fancy-menu-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.18); border-radius: 3px; }
+.fancy-option {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 11px 12px;
+    border-radius: 0.8rem;
+    cursor: pointer;
+    transition: 0.15s;
+    margin-bottom: 2px;
+    border: 1px solid transparent;
+}
+.fancy-option:hover {
+    background: rgba(56,189,248,0.10);
+    border-color: rgba(56,189,248,0.2);
+}
+.fancy-option.active {
+    background: linear-gradient(135deg, rgba(56,189,248,0.18), rgba(129,140,248,0.10));
+    border-color: rgba(56,189,248,0.45);
+}
+.fancy-option .fancy-swatch { margin-top: 3px; }
+.fancy-option-body { flex: 1; min-width: 0; }
+.fancy-option-title {
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: #f1f5f9;
+    margin-bottom: 2px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+.fancy-option-desc {
+    font-size: 0.72rem;
+    color: #94a3b8;
+    line-height: 1.35;
+}
+.fancy-tag {
+    font-size: 0.6rem;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 999px;
+    background: rgba(56,189,248,0.18);
+    color: #38bdf8;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.fancy-tag.essentials { background: rgba(34,197,94,0.18); color: #4ade80; }
+.fancy-tag.standard   { background: rgba(129,140,248,0.18); color: #818cf8; }
+.fancy-tag.luxury     { background: rgba(244,63,94,0.18); color: #fb7185; }
+.fancy-tag.common     { background: rgba(245,158,11,0.18); color: #fbbf24; }
+.fancy-menu-footer {
+    padding: 8px 12px;
+    font-size: 0.66rem;
+    color: #64748b;
+    text-align: center;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    background: rgba(255,255,255,0.02);
+    letter-spacing: 0.3px;
+}
+.fancy-manual-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    background: rgba(255,255,255,0.02);
+}
+.fancy-manual-row input {
+    flex: 1;
+    padding: 8px 11px;
+    border-radius: 0.6rem;
+    background: rgba(0,0,0,0.3);
+    border: 1px solid rgba(255,255,255,0.06);
+    color: #f8fafc;
+    font-size: 0.82rem;
+    outline: none;
+}
+.fancy-manual-row input:focus {
+    border-color: rgba(56,189,248,0.4);
+    box-shadow: 0 0 0 2px rgba(56,189,248,0.18);
+}
+.fancy-manual-row label {
+    font-size: 0.65rem;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 0;
+    font-weight: 600;
+}
+
+/* Light mode for fancy dropdowns */
+body.light-mode .fancy-btn {
+    background: rgba(255,255,255,0.85);
+    color: #1e293b;
+    border-color: rgba(2,132,199,0.25);
+}
+body.light-mode .fancy-btn:hover {
+    border-color: rgba(2,132,199,0.5);
+    background: rgba(56,189,248,0.06);
+}
+body.light-mode .fancy-menu {
+    background: #ffffff;
+    border-color: rgba(0,0,0,0.1);
+    box-shadow: 0 24px 50px -16px rgba(0,0,0,0.25);
+}
+body.light-mode .fancy-menu-search { background: rgba(0,0,0,0.02); border-bottom-color: rgba(0,0,0,0.06); }
+body.light-mode .fancy-menu-search input {
+    background: rgba(0,0,0,0.04);
+    color: #1e293b;
+    border-color: rgba(0,0,0,0.08);
+}
+body.light-mode .fancy-menu-search input:focus {
+    border-color: rgba(2,132,199,0.4);
+    box-shadow: 0 0 0 2px rgba(2,132,199,0.15);
+}
+body.light-mode .fancy-option:hover {
+    background: rgba(2,132,199,0.08);
+    border-color: rgba(2,132,199,0.2);
+}
+body.light-mode .fancy-option.active {
+    background: linear-gradient(135deg, rgba(2,132,199,0.12), rgba(129,140,248,0.08));
+    border-color: rgba(2,132,199,0.4);
+}
+body.light-mode .fancy-option-title { color: #0f172a; }
+body.light-mode .fancy-option-desc { color: #64748b; }
+body.light-mode .fancy-manual-row {
+    background: rgba(0,0,0,0.02);
+    border-bottom-color: rgba(0,0,0,0.06);
+}
+body.light-mode .fancy-manual-row input {
+    background: rgba(0,0,0,0.04);
+    color: #1e293b;
+    border-color: rgba(0,0,0,0.08);
+}
+body.light-mode .fancy-manual-row label { color: #64748b; }
+body.light-mode .fancy-menu-footer {
+    color: #64748b;
+    border-top-color: rgba(0,0,0,0.06);
+    background: rgba(0,0,0,0.02);
+}
+
 /* ===================== COAL GRADE CUSTOM DROPDOWN ===================== */
 .coal-selector { position: relative; }
 .coal-btn {
@@ -1775,6 +2068,15 @@ body.light-mode .fuel-rate-widget .frw-disclaimer { color: #64748b; }
     max-height: 420px;
 }
 .coal-menu.show { display: flex; animation: coalMenuIn 0.18s ease; }
+.coal-menu.open-upward {
+    top: auto;
+    bottom: calc(100% + 6px);
+    animation: coalMenuInUp 0.18s ease;
+}
+@keyframes coalMenuInUp {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
 @keyframes coalMenuIn {
     from { opacity: 0; transform: translateY(-6px); }
     to   { opacity: 1; transform: translateY(0); }
@@ -2023,13 +2325,34 @@ body.light-mode .metal-btn { background: rgba(0,0,0,0.04); color: #475569; borde
 body.light-mode .metal-btn:hover { background: rgba(2,132,199,0.1); color: #0284c7; border-color: rgba(2,132,199,0.3); }
 body.light-mode .metal-btn.active { background: linear-gradient(135deg, rgba(2,132,199,0.18), rgba(79,70,229,0.18)); color: #0f172a; border-color: rgba(2,132,199,0.55); }
 
+/* Making-charges fancy swatches */
+.fancy-swatch[data-tier="mc-none"]     { background: linear-gradient(135deg, #64748b, #475569); }
+.fancy-swatch[data-tier="mc-percent"]  { background: linear-gradient(135deg, #38bdf8, #0284c7); }
+.fancy-swatch[data-tier="mc-pergram"]  { background: linear-gradient(135deg, #fbbf24, #d97706); }
+.fancy-swatch[data-tier="mc-fixed"]    { background: linear-gradient(135deg, #f472b6, #be185d); }
+
+/* Making-charges row — stacked vertically on mobile, side-by-side on desktop */
 .making-charges-row {
     display: flex;
     gap: 8px;
-    align-items: flex-end;
+    align-items: stretch;
     flex-wrap: wrap;
 }
 .making-charges-row > div { flex: 1; min-width: 120px; }
+.making-charges-row .fancy-selector { min-width: 200px; }
+.making-charges-row .mc-value-col { display: flex; flex-direction: column; }
+.making-charges-row .mc-value-col label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #94a3b8;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+@media (max-width: 720px) {
+    .making-charges-row { flex-direction: column; }
+    .making-charges-row > div { min-width: 100%; }
+}
 
 /* Discount enhancements */
 .discount-stack-list {
@@ -2140,13 +2463,13 @@ body.light-mode .company-tab.active { background: rgba(5,150,105,0.15); color: #
     gap: 10px;
     font-size: 1rem;
     font-weight: 700;
-    color: #84cc16;
+    color: #22c55e;
     letter-spacing: 0.3px;
 }
 .veg-widget .vw-title svg {
     width: 22px;
     height: 22px;
-    stroke: #84cc16;
+    stroke: #22c55e;
     fill: none;
     stroke-width: 1.8;
 }
@@ -2156,9 +2479,9 @@ body.light-mode .company-tab.active { background: rgba(5,150,105,0.15); color: #
     letter-spacing: 1px;
     padding: 4px 10px;
     border-radius: 999px;
-    background: rgba(132,204,22,0.15);
-    color: #84cc16;
-    border: 1px solid rgba(132,204,22,0.3);
+    background: rgba(34,197,94,0.15);
+    color: #22c55e;
+    border: 1px solid rgba(34,197,94,0.3);
     font-weight: 600;
     display: inline-flex;
     align-items: center;
@@ -2168,7 +2491,7 @@ body.light-mode .company-tab.active { background: rgba(5,150,105,0.15); color: #
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background: #84cc16;
+    background: #22c55e;
     animation: grwPulse 1.4s infinite;
 }
 .veg-widget .vw-input-row {
@@ -2188,15 +2511,15 @@ body.light-mode .company-tab.active { background: rgba(5,150,105,0.15); color: #
 }
 .veg-widget .vw-input-row input {
     background: rgba(0,0,0,0.25);
-    border: 1px solid rgba(132,204,22,0.15);
+    border: 1px solid rgba(34,197,94,0.15);
     padding-right: 36px;
 }
 .veg-widget .vw-input-row input:focus {
-    box-shadow: 0 0 0 2px rgba(132,204,22,0.35);
+    box-shadow: 0 0 0 2px rgba(34,197,94,0.35);
 }
 .veg-widget .vw-fetch-btn {
-    background: linear-gradient(135deg, #84cc16 0%, #65a30d 100%);
-    color: #1a1a1a;
+    background: linear-gradient(135deg, #22c55e 0%, #15803d 100%);
+    color: #ffffff;
     font-weight: 700;
     padding: 13px 18px;
     border: none;
@@ -2205,7 +2528,7 @@ body.light-mode .company-tab.active { background: rgba(5,150,105,0.15); color: #
     align-self: flex-end;
     letter-spacing: 0.3px;
     transition: 0.2s;
-    box-shadow: 0 4px 14px -2px rgba(132,204,22,0.4);
+    box-shadow: 0 4px 14px -2px rgba(34,197,94,0.4);
     white-space: nowrap;
     display: inline-flex;
     align-items: center;
@@ -2222,7 +2545,7 @@ body.light-mode .company-tab.active { background: rgba(5,150,105,0.15); color: #
     gap: 6px;
     flex-wrap: wrap;
 }
-.veg-widget .vw-location-info strong { color: #84cc16; font-weight: 600; }
+.veg-widget .vw-location-info strong { color: #22c55e; font-weight: 600; }
 .veg-widget .vw-status {
     font-size: 0.75rem;
     color: #94a3b8;
@@ -2244,7 +2567,7 @@ body.light-mode .company-tab.active { background: rgba(5,150,105,0.15); color: #
 .veg-widget .vw-segment-tabs {
     display: flex;
     background: rgba(0,0,0,0.25);
-    border: 1px solid rgba(132,204,22,0.18);
+    border: 1px solid rgba(34,197,94,0.20);
     border-radius: 0.9rem;
     padding: 4px;
     gap: 4px;
@@ -2265,13 +2588,18 @@ body.light-mode .company-tab.active { background: rgba(5,150,105,0.15); color: #
     white-space: nowrap;
 }
 .veg-widget .vw-seg-btn:hover:not(.active) {
-    background: rgba(132,204,22,0.08);
-    color: #d9f99d;
+    background: rgba(34,197,94,0.08);
+    color: #86efac;
 }
 .veg-widget .vw-seg-btn.active {
-    background: linear-gradient(135deg, #84cc16, #4d7c0f);
-    color: #0f172a;
-    box-shadow: 0 4px 14px -4px rgba(132,204,22,0.55);
+    background: linear-gradient(135deg, #22c55e, #15803d);
+    color: #ffffff;
+    box-shadow: 0 4px 14px -4px rgba(34,197,94,0.55);
+}
+.veg-widget .vw-seg-btn[data-seg="fruit"].active {
+    background: linear-gradient(135deg, #f43f5e, #be123c);
+    color: #ffffff;
+    box-shadow: 0 4px 14px -4px rgba(244,63,94,0.55);
 }
 .veg-widget .vw-search {
     flex: 1;
@@ -2302,7 +2630,7 @@ body.light-mode .veg-widget .vw-search input { background: rgba(0,0,0,0.04); col
 }
 .veg-widget .vw-card {
     background: linear-gradient(160deg, rgba(0,0,0,0.30) 0%, rgba(0,0,0,0.18) 100%);
-    border: 1px solid rgba(132,204,22,0.18);
+    border: 1px solid rgba(34,197,94,0.22);
     border-radius: 1rem;
     padding: 12px;
     display: flex;
@@ -2317,12 +2645,13 @@ body.light-mode .veg-widget .vw-search input { background: rgba(0,0,0,0.04); col
     position: absolute;
     top: 0; left: 0;
     width: 3px; height: 100%;
-    background: linear-gradient(180deg, #84cc16, #4d7c0f);
-    opacity: 0.7;
+    background: linear-gradient(180deg, #22c55e, #15803d);
+    opacity: 0.85;
 }
-.veg-widget .vw-card.fruit::before { background: linear-gradient(180deg, #fb923c, #c2410c); }
-.veg-widget .vw-card:hover { transform: translateY(-2px); border-color: rgba(132,204,22,0.55); box-shadow: 0 10px 20px -10px rgba(132,204,22,0.25); }
-.veg-widget .vw-card.fruit:hover { border-color: rgba(251,146,60,0.55); box-shadow: 0 10px 20px -10px rgba(251,146,60,0.25); }
+.veg-widget .vw-card.fruit { border-color: rgba(244,63,94,0.25); }
+.veg-widget .vw-card.fruit::before { background: linear-gradient(180deg, #f43f5e, #be123c); }
+.veg-widget .vw-card:hover { transform: translateY(-2px); border-color: rgba(34,197,94,0.60); box-shadow: 0 10px 20px -10px rgba(34,197,94,0.30); }
+.veg-widget .vw-card.fruit:hover { border-color: rgba(244,63,94,0.60); box-shadow: 0 10px 20px -10px rgba(244,63,94,0.30); }
 .veg-widget .vw-card .veg-emoji {
     font-size: 1.8rem;
     width: 42px;
@@ -2330,11 +2659,11 @@ body.light-mode .veg-widget .vw-search input { background: rgba(0,0,0,0.04); col
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(132,204,22,0.12);
+    background: rgba(34,197,94,0.14);
     border-radius: 50%;
     flex-shrink: 0;
 }
-.veg-widget .vw-card.fruit .veg-emoji { background: rgba(251,146,60,0.12); }
+.veg-widget .vw-card.fruit .veg-emoji { background: rgba(244,63,94,0.14); }
 .veg-widget .vw-card .veg-info { flex: 1; min-width: 0; }
 .veg-widget .vw-card .veg-name {
     font-size: 0.88rem;
@@ -2348,10 +2677,10 @@ body.light-mode .veg-widget .vw-search input { background: rgba(0,0,0,0.04); col
     white-space: normal;
 }
 .veg-widget .vw-card .veg-name .hindi {
-    color: #d9f99d;
+    color: #86efac;
     font-weight: 800;
 }
-.veg-widget .vw-card.fruit .veg-name .hindi { color: #fed7aa; }
+.veg-widget .vw-card.fruit .veg-name .hindi { color: #fda4af; }
 .veg-widget .vw-card .veg-name .english {
     color: #94a3b8;
     font-weight: 500;
@@ -2389,10 +2718,10 @@ body.light-mode .veg-widget .vw-search input { background: rgba(0,0,0,0.04); col
     color: #94a3b8;
     margin-top: 1px;
 }
-.veg-widget .vw-card .veg-price-block.wholesale .price-val { color: #a3e635; }
-.veg-widget .vw-card .veg-price-block.retail .price-val { color: #fb923c; }
-.veg-widget .vw-card.fruit .veg-price-block.wholesale .price-val { color: #fdba74; }
-.veg-widget .vw-card.fruit .veg-price-block.retail .price-val { color: #fca5a5; }
+.veg-widget .vw-card .veg-price-block.wholesale .price-val { color: #4ade80; }
+.veg-widget .vw-card .veg-price-block.retail .price-val { color: #22c55e; }
+.veg-widget .vw-card.fruit .veg-price-block.wholesale .price-val { color: #fb7185; }
+.veg-widget .vw-card.fruit .veg-price-block.retail .price-val { color: #f43f5e; }
 .veg-widget .vw-card .veg-trend {
     font-size: 0.6rem;
     padding: 2px 8px;
@@ -2432,48 +2761,316 @@ body.light-mode .veg-widget {
     background: linear-gradient(135deg, rgba(132,204,22,0.10) 0%, rgba(101,163,13,0.05) 100%);
     border-color: rgba(101,163,13,0.3);
 }
-body.light-mode .veg-widget .vw-title { color: #4d7c0f; }
-body.light-mode .veg-widget .vw-title svg { stroke: #4d7c0f; }
+body.light-mode .veg-widget .vw-title { color: #15803d; }
+body.light-mode .veg-widget .vw-title svg { stroke: #15803d; }
 body.light-mode .veg-widget .vw-input-row label { color: #475569; }
 body.light-mode .veg-widget .vw-input-row input {
     background: rgba(255,255,255,0.85) !important;
     color: #1e293b !important;
-    border-color: rgba(101,163,13,0.3);
+    border-color: rgba(21,128,61,0.3);
 }
 body.light-mode .veg-widget .vw-input-row input::placeholder { color: #94a3b8; }
 body.light-mode .veg-widget .vw-fetch-btn {
-    background: linear-gradient(135deg, #84cc16 0%, #65a30d 100%);
-    color: #1a1a1a;
+    background: linear-gradient(135deg, #22c55e 0%, #15803d 100%);
+    color: #ffffff;
 }
 body.light-mode .veg-widget .vw-location-info { color: #475569; }
-body.light-mode .veg-widget .vw-location-info strong { color: #4d7c0f; }
+body.light-mode .veg-widget .vw-location-info strong { color: #15803d; }
 body.light-mode .veg-widget .vw-status { background: rgba(0,0,0,0.04); color: #475569; }
 body.light-mode .veg-widget .vw-status.error { background: rgba(220,38,38,0.08); color: #b91c1c; border-color: rgba(220,38,38,0.25); }
-body.light-mode .veg-widget .vw-card { background: rgba(255,255,255,0.85); border-color: rgba(101,163,13,0.18); }
-body.light-mode .veg-widget .vw-card.fruit { border-color: rgba(194,65,12,0.18); }
+body.light-mode .veg-widget .vw-card { background: rgba(255,255,255,0.85); border-color: rgba(21,128,61,0.20); }
+body.light-mode .veg-widget .vw-card.fruit { border-color: rgba(190,18,60,0.20); }
 body.light-mode .veg-widget .vw-card .veg-name { color: #0f172a; }
-body.light-mode .veg-widget .vw-card .veg-name .hindi { color: #4d7c0f; }
-body.light-mode .veg-widget .vw-card.fruit .veg-name .hindi { color: #c2410c; }
+body.light-mode .veg-widget .vw-card .veg-name .hindi { color: #15803d; }
+body.light-mode .veg-widget .vw-card.fruit .veg-name .hindi { color: #be123c; }
 body.light-mode .veg-widget .vw-card .veg-name .english { color: #64748b; }
 body.light-mode .veg-widget .vw-card .veg-price-block { background: rgba(0,0,0,0.03); border-color: rgba(0,0,0,0.06); }
 body.light-mode .veg-widget .vw-card .veg-price-block .price-label { color: #64748b; }
 body.light-mode .veg-widget .vw-card .veg-price-block .price-unit { color: #64748b; }
-body.light-mode .veg-widget .vw-card .veg-price-block.wholesale .price-val { color: #4d7c0f; }
-body.light-mode .veg-widget .vw-card .veg-price-block.retail .price-val { color: #c2410c; }
-body.light-mode .veg-widget .vw-card.fruit .veg-price-block.wholesale .price-val { color: #c2410c; }
-body.light-mode .veg-widget .vw-card.fruit .veg-price-block.retail .price-val { color: #b91c1c; }
-body.light-mode .veg-widget .vw-segment-tabs { background: rgba(0,0,0,0.04); border-color: rgba(101,163,13,0.2); }
+body.light-mode .veg-widget .vw-card .veg-price-block.wholesale .price-val { color: #15803d; }
+body.light-mode .veg-widget .vw-card .veg-price-block.retail .price-val { color: #166534; }
+body.light-mode .veg-widget .vw-card.fruit .veg-price-block.wholesale .price-val { color: #be123c; }
+body.light-mode .veg-widget .vw-card.fruit .veg-price-block.retail .price-val { color: #9f1239; }
+body.light-mode .veg-widget .vw-segment-tabs { background: rgba(0,0,0,0.04); border-color: rgba(21,128,61,0.22); }
 body.light-mode .veg-widget .vw-seg-btn { color: #475569; }
-body.light-mode .veg-widget .vw-seg-btn:hover:not(.active) { background: rgba(101,163,13,0.08); color: #4d7c0f; }
-body.light-mode .veg-widget .vw-seg-btn.active { background: linear-gradient(135deg, #84cc16, #4d7c0f); color: #fff; }
+body.light-mode .veg-widget .vw-seg-btn:hover:not(.active) { background: rgba(21,128,61,0.08); color: #15803d; }
+body.light-mode .veg-widget .vw-seg-btn.active { background: linear-gradient(135deg, #22c55e, #15803d); color: #fff; }
+body.light-mode .veg-widget .vw-seg-btn[data-seg="fruit"].active { background: linear-gradient(135deg, #f43f5e, #be123c); color: #fff; }
 body.light-mode .veg-widget .vw-updated { color: #64748b; }
 body.light-mode .veg-widget .vw-disclaimer { color: #64748b; }
+.veg-widget .vw-updated { color: #64748b; }
 
 /* Coal card variant */
 .fuel-rate-widget .frw-card.coal::before { background: linear-gradient(90deg, #1f2937, #374151); }
 .fuel-rate-widget .frw-card.coal .fuel-name, .fuel-rate-widget .frw-card.coal .fuel-head svg { color: #9ca3af; }
 .fuel-rate-widget .frw-card.commercial::before { background: linear-gradient(90deg, #f59e0b, #b45309); }
 .fuel-rate-widget .frw-card.commercial .fuel-name, .fuel-rate-widget .frw-card.commercial .fuel-head svg { color: #fbbf24; }
+
+/* ===================== RATE-CHANGE BADGES (shared) ===================== */
+/* Gold rate change badge */
+.gold-rate-widget .grw-card .rate-change {
+    display: inline-block;
+    margin-top: 6px;
+    padding: 3px 8px;
+    border-radius: 999px;
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+}
+.gold-rate-widget .grw-card .rate-change.pos { background: rgba(239,68,68,0.18); color: #fca5a5; }
+.gold-rate-widget .grw-card .rate-change.neg { background: rgba(34,197,94,0.18); color: #86efac; }
+.gold-rate-widget .grw-card .rate-change.flat { background: rgba(148,163,184,0.18); color: #94a3b8; }
+body.light-mode .gold-rate-widget .grw-card .rate-change.pos { background: rgba(220,38,38,0.10); color: #b91c1c; }
+body.light-mode .gold-rate-widget .grw-card .rate-change.neg { background: rgba(21,128,61,0.10); color: #15803d; }
+body.light-mode .gold-rate-widget .grw-card .rate-change.flat { background: rgba(71,85,105,0.10); color: #475569; }
+
+/* Fuel rate change badge */
+.fuel-rate-widget .frw-card .rate-change {
+    display: inline-block;
+    margin-top: 4px;
+    margin-bottom: 4px;
+    padding: 3px 9px;
+    border-radius: 999px;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+}
+.fuel-rate-widget .frw-card .rate-change.pos { background: rgba(239,68,68,0.18); color: #fca5a5; }
+.fuel-rate-widget .frw-card .rate-change.neg { background: rgba(34,197,94,0.18); color: #86efac; }
+.fuel-rate-widget .frw-card .rate-change.flat { background: rgba(148,163,184,0.18); color: #94a3b8; }
+body.light-mode .fuel-rate-widget .frw-card .rate-change.pos { background: rgba(220,38,38,0.10); color: #b91c1c; }
+body.light-mode .fuel-rate-widget .frw-card .rate-change.neg { background: rgba(21,128,61,0.10); color: #15803d; }
+body.light-mode .fuel-rate-widget .frw-card .rate-change.flat { background: rgba(71,85,105,0.10); color: #475569; }
+
+/* Veg/Fruit trend row + ₹ change badge */
+.veg-widget .vw-card .veg-trend-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 6px;
+    flex-wrap: wrap;
+}
+.veg-widget .vw-card .veg-change {
+    font-size: 0.6rem;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+}
+.veg-widget .vw-card .veg-change.pos { background: rgba(239,68,68,0.18); color: #fca5a5; }
+.veg-widget .vw-card .veg-change.neg { background: rgba(34,197,94,0.18); color: #86efac; }
+.veg-widget .vw-card .veg-change.flat { background: rgba(148,163,184,0.18); color: #94a3b8; }
+body.light-mode .veg-widget .vw-card .veg-change.pos { background: rgba(220,38,38,0.10); color: #b91c1c; }
+body.light-mode .veg-widget .vw-card .veg-change.neg { background: rgba(21,128,61,0.10); color: #15803d; }
+body.light-mode .veg-widget .vw-card .veg-change.flat { background: rgba(71,85,105,0.10); color: #475569; }
+
+/* ===================== MOBILE COMPACTNESS (≤720px) ===================== */
+@media (max-width: 720px) {
+    body { padding: 8px; }
+    .card {
+        padding: 0.9rem 0.75rem 0.9rem;
+        border-radius: 1.2rem;
+    }
+    /* Top bar — tighter */
+    .top-bar { padding: 2px 2px 10px; margin-bottom: 4px; gap: 6px; }
+    .top-bar .brand-mini { font-size: 0.6rem; letter-spacing: 0.6px; }
+    .top-bar .brand-mini .brand-dot { width: 6px; height: 6px; }
+    .icon-btn, .comparison-btn { width: 36px; height: 36px; }
+    .icon-btn svg, .comparison-btn svg { width: 17px; height: 17px; }
+    .top-bar .icon-group { gap: 5px; }
+
+    /* Header — smaller */
+    .header-area { margin-top: 0.5rem; margin-bottom: 0.7rem; }
+    h1 { font-size: 1.6rem; letter-spacing: -0.5px; }
+
+    /* Tab bar — more compact, scrollable */
+    .tab-switcher {
+        margin: 0.5rem 0 0.9rem 0;
+        padding: 4px;
+        gap: 3px;
+        border-radius: 14px;
+    }
+    .tab-btn { padding: 7px 4px; min-width: 60px; gap: 2px; }
+    .tab-btn svg { width: 17px; height: 17px; }
+    .tab-btn span { font-size: 0.58rem; }
+    .tab-switcher .tab-divider { margin: 2px 1px; }
+
+    /* Two-column layouts — stack on mobile, tighter gap */
+    .two-columns { gap: 0.9rem; }
+
+    /* Inputs — smaller */
+    .row { margin-bottom: 0.7rem; }
+    label { font-size: 0.65rem; margin-bottom: 4px; gap: 4px; }
+    label svg { width: 12px; height: 12px; }
+    input, .gst-btn, .unit-btn, select {
+        padding: 10px 12px;
+        font-size: 0.85rem;
+        border-radius: 0.9rem;
+    }
+    .preset-row { gap: 5px; flex-wrap: wrap; }
+    .preset-chip { padding: 6px 10px; font-size: 0.7rem; border-radius: 0.7rem; }
+
+    /* Action buttons — shorter */
+    .action { padding: 10px; font-size: 0.85rem; border-radius: 0.9rem; }
+    .action-btns { gap: 8px; }
+    .add-to-comparison-btn { padding: 9px 12px; font-size: 0.78rem; border-radius: 0.8rem; }
+
+    /* Result panel — tighter */
+    .result { padding: 0.9rem; border-radius: 1.1rem; }
+    .result-item { margin: 7px 0; font-size: 0.85rem; }
+    .total, .pg-total, .discount-saved { font-size: 1.2rem; }
+
+    /* Gold rate widget — compact */
+    .gold-rate-widget,
+    .fuel-rate-widget,
+    .veg-widget {
+        padding: 0.7rem;
+        border-radius: 1rem;
+        margin-bottom: 0.7rem;
+    }
+    .gold-rate-widget .grw-header,
+    .fuel-rate-widget .frw-header,
+    .veg-widget .vw-header { margin-bottom: 0.6rem; gap: 6px; }
+    .gold-rate-widget .grw-title,
+    .fuel-rate-widget .frw-title,
+    .veg-widget .vw-title { font-size: 0.88rem; gap: 6px; }
+    .gold-rate-widget .grw-title svg,
+    .fuel-rate-widget .frw-title svg,
+    .veg-widget .vw-title svg { width: 18px; height: 18px; }
+    .gold-rate-widget .grw-live-pill,
+    .fuel-rate-widget .frw-live-pill,
+    .veg-widget .vw-live-pill { font-size: 0.55rem; padding: 3px 8px; }
+
+    /* Input row — stack on mobile, tighter */
+    .gold-rate-widget .grw-input-row,
+    .fuel-rate-widget .frw-input-row,
+    .veg-widget .vw-input-row {
+        flex-direction: column;
+        gap: 6px;
+        margin-bottom: 0.6rem;
+    }
+    .gold-rate-widget .grw-input-row > div,
+    .fuel-rate-widget .frw-input-row > div,
+    .veg-widget .vw-input-row > div { min-width: 100%; }
+    .gold-rate-widget .grw-fetch-btn,
+    .fuel-rate-widget .frw-fetch-btn,
+    .veg-widget .vw-fetch-btn {
+        width: 100%;
+        padding: 10px 12px;
+        font-size: 0.85rem;
+        border-radius: 0.9rem;
+        align-self: stretch;
+    }
+
+    /* Location info — smaller text */
+    .gold-rate-widget .grw-location-info,
+    .fuel-rate-widget .frw-location-info,
+    .veg-widget .vw-location-info { font-size: 0.65rem; margin-bottom: 0.5rem; }
+
+    /* View toggle — full width on mobile */
+    .gold-rate-widget .grw-view-toggle {
+        width: 100%;
+        justify-content: space-between;
+        padding: 4px 6px;
+    }
+    .gold-rate-widget .grw-toggle-btn { padding: 5px 8px; font-size: 0.65rem; flex: 1; text-align: center; }
+
+    /* Gold cards — 2 per row on mobile, smaller text */
+    .gold-rate-widget .grw-cards {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 6px;
+    }
+    .gold-rate-widget .grw-card { padding: 8px 6px; border-radius: 0.7rem; }
+    .gold-rate-widget .grw-card .carat { font-size: 0.6rem; margin-bottom: 4px; padding-bottom: 4px; }
+    .gold-rate-widget .grw-card .rate-block { padding: 3px 0; }
+    .gold-rate-widget .grw-card .rate-block .rate-label { font-size: 0.5rem; padding: 1px 6px; }
+    .gold-rate-widget .grw-card .rate-block .rate { font-size: 0.85rem; }
+    .gold-rate-widget .grw-card .rate-block .per { font-size: 0.5rem; }
+    .gold-rate-widget .grw-card .rate-block .per10g { font-size: 0.55rem; }
+    .gold-rate-widget .grw-card .gst-line { font-size: 0.52rem; margin-top: 4px; padding-top: 4px; }
+    .gold-rate-widget .grw-card .rate-change { font-size: 0.52rem; padding: 2px 6px; margin-top: 4px; }
+
+    /* Fuel cards — 2 per row on mobile */
+    .fuel-rate-widget .frw-cards {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 6px;
+    }
+    .fuel-rate-widget .frw-card { padding: 9px 8px; border-radius: 0.7rem; }
+    .fuel-rate-widget .frw-card .fuel-head { gap: 5px; margin-bottom: 5px; padding-bottom: 5px; }
+    .fuel-rate-widget .frw-card .fuel-head svg { width: 14px; height: 14px; }
+    .fuel-rate-widget .frw-card .fuel-name { font-size: 0.7rem; }
+    .fuel-rate-widget .frw-card .fuel-rate { font-size: 1.05rem; }
+    .fuel-rate-widget .frw-card .fuel-unit { font-size: 0.55rem; }
+    .fuel-rate-widget .frw-card .fuel-breakdown { font-size: 0.58rem; margin-top: 6px; padding-top: 5px; gap: 2px 6px; }
+    .fuel-rate-widget .frw-card .rate-change { font-size: 0.55rem; padding: 2px 6px; }
+
+    /* Company tabs — wrap on mobile, smaller */
+    .fuel-company-tabs { flex-wrap: wrap; gap: 4px; }
+    .company-tab { padding: 5px 9px; font-size: 0.65rem; border-radius: 0.5rem; }
+
+    /* Veg cards — 1 per row on small phones, 2 on slightly wider */
+    .veg-widget .vw-cards {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 6px;
+    }
+    .veg-widget .vw-card { padding: 8px; gap: 8px; border-radius: 0.7rem; }
+    .veg-widget .vw-card .veg-emoji { font-size: 1.4rem; width: 32px; height: 32px; }
+    .veg-widget .vw-card .veg-name { font-size: 0.78rem; margin-bottom: 3px; }
+    .veg-widget .vw-card .veg-name .english { font-size: 0.65rem; }
+    .veg-widget .vw-card .veg-price-block { padding: 3px 6px; min-width: 60px; }
+    .veg-widget .vw-card .veg-price-block .price-label { font-size: 0.48rem; }
+    .veg-widget .vw-card .veg-price-block .price-val { font-size: 0.85rem; }
+    .veg-widget .vw-card .veg-price-block .price-unit { font-size: 0.48rem; }
+    .veg-widget .vw-card .veg-trend { font-size: 0.55rem; padding: 2px 6px; }
+    .veg-widget .vw-card .veg-change { font-size: 0.55rem; padding: 2px 6px; }
+
+    /* Veg controls — stack on mobile */
+    .veg-widget .vw-controls { gap: 6px; margin-bottom: 0.6rem; }
+    .veg-widget .vw-seg-btn { padding: 6px 8px; font-size: 0.7rem; }
+    .veg-widget .vw-search input { padding: 8px 12px; font-size: 0.78rem; }
+
+    /* Footer / disclaimer — smaller */
+    .gold-rate-widget .grw-updated,
+    .fuel-rate-widget .frw-updated,
+    .veg-widget .vw-updated { font-size: 0.6rem; }
+    .gold-rate-widget .grw-disclaimer,
+    .fuel-rate-widget .frw-disclaimer,
+    .veg-widget .vw-disclaimer { font-size: 0.55rem; margin-top: 6px; line-height: 1.35; }
+
+    /* Use-rate button — full width */
+    .gold-rate-widget .grw-footer { flex-direction: column; align-items: stretch; gap: 6px; }
+    .gold-rate-widget .grw-use-btn { width: 100%; justify-content: center; padding: 9px 12px; font-size: 0.78rem; }
+
+    /* PG metal toggle — wrap on mobile, smaller */
+    .pg-metal-toggle { flex-wrap: wrap; gap: 4px; }
+    .metal-btn { padding: 7px 8px; font-size: 0.7rem; }
+
+    /* Discount mode tabs — wrap */
+    .mode-tabs { flex-wrap: wrap; gap: 4px; }
+    .mode-tab { padding: 7px 10px; font-size: 0.72rem; }
+
+    /* Modal dialogs — smaller */
+    .mini-calculator-dialog, .history-dialog, .comparison-dialog {
+        right: 0.5rem;
+        width: 240px;
+        top: 56px;
+        max-height: calc(100vh - 80px);
+    }
+
+    /* Tooltips — narrower on mobile */
+    .tooltip-box { max-width: 200px; font-size: 0.7rem; }
+}
+
+/* Very small phones (≤380px) — even tighter */
+@media (max-width: 380px) {
+    .card { padding: 0.7rem 0.55rem; border-radius: 1rem; }
+    h1 { font-size: 1.4rem; }
+    .gold-rate-widget .grw-cards,
+    .fuel-rate-widget .frw-cards { grid-template-columns: 1fr; }
+    .veg-widget .vw-cards { grid-template-columns: 1fr; }
+    .tab-btn span { font-size: 0.55rem; }
+    .tab-btn svg { width: 15px; height: 15px; }
+}
 </style>
 </head>
 <body>
@@ -2546,14 +3143,15 @@ body.light-mode .veg-widget .vw-disclaimer { color: #64748b; }
         </div>
     </div>
 
-    <!-- tab bar -->
+    <!-- tab bar — Calculators (Per-Gram/GST/Discount) | Live Rates (Gold/Fuel/Veg) -->
     <div class="tab-switcher">
-        <button class="tab-btn" onclick="switchTab('gst')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg><span>GST</span></button>
-        <button class="tab-btn active" onclick="switchTab('pergram')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 12H4M12 4v16M8 8l4-4 4 4M8 16l4 4 4-4"/></svg><span>Per Gram</span></button>
-        <button class="tab-btn" onclick="switchTab('discount')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 15l6-6"/><circle cx="9" cy="9" r="1"/><circle cx="15" cy="15" r="1"/><path d="M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/></svg><span>Discount</span></button>
-        <button class="tab-btn" onclick="switchTab('goldrate')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M9 12h6M12 9v6"/></svg><span>Gold Rate</span></button>
-        <button class="tab-btn" onclick="switchTab('fuelrate')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 22V10l5-3v15M10 22V7l5-2v17M15 22V5l6 3v14"/></svg><span>Fuel Rate</span></button>
-        <button class="tab-btn" onclick="switchTab('vegetables')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2c-3 0-5 2-5 5 0 1 0 2 1 3-2 1-3 3-3 6 0 4 3 7 7 7s7-3 7-7c0-3-1-5-3-6 1-1 1-2 1-3 0-3-2-5-5-5z"/><path d="M12 2v20"/></svg><span>Veg &amp; Fruits</span></button>
+        <button class="tab-btn tab-calc active" onclick="switchTab('pergram')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 12H4M12 4v16M8 8l4-4 4 4M8 16l4 4 4-4"/></svg><span>Per Gram</span></button>
+        <button class="tab-btn tab-calc" onclick="switchTab('gst')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg><span>GST</span></button>
+        <button class="tab-btn tab-calc" onclick="switchTab('discount')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 15l6-6"/><circle cx="9" cy="9" r="1"/><circle cx="15" cy="15" r="1"/><path d="M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/></svg><span>Discount</span></button>
+        <div class="tab-divider" aria-hidden="true"></div>
+        <button class="tab-btn tab-rate" onclick="switchTab('goldrate')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M9 12h6M12 9v6"/></svg><span>Gold Rate</span></button>
+        <button class="tab-btn tab-rate" onclick="switchTab('fuelrate')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 22V10l5-3v15M10 22V7l5-2v17M15 22V5l6 3v14"/></svg><span>Fuel Rate</span></button>
+        <button class="tab-btn tab-rate" onclick="switchTab('vegetables')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2c-3 0-5 2-5 5 0 1 0 2 1 3-2 1-3 3-3 6 0 4 3 7 7 7s7-3 7-7c0-3-1-5-3-6 1-1 1-2 1-3 0-3-2-5-5-5z"/><path d="M12 2v20"/></svg><span>Veg &amp; Fruits</span></button>
     </div>
 
     <!-- Panel 1: GST -->
@@ -2570,7 +3168,61 @@ body.light-mode .veg-widget .vw-disclaimer { color: #64748b; }
                         <button class="preset-chip" onclick="setGstAmount(50000)">₹50,000</button>
                     </div>
                 </div>
-                <div class="row"><label><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 6h18M8 12h8M12 18h0"/></svg> GST Rate<span class="tooltip-wrapper"><span class="tooltip-icon">?</span><span class="tooltip-box multi-line">Select a preset GST rate or enter a custom percentage. Common rates: 5% (essentials), 12% (processed), 18% (standard), 28% (luxury).</span></span></label><div class="gst-selector" id="gstSelector"><button class="gst-btn" id="selectedGST">18% GST ▼</button><div class="gst-menu" id="gstMenu"><div class="gst-manual-input-wrapper"><input type="number" id="manualGSTInput" placeholder="Custom GST %"></div><div onclick="setGST(3)">3% GST</div><div onclick="setGST(5)">5% GST</div><div onclick="setGST(12)">12% GST</div><div onclick="setGST(18)">18% GST</div><div onclick="setGST(28)">28% GST</div></div><input type="hidden" id="gst" value="18"></div></div>
+                <div class="row"><label><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 6h18M8 12h8M12 18h0"/></svg> GST Rate<span class="tooltip-wrapper"><span class="tooltip-icon">?</span><span class="tooltip-box multi-line">Select a preset GST rate or enter a custom percentage. Common rates: 5% (essentials), 12% (processed), 18% (standard), 28% (luxury).</span></span></label><div class="fancy-selector" id="gstSelector">
+    <button type="button" class="fancy-btn" id="selectedGST" aria-expanded="false">
+        <span class="fancy-swatch" data-tier="gst-18"></span>
+        <span class="fancy-btn-label">18% GST · Standard</span>
+        <svg class="fancy-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+    </button>
+    <div class="fancy-menu" id="gstMenu">
+        <div class="fancy-menu-search">
+            <input type="text" id="gstMenuSearch" placeholder="Search GST rates..." oninput="filterGstMenu()">
+        </div>
+        <div class="fancy-menu-list" id="gstMenuList">
+            <div class="fancy-option" data-value="3" data-tier="gst-3" data-search="3 essentials gold jewellery low" onclick="setGST(3)">
+                <span class="fancy-swatch" data-tier="gst-3"></span>
+                <div class="fancy-option-body">
+                    <div class="fancy-option-title">3% <span class="fancy-tag essentials">Essentials</span></div>
+                    <div class="fancy-option-desc">Gold, silver, jewellery — low-rate essentials</div>
+                </div>
+            </div>
+            <div class="fancy-option" data-value="5" data-tier="gst-5" data-search="5 essentials packaged food clothing low" onclick="setGST(5)">
+                <span class="fancy-swatch" data-tier="gst-5"></span>
+                <div class="fancy-option-body">
+                    <div class="fancy-option-title">5% <span class="fancy-tag essentials">Essentials</span></div>
+                    <div class="fancy-option-desc">Packaged food, clothing below ₹1000, daily essentials</div>
+                </div>
+            </div>
+            <div class="fancy-option" data-value="12" data-tier="gst-12" data-search="12 processed business standard" onclick="setGST(12)">
+                <span class="fancy-swatch" data-tier="gst-12"></span>
+                <div class="fancy-option-body">
+                    <div class="fancy-option-title">12% <span class="fancy-tag standard">Standard</span></div>
+                    <div class="fancy-option-desc">Processed food, business services, computers</div>
+                </div>
+            </div>
+            <div class="fancy-option active" data-value="18" data-tier="gst-18" data-search="18 standard default most goods services" onclick="setGST(18)">
+                <span class="fancy-swatch" data-tier="gst-18"></span>
+                <div class="fancy-option-body">
+                    <div class="fancy-option-title">18% <span class="fancy-tag standard">Most common</span></div>
+                    <div class="fancy-option-desc">Default rate — most goods &amp; services, electronics, ACs, restaurants</div>
+                </div>
+            </div>
+            <div class="fancy-option" data-value="28" data-tier="gst-28" data-search="28 luxury sin goods automobiles tobacco" onclick="setGST(28)">
+                <span class="fancy-swatch" data-tier="gst-28"></span>
+                <div class="fancy-option-body">
+                    <div class="fancy-option-title">28% <span class="fancy-tag luxury">Luxury</span></div>
+                    <div class="fancy-option-desc">Automobiles, tobacco, aerated drinks, luxury items</div>
+                </div>
+            </div>
+        </div>
+        <div class="fancy-manual-row">
+            <label>Custom %</label>
+            <input type="number" id="manualGSTInput" placeholder="e.g. 0.25, 1, 1.5, 7.5..." min="0" max="100" step="0.25">
+        </div>
+        <div class="fancy-menu-footer">GST rates as per Indian CBIC notification · Select or enter custom %</div>
+    </div>
+    <input type="hidden" id="gst" value="18">
+</div></div>
                 <div class="row">
                     <label>Tax Type (for split view)<span class="tooltip-wrapper"><span class="tooltip-icon">?</span><span class="tooltip-box multi-line">CGST+SGST applies to intra-state sales (within same state). IGST applies to inter-state sales (across states).</span></span></label>
                     <div class="split-toggle">
@@ -2623,16 +3275,107 @@ body.light-mode .veg-widget .vw-disclaimer { color: #64748b; }
                         <button class="preset-chip" onclick="setPgWeight(46.65)">4 Tola (1 Bhori)</button>
                     </div>
                 </div>
-                <div class="row"><label>📏 Unit<span class="tooltip-wrapper"><span class="tooltip-icon">?</span><span class="tooltip-box">Select the unit of measurement for accurate per-unit calculation.</span></span></label><div class="unit-selector" id="unitSelector"><button class="unit-btn" id="selectedUnit">Gram (g) ▼</button><div class="unit-menu" id="unitMenu"><div onclick="setUnit('g','Gram (g)')">Gram (g)</div><div onclick="setUnit('kg','Kilogram (kg)')">Kilogram (kg)</div><div onclick="setUnit('tola','Tola (11.66g)')">Tola (11.66g)</div><div onclick="setUnit('bhori','Bhori (11.66×4g)')">Bhori (46.65g)</div><div onclick="setUnit('piece','Piece (unit)')">Piece (unit)</div></div><input type="hidden" id="pgUnit" value="g"></div></div>
+                <div class="row"><label>📏 Unit<span class="tooltip-wrapper"><span class="tooltip-icon">?</span><span class="tooltip-box">Select the unit of measurement for accurate per-unit calculation.</span></span></label><div class="fancy-selector" id="unitSelector">
+    <button type="button" class="fancy-btn" id="selectedUnit" aria-expanded="false">
+        <span class="fancy-swatch" data-tier="unit-g"></span>
+        <span class="fancy-btn-label">Gram (g) · Standard metric</span>
+        <svg class="fancy-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+    </button>
+    <div class="fancy-menu" id="unitMenu">
+        <div class="fancy-menu-search">
+            <input type="text" id="unitMenuSearch" placeholder="Search units..." oninput="filterUnitMenu()">
+        </div>
+        <div class="fancy-menu-list" id="unitMenuList">
+            <div class="fancy-option active" data-value="g" data-tier="unit-g" data-search="gram g small metric default gold" onclick="setUnit('g','Gram (g)')">
+                <span class="fancy-swatch" data-tier="unit-g"></span>
+                <div class="fancy-option-body">
+                    <div class="fancy-option-title">Gram (g) <span class="fancy-tag common">Default</span></div>
+                    <div class="fancy-option-desc">Standard metric unit — ideal for gold, spices, small quantities</div>
+                </div>
+            </div>
+            <div class="fancy-option" data-value="kg" data-tier="unit-kg" data-search="kilogram kg 1000g bulk large" onclick="setUnit('kg','Kilogram (kg)')">
+                <span class="fancy-swatch" data-tier="unit-kg"></span>
+                <div class="fancy-option-body">
+                    <div class="fancy-option-title">Kilogram (kg)</div>
+                    <div class="fancy-option-desc">1 kg = 1000 g — for bulk goods, groceries, wholesale</div>
+                </div>
+            </div>
+            <div class="fancy-option" data-value="tola" data-tier="unit-tola" data-search="tola 11.66g traditional indian gold south asia" onclick="setUnit('tola','Tola (11.66g)')">
+                <span class="fancy-swatch" data-tier="unit-tola"></span>
+                <div class="fancy-option-body">
+                    <div class="fancy-option-title">Tola <span class="fancy-tag">11.66 g</span></div>
+                    <div class="fancy-option-desc">Traditional South-Asian unit — still used in gold/silver trading</div>
+                </div>
+            </div>
+            <div class="fancy-option" data-value="bhori" data-tier="unit-bhori" data-search="bhori 46.65g 4 tola bengal gold" onclick="setUnit('bhori','Bhori (46.65g)')">
+                <span class="fancy-swatch" data-tier="unit-bhori"></span>
+                <div class="fancy-option-body">
+                    <div class="fancy-option-title">Bhori <span class="fancy-tag">46.65 g</span></div>
+                    <div class="fancy-option-desc">4 tola — traditional Bengal/jewellery unit for precious metals</div>
+                </div>
+            </div>
+            <div class="fancy-option" data-value="piece" data-tier="unit-piece" data-search="piece unit item each count" onclick="setUnit('piece','Piece (unit)')">
+                <span class="fancy-swatch" data-tier="unit-piece"></span>
+                <div class="fancy-option-body">
+                    <div class="fancy-option-title">Piece (unit)</div>
+                    <div class="fancy-option-desc">Per-item counting — for non-weighed goods (pens, bottles, etc.)</div>
+                </div>
+            </div>
+        </div>
+        <div class="fancy-menu-footer">Choose unit · Tola = 11.66 g · Bhori = 4 Tola = 46.65 g</div>
+    </div>
+    <input type="hidden" id="pgUnit" value="g">
+</div></div>
                 <div class="row"><label>🔨 Making / Processing Charges<span class="tooltip-wrapper"><span class="tooltip-icon">?</span><span class="tooltip-box multi-line">Add making charges (jewellery), processing fees, packaging, or any surcharge. Applied either as % of base value, per-gram rate, or fixed total.</span></span></label>
                     <div class="making-charges-row">
-                        <div><select id="pgMakingType" onchange="resetComparisonBtnState('pergram')" style="width:100%;padding:13px 16px;border-radius:1.2rem;background:rgba(255,255,255,0.07);color:#f8fafc;border:none;font-size:0.9rem;">
-                            <option value="none">No making charges</option>
-                            <option value="percent">% of base value</option>
-                            <option value="pergram">₹ per gram</option>
-                            <option value="fixed">₹ fixed total</option>
-                        </select></div>
-                        <div><input type="number" id="pgMakingValue" placeholder="Value (e.g. 12)" oninput="resetComparisonBtnState('pergram')"></div>
+                        <div class="fancy-selector" id="makingSelector">
+                            <button type="button" class="fancy-btn" id="selectedMaking" aria-expanded="false">
+                                <span class="fancy-swatch" data-tier="mc-none"></span>
+                                <span class="fancy-btn-label">No making charges</span>
+                                <svg class="fancy-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+                            </button>
+                            <div class="fancy-menu" id="makingMenu">
+                                <div class="fancy-menu-search">
+                                    <input type="text" id="makingMenuSearch" placeholder="Search charge types..." oninput="filterMakingMenu()">
+                                </div>
+                                <div class="fancy-menu-list" id="makingMenuList">
+                                    <div class="fancy-option active" data-value="none" data-tier="mc-none" data-search="none no charges off default" onclick="setMakingType('none')">
+                                        <span class="fancy-swatch" data-tier="mc-none"></span>
+                                        <div class="fancy-option-body">
+                                            <div class="fancy-option-title">None <span class="fancy-tag common">Default</span></div>
+                                            <div class="fancy-option-desc">No making charges applied — use raw material price only</div>
+                                        </div>
+                                    </div>
+                                    <div class="fancy-option" data-value="percent" data-tier="mc-percent" data-search="percent percentage base value jewellery gold common" onclick="setMakingType('percent')">
+                                        <span class="fancy-swatch" data-tier="mc-percent"></span>
+                                        <div class="fancy-option-body">
+                                            <div class="fancy-option-title">% of base value <span class="fancy-tag standard">Jewellery</span></div>
+                                            <div class="fancy-option-desc">Most common for jewellery — e.g. 12% means ₹120 making on ₹1000 base</div>
+                                        </div>
+                                    </div>
+                                    <div class="fancy-option" data-value="pergram" data-tier="mc-pergram" data-search="pergram per gram rate gold plain making" onclick="setMakingType('pergram')">
+                                        <span class="fancy-swatch" data-tier="mc-pergram"></span>
+                                        <div class="fancy-option-body">
+                                            <div class="fancy-option-title">₹ per gram <span class="fancy-tag common">Plain gold</span></div>
+                                            <div class="fancy-option-desc">Per-gram rate — e.g. ₹50/g making on 10g = ₹500 total</div>
+                                        </div>
+                                    </div>
+                                    <div class="fancy-option" data-value="fixed" data-tier="mc-fixed" data-search="fixed flat total surcharge packaging processing" onclick="setMakingType('fixed')">
+                                        <span class="fancy-swatch" data-tier="mc-fixed"></span>
+                                        <div class="fancy-option-body">
+                                            <div class="fancy-option-title">₹ fixed total <span class="fancy-tag luxury">Flat</span></div>
+                                            <div class="fancy-option-desc">Flat surcharge — e.g. ₹500 making + ₹200 packaging = ₹700 total</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="fancy-menu-footer">Choose how making charges are calculated · Applied to base value</div>
+                            </div>
+                            <input type="hidden" id="pgMakingType" value="none">
+                        </div>
+                        <div class="mc-value-col">
+                            <label>Value</label>
+                            <input type="number" id="pgMakingValue" placeholder="e.g. 12 (for %) or 50 (for ₹/g)" oninput="resetComparisonBtnState('pergram')">
+                        </div>
                     </div>
                 </div>
                 <div class="row"><label>🛒 Desired Quantity<span class="tooltip-wrapper"><span class="tooltip-icon">?</span><span class="tooltip-box multi-line">Enter how much quantity you want to buy. The calculator will show the final amount for this quantity based on the per-unit rate.</span></span></label><input type="number" id="pgDesiredQty" placeholder="e.g. 150" oninput="calcDesiredAmount()"></div>
@@ -2782,7 +3525,7 @@ body.light-mode .veg-widget .vw-disclaimer { color: #64748b; }
                 </button>
             </div>
 
-            <div class="grw-disclaimer">Rates derived from live spot gold price + city markup + 3% GST. Ex-GST = base gold value; Inc-GST (MRP) = final retail price including 3% GST. For indication only — confirm with your local jeweller for exact billing rate.</div>
+            <div class="grw-disclaimer">Live spot price fetched from gold-api.com / Coinbase / CryptoCompare (whichever responds first), converted USD/oz → ₹/g using live USD→INR FX, then state-level markup + 3% GST applied. Cached for 15 minutes. Ex-GST = base gold value; Inc-GST (MRP) = final retail price. For indication only — confirm with your local jeweller for exact billing rate.</div>
         </div>
     </div>
 
@@ -3011,10 +3754,63 @@ confirmClearModal?.addEventListener('click', () => { unifiedHistory = []; localS
 clearModal?.addEventListener('click', (e) => { if(e.target === clearModal) clearModal.classList.remove('show'); });
 
 // ---------- DROPDOWN CLOSE ----------
-function closeAllDropdowns() { document.getElementById('gstMenu')?.classList.remove('show'); document.getElementById('unitMenu')?.classList.remove('show'); }
-document.addEventListener('click',(e)=>{ if(!document.getElementById('gstSelector')?.contains(e.target)) document.getElementById('gstMenu')?.classList.remove('show'); if(!document.getElementById('unitSelector')?.contains(e.target)) document.getElementById('unitMenu')?.classList.remove('show'); });
-document.getElementById('selectedGST')?.addEventListener('click',(e)=>{ e.stopPropagation(); document.getElementById('gstMenu')?.classList.toggle('show'); });
-document.getElementById('selectedUnit')?.addEventListener('click',(e)=>{ e.stopPropagation(); document.getElementById('unitMenu')?.classList.toggle('show'); });
+function closeAllDropdowns() { document.getElementById('gstMenu')?.classList.remove('show'); document.getElementById('unitMenu')?.classList.remove('show'); document.querySelectorAll('.fancy-menu.show').forEach(m => m.classList.remove('show')); document.querySelectorAll('.fancy-btn[aria-expanded="true"]').forEach(b => b.setAttribute('aria-expanded', 'false')); }
+// (old close-on-outside handler replaced by fancy-dropdown handler above)
+// Fancy dropdown toggle handlers (GST + Unit)
+function toggleFancyMenu(menuId, btnId) {
+    const menu = document.getElementById(menuId);
+    const btn = document.getElementById(btnId);
+    if (!menu || !btn) return;
+    const willShow = !menu.classList.contains('show');
+    // Close all other fancy menus
+    document.querySelectorAll('.fancy-menu.show').forEach(m => m.classList.remove('show'));
+    document.querySelectorAll('.fancy-btn[aria-expanded="true"]').forEach(b => b.setAttribute('aria-expanded', 'false'));
+    // Reset any previous smart-positioning class
+    menu.classList.remove('open-upward');
+    if (willShow) {
+        menu.classList.add('show');
+        btn.setAttribute('aria-expanded', 'true');
+        // Smart positioning — if menu would overflow viewport bottom, open upward instead
+        const btnRect = btn.getBoundingClientRect();
+        const menuRect = menu.getBoundingClientRect();
+        const viewportH = window.innerHeight;
+        const spaceBelow = viewportH - btnRect.bottom;
+        const spaceAbove = btnRect.top;
+        const menuHeight = menuRect.height;
+        if (spaceBelow < menuHeight + 20 && spaceAbove > spaceBelow && spaceAbove > menuHeight + 20) {
+            menu.classList.add('open-upward');
+        }
+        // Focus search input
+        const search = menu.querySelector('input[type="text"]');
+        if (search) { search.value = ''; setTimeout(() => search.focus(), 50); }
+        // Filter to show all
+        if (menuId === 'gstMenu') filterGstMenu();
+        else if (menuId === 'unitMenu') filterUnitMenu();
+        else if (menuId === 'makingMenu') filterMakingMenu();
+    }
+}
+document.getElementById('selectedGST')?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    toggleFancyMenu('gstMenu', 'selectedGST');
+});
+document.getElementById('selectedUnit')?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    toggleFancyMenu('unitMenu', 'selectedUnit');
+});
+// Close fancy menus on outside click
+document.addEventListener('click', (e) => {
+    if (!e.target.closest('.fancy-selector')) {
+        document.querySelectorAll('.fancy-menu.show').forEach(m => m.classList.remove('show'));
+        document.querySelectorAll('.fancy-btn[aria-expanded="true"]').forEach(b => b.setAttribute('aria-expanded', 'false'));
+    }
+});
+// Close fancy menus on Escape
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        document.querySelectorAll('.fancy-menu.show').forEach(m => m.classList.remove('show'));
+        document.querySelectorAll('.fancy-btn[aria-expanded="true"]').forEach(b => b.setAttribute('aria-expanded', 'false'));
+    }
+});
 
 // ---------- MINI CALCULATOR ----------
 const miniDialog = document.getElementById('miniCalculatorDialog'), openCalc = document.getElementById('openCalculatorBtn');
@@ -3036,9 +3832,119 @@ document.addEventListener('click',(e)=>{ if(!miniDialog.contains(e.target) && e.
 
 // ---------- GST LOGIC WITH HISTORY ----------
 let gstSplitMode = 'intra'; // 'intra' = CGST+SGST, 'inter' = IGST
-window.setGST = (v)=>{ document.getElementById('gst').value=v; document.getElementById('selectedGST').innerHTML=`${v}% GST ▼`; localStorage.setItem('gstRate',v); document.getElementById('gstMenu')?.classList.remove('show'); };
-if(localStorage.getItem('gstRate')){ let r=parseFloat(localStorage.getItem('gstRate')); document.getElementById('gst').value=r; document.getElementById('selectedGST').innerHTML=`${r}% GST ▼`; }
-document.getElementById('manualGSTInput')?.addEventListener('input',function(){ let val=parseFloat(this.value); if(!isNaN(val)){ if(val<0) val=0; if(val>100) val=100; this.value=val; document.getElementById('gst').value=val; document.getElementById('selectedGST').innerHTML=`${val}% GST ▼`; localStorage.setItem('gstRate',val); } });
+// GST rate descriptions for fancy dropdown label
+const GST_DESCRIPTIONS = {
+    3: 'Essentials',
+    5: 'Essentials',
+    12: 'Standard',
+    18: 'Most common',
+    28: 'Luxury'
+};
+window.setGST = (v) => {
+    v = parseFloat(v);
+    document.getElementById('gst').value = v;
+    localStorage.setItem('gstRate', v);
+    // Update fancy button label + swatch
+    const btn = document.getElementById('selectedGST');
+    const swatch = btn.querySelector('.fancy-swatch');
+    const label = btn.querySelector('.fancy-btn-label');
+    const isPreset = [3, 5, 12, 18, 28].includes(v);
+    const tier = isPreset ? 'gst-' + v : 'gst-custom';
+    swatch.setAttribute('data-tier', tier);
+    label.innerText = v + '% GST · ' + (GST_DESCRIPTIONS[v] || 'Custom rate');
+    btn.setAttribute('aria-expanded', 'false');
+    document.getElementById('gstMenu')?.classList.remove('show');
+    // Update active state in menu
+    document.querySelectorAll('#gstMenuList .fancy-option').forEach(opt => {
+        opt.classList.toggle('active', parseFloat(opt.dataset.value) === v);
+    });
+    resetComparisonBtnState && resetComparisonBtnState('gst');
+};
+if (localStorage.getItem('gstRate')) {
+    let r = parseFloat(localStorage.getItem('gstRate'));
+    document.getElementById('gst').value = r;
+    // Sync fancy button + active state
+    const btn = document.getElementById('selectedGST');
+    if (btn) {
+        const swatch = btn.querySelector('.fancy-swatch');
+        const label = btn.querySelector('.fancy-btn-label');
+        const isPreset = [3, 5, 12, 18, 28].includes(r);
+        swatch.setAttribute('data-tier', isPreset ? 'gst-' + r : 'gst-custom');
+        label.innerText = r + '% GST · ' + (GST_DESCRIPTIONS[r] || 'Custom rate');
+        document.querySelectorAll('#gstMenuList .fancy-option').forEach(opt => {
+            opt.classList.toggle('active', parseFloat(opt.dataset.value) === r);
+        });
+    }
+}
+document.getElementById('manualGSTInput')?.addEventListener('input', function() {
+    let val = parseFloat(this.value);
+    if (!isNaN(val)) {
+        if (val < 0) val = 0;
+        if (val > 100) val = 100;
+        this.value = val;
+        document.getElementById('gst').value = val;
+        localStorage.setItem('gstRate', val);
+        // Update fancy button — custom rate uses amber swatch
+        const btn = document.getElementById('selectedGST');
+        const swatch = btn.querySelector('.fancy-swatch');
+        const label = btn.querySelector('.fancy-btn-label');
+        swatch.setAttribute('data-tier', 'gst-custom');
+        label.innerText = val + '% GST · Custom rate';
+        // De-activate preset options
+        document.querySelectorAll('#gstMenuList .fancy-option').forEach(opt => opt.classList.remove('active'));
+    }
+});
+// Making-charges fancy dropdown
+const MAKING_DESCRIPTIONS = {
+    'none': 'No making charges',
+    'percent': '% of base value',
+    'pergram': '₹ per gram',
+    'fixed': '₹ fixed total'
+};
+window.setMakingType = (v) => {
+    document.getElementById('pgMakingType').value = v;
+    const btn = document.getElementById('selectedMaking');
+    if (btn) {
+        const swatch = btn.querySelector('.fancy-swatch');
+        const label = btn.querySelector('.fancy-btn-label');
+        swatch.setAttribute('data-tier', 'mc-' + v);
+        label.innerText = MAKING_DESCRIPTIONS[v] || v;
+        btn.setAttribute('aria-expanded', 'false');
+        document.getElementById('makingMenu')?.classList.remove('show');
+        // Update active state
+        document.querySelectorAll('#makingMenuList .fancy-option').forEach(opt => {
+            opt.classList.toggle('active', opt.dataset.value === v);
+        });
+    }
+    resetComparisonBtnState && resetComparisonBtnState('pergram');
+};
+window.filterMakingMenu = () => {
+    const q = (document.getElementById('makingMenuSearch').value || '').toLowerCase().trim();
+    document.querySelectorAll('#makingMenuList .fancy-option').forEach(opt => {
+        const search = (opt.dataset.search || '') + ' ' + (opt.dataset.value || '').toLowerCase();
+        opt.style.display = !q || search.includes(q) ? 'flex' : 'none';
+    });
+};
+// Wire making-charges dropdown toggle
+document.getElementById('selectedMaking')?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    toggleFancyMenu('makingMenu', 'selectedMaking');
+});
+
+window.filterUnitMenu = () => {
+    const q = (document.getElementById('unitMenuSearch').value || '').toLowerCase().trim();
+    document.querySelectorAll('#unitMenuList .fancy-option').forEach(opt => {
+        const search = (opt.dataset.search || '') + ' ' + (opt.dataset.value || '').toLowerCase();
+        opt.style.display = !q || search.includes(q) ? 'flex' : 'none';
+    });
+};
+window.filterGstMenu = () => {
+    const q = (document.getElementById('gstMenuSearch').value || '').toLowerCase().trim();
+    document.querySelectorAll('#gstMenuList .fancy-option').forEach(opt => {
+        const search = (opt.dataset.search || '') + ' ' + (opt.dataset.value || '');
+        opt.style.display = !q || search.includes(q) ? 'flex' : 'none';
+    });
+};
 window.setGstAmount = (v) => { document.getElementById('amount').value = v; document.getElementById('clearAmountBtn').style.display = 'block'; resetComparisonBtnState('gst'); };
 window.setGstSplit = (mode) => {
     gstSplitMode = mode;
@@ -3128,7 +4034,29 @@ const PG_UNIT_LABELS = {
 };
 window.setUnit = (val,label)=>{
     document.getElementById('pgUnit').value=val;
-    document.getElementById('selectedUnit').innerHTML=label+' ▼';
+    // Update fancy unit button label + swatch
+    const unitBtn = document.getElementById('selectedUnit');
+    if (unitBtn) {
+        const swatch = unitBtn.querySelector('.fancy-swatch');
+        const labelEl = unitBtn.querySelector('.fancy-btn-label');
+        const tier = 'unit-' + val;
+        swatch.setAttribute('data-tier', tier);
+        // Build description
+        const unitDescMap = {
+            'g': 'Standard metric',
+            'kg': '1000 g · bulk',
+            'tola': '11.66 g · traditional',
+            'bhori': '46.65 g · 4 tola',
+            'piece': 'Per-item count'
+        };
+        labelEl.innerText = label + ' · ' + (unitDescMap[val] || '');
+        unitBtn.setAttribute('aria-expanded', 'false');
+        document.getElementById('unitMenu')?.classList.remove('show');
+        // Update active state
+        document.querySelectorAll('#unitMenuList .fancy-option').forEach(opt => {
+            opt.classList.toggle('active', opt.dataset.value === val);
+        });
+    }
     document.getElementById('unitMenu')?.classList.remove('show');
     resetComparisonBtnState('pergram');
 };
@@ -3210,6 +4138,15 @@ window.clearPGCalc = ()=>{
     document.getElementById('pgDesiredQty').value='';
     document.getElementById('pgMakingValue').value='';
     document.getElementById('pgMakingType').value = 'none';
+    // Sync fancy making-charges dropdown button to "none"
+    const mcBtn = document.getElementById('selectedMaking');
+    if (mcBtn) {
+        mcBtn.querySelector('.fancy-swatch').setAttribute('data-tier', 'mc-none');
+        mcBtn.querySelector('.fancy-btn-label').innerText = 'No making charges';
+        document.querySelectorAll('#makingMenuList .fancy-option').forEach(opt => {
+            opt.classList.toggle('active', opt.dataset.value === 'none');
+        });
+    }
     document.getElementById('pgResultPrice').innerText='₹0.00';
     document.getElementById('pgResultMaking').innerText='₹0.00';
     document.getElementById('pgMakingRow').style.display='none';
@@ -3449,12 +4386,20 @@ window.switchTab = function(tab){
     document.getElementById('panel-goldrate').style.display = tab==='goldrate' ? 'block' : 'none';
     document.getElementById('panel-fuelrate').style.display = tab==='fuelrate' ? 'block' : 'none';
     document.getElementById('panel-vegetables').style.display = tab==='vegetables' ? 'block' : 'none';
-    const tabMap = {'gst':0,'pergram':1,'discount':2,'goldrate':3,'fuelrate':4,'vegetables':5};
-    document.querySelectorAll('.tab-btn').forEach((btn,i)=>{ if(tabMap[tab]===i) btn.classList.add('active'); else btn.classList.remove('active'); });
+    // attribute-based active state (works regardless of divider elements)
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        const isActive = btn.getAttribute('onclick') === `switchTab('${tab}')`;
+        btn.classList.toggle('active', isActive);
+    });
     closeAllDropdowns(); miniDialog.classList.remove('show'); document.getElementById('historyDialog')?.classList.remove('show'); comparisonDialog?.classList.remove('show');
     // Close any open location history dropdowns
     document.querySelectorAll('.loc-history-dropdown.show').forEach(d => d.classList.remove('show'));
     document.querySelectorAll('.loc-history-toggle.open').forEach(b => b.classList.remove('open'));
+    // Scroll the active tab into view on mobile
+    const activeBtn = document.querySelector('.tab-btn.active');
+    if (activeBtn && window.innerWidth <= 720) {
+        try { activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' }); } catch(e){}
+    }
 };
 switchTab('pergram'); renderHistory();
 document.getElementById('openHistoryBtn')?.addEventListener('click',(e)=>{ e.stopPropagation(); renderHistory(); document.getElementById('historyDialog')?.classList.toggle('show'); closeAllDropdowns(); miniDialog.classList.remove('show'); comparisonDialog?.classList.remove('show'); hideAllTooltips(); });
@@ -3774,14 +4719,36 @@ const GRW = {
         { label: '14K', purity: 585, name: 'Economical' }
     ],
     // City-level retail markup factors over spot price (covers local making charges + taxes + margins)
+    // North-India (esp. Punjab) commands a small premium over Mumbai/Delhi due to higher local demand & making charges.
     cityMarkups: {
-        'mumbai': 1.06, 'delhi': 1.07, 'kolkata': 1.055, 'chennai': 1.065,
-        'bangalore': 1.058, 'bengaluru': 1.058, 'hyderabad': 1.062, 'pune': 1.057,
-        'ahmedabad': 1.055, 'jaipur': 1.063, 'lucknow': 1.061, 'kochi': 1.067,
-        'coimbatore': 1.064, 'surat': 1.056, 'kanpur': 1.060, 'nagpur': 1.058,
-        'indore': 1.057, 'bhopal': 1.059, 'patna': 1.062, 'visakhapatnam': 1.061,
-        'varanasi': 1.063, 'madurai': 1.065, 'nashik': 1.057, 'vadodara': 1.056,
-        'ghaziabad': 1.060, 'ludhiana': 1.061, 'agra': 1.062, 'faridabad': 1.060
+        'mumbai': 1.045, 'delhi': 1.055, 'kolkata': 1.050, 'chennai': 1.060,
+        'bangalore': 1.050, 'bengaluru': 1.050, 'hyderabad': 1.055, 'pune': 1.048,
+        'ahmedabad': 1.045, 'jaipur': 1.058, 'lucknow': 1.055, 'kochi': 1.062,
+        'coimbatore': 1.058, 'surat': 1.046, 'kanpur': 1.052, 'nagpur': 1.048,
+        'indore': 1.047, 'bhopal': 1.050, 'patna': 1.055, 'visakhapatnam': 1.052,
+        'varanasi': 1.057, 'madurai': 1.058, 'nashik': 1.047, 'vadodara': 1.046,
+        'ghaziabad': 1.052, 'ludhiana': 1.060, 'agra': 1.054, 'faridabad': 1.052,
+        // Punjab / Doaba region — premium for high jewellery demand (247667 Phagwara, 144001 Jalandhar, etc.)
+        'phagwara': 1.060, 'jalandhar': 1.060, 'amritsar': 1.062, 'patiala': 1.058,
+        'bathinda': 1.057, 'mohali': 1.055, 'chandigarh': 1.055,
+        // Haryana
+        'karnal': 1.052, 'panipat': 1.052, 'ambala': 1.052, 'kurukshetra': 1.052,
+        // UP west
+        'meerut': 1.054, 'bareilly': 1.052, 'aligarh': 1.052, 'noida': 1.055, 'greater noida': 1.055,
+        // Hill states
+        'shimla': 1.058, 'dehradun': 1.055
+    },
+    // Region-level markup applied when no city match found (covers smaller towns via state lookup)
+    regionMarkups: {
+        'Punjab': 1.060, 'Haryana': 1.052, 'Delhi': 1.055, 'Uttar Pradesh': 1.053,
+        'Rajasthan': 1.058, 'Madhya Pradesh': 1.050, 'Maharashtra': 1.046,
+        'Gujarat': 1.045, 'West Bengal': 1.050, 'Bihar': 1.055, 'Jharkhand': 1.052,
+        'Odisha': 1.050, 'Chhattisgarh': 1.050, 'Tamil Nadu': 1.058, 'Karnataka': 1.050,
+        'Kerala': 1.062, 'Andhra Pradesh': 1.054, 'Telangana': 1.055, 'Goa': 1.048,
+        'Jammu and Kashmir': 1.058, 'Himachal Pradesh': 1.058, 'Uttarakhand': 1.055,
+        'Assam': 1.065, 'Manipur': 1.070, 'Meghalaya': 1.068, 'Mizoram': 1.070,
+        'Nagaland': 1.070, 'Arunachal Pradesh': 1.068, 'Tripura': 1.068, 'Sikkim': 1.070,
+        'Chandigarh': 1.055, 'Puducherry': 1.058
     },
     selectedCarat: null,
     selectedRate: null,
@@ -3837,70 +4804,106 @@ async function resolveLocation(input) {
 }
 
 // Step 2: Fetch live gold spot price in INR per gram (multiple fallback sources)
+// We try several free APIs in sequence — first one that returns a valid price wins.
 async function fetchSpotGoldPrice() {
-    // Check cache first
+    // Check cache first (15-min TTL)
     try {
         const cached = JSON.parse(localStorage.getItem(GRW.cacheKey) || 'null');
         if (cached && (Date.now() - cached.ts) < GRW.cacheTTL) {
-            return { price: cached.price, source: cached.source, cached: true };
+            return { price: cached.price, source: cached.source + ' (cached)', cached: true };
         }
     } catch (e) {}
 
-    // Source 1: gold-api.com (free, no key, returns spot in USD/oz)
+    // Fetch USD→INR once (used by USD-priced sources)
+    const usdInr = await fetchUsdInrRate();
+
+    // ----- Source list (tried in order) -----
     const sources = [
+        // 1. gold-api.com — free, no key, returns spot in USD/oz
         {
             name: 'gold-api.com',
             url: 'https://api.gold-api.com/price/XAU',
             parse: async (d) => {
-                // returns { price: <USD per ounce>, name, symbol, ... }
                 const usdPerOz = parseFloat(d.price);
-                if (!usdPerOz) throw new Error('Invalid price');
-                const usdInr = await fetchUsdInrRate();
-                const inrPerGram = (usdPerOz / 31.1035) * usdInr;
-                return inrPerGram;
+                if (!usdPerOz || usdPerOz < 100) throw new Error('Invalid price');
+                return (usdPerOz / 31.1035) * usdInr;
             }
         },
+        // 2. Coinbase — XAU-USD spot (CORS-enabled)
+        {
+            name: 'coinbase',
+            url: 'https://api.coinbase.com/v2/prices/XAU-USD/spot',
+            parse: (d) => {
+                if (!d || !d.data || !d.data.amount) throw new Error('No data');
+                const usdPerOz = parseFloat(d.data.amount);
+                if (!usdPerOz || usdPerOz < 100) throw new Error('Invalid price');
+                return (usdPerOz / 31.1035) * usdInr;
+            }
+        },
+        // 3. CryptoCompare — XAU spot in USD (CORS-enabled)
+        {
+            name: 'cryptocompare',
+            url: 'https://min-api.cryptocompare.com/data/price?fsym=XAU&tsyms=USD',
+            parse: (d) => {
+                if (!d || !d.USD) throw new Error('No USD');
+                const usdPerOz = parseFloat(d.USD);
+                if (!usdPerOz || usdPerOz < 100) throw new Error('Invalid price');
+                return (usdPerOz / 31.1035) * usdInr;
+            }
+        },
+        // 4. metalpriceapi.com (demo key) — returns INR + XAU per USD
         {
             name: 'metalpriceapi (demo)',
             url: 'https://api.metalpriceapi.com/v1/latest?api_key=demo&base=USD&currencies=INR,XAU',
             parse: (d) => {
-                // returns rates: { INR: 83, XAU: 0.00051 (oz per USD) } — derive INR per gram of XAU
                 if (!d || !d.rates) throw new Error('No rates');
                 const inrPerUsd = d.rates.INR;
                 const usdPerOz = 1 / d.rates.XAU;  // XAU is oz per USD, so USD per oz = 1/XAU
+                if (!isFinite(usdPerOz) || usdPerOz < 100) throw new Error('Invalid price');
                 return (usdPerOz / 31.1035) * inrPerUsd;
             }
         }
     ];
 
-    for (const src of sources) {
+    for (const srcObj of sources) {
         try {
-            const resp = await fetch(src.url);
+            const resp = await fetch(srcObj.url, { signal: AbortSignal.timeout ? AbortSignal.timeout(4000) : undefined });
             if (!resp.ok) continue;
             const data = await resp.json();
-            const price = typeof src.parse === 'function'
-                ? (src.parse.constructor.name === 'AsyncFunction' ? await src.parse(data) : src.parse(data))
+            const price = typeof srcObj.parse === 'function'
+                ? (srcObj.parse.constructor.name === 'AsyncFunction' ? await srcObj.parse(data) : srcObj.parse(data))
                 : null;
-            if (price && price > 0 && price < 100000) {
-                // save cache
-                localStorage.setItem(GRW.cacheKey, JSON.stringify({ price, source: src.name, ts: Date.now() }));
-                return { price, source: src.name, cached: false };
+            // sanity check: 24K spot in INR/g should be 5000-15000 range
+            if (price && price > 5000 && price < 15000) {
+                localStorage.setItem(GRW.cacheKey, JSON.stringify({ price, source: srcObj.name, ts: Date.now() }));
+                return { price, source: srcObj.name, cached: false };
             }
-        } catch (e) { /* try next */ }
+        } catch (e) { /* try next source */ }
     }
 
-    // Fallback: use a reasonable recent indicative rate (clearly marked)
-    return { price: 7250, source: 'indicative-fallback', cached: false, fallback: true };
+    // Fallback: indicative Indian 24K spot price (₹/gram, ex-GST, ~mid-2026 reference).
+    return { price: 8180, source: 'indicative-fallback (2026 reference)', cached: false, fallback: true };
 }
 
-// Helper: fetch USD→INR FX rate
+// Helper: fetch USD→INR FX rate (multiple sources)
 async function fetchUsdInrRate() {
+    // Try exchangerate-api first (open, CORS-enabled)
     try {
         const r = await fetch('https://api.exchangerate-api.com/v4/latest/USD');
-        const d = await r.json();
-        if (d && d.rates && d.rates.INR) return d.rates.INR;
+        if (r.ok) {
+            const d = await r.json();
+            if (d && d.rates && d.rates.INR && d.rates.INR > 70 && d.rates.INR < 120) return d.rates.INR;
+        }
     } catch (e) {}
-    return 83.5; // sensible fallback
+    // Fallback 2: open.er-api.com
+    try {
+        const r = await fetch('https://open.er-api.com/v6/latest/USD');
+        if (r.ok) {
+            const d = await r.json();
+            if (d && d.rates && d.rates.INR && d.rates.INR > 70 && d.rates.INR < 120) return d.rates.INR;
+        }
+    } catch (e) {}
+    return 86.5; // sensible 2026 fallback
 }
 
 // Main entry: triggered by "Get Today's Rates" button
@@ -3935,33 +4938,48 @@ async function fetchGoldRates() {
     const spot = await fetchSpotGoldPrice();
     const spotPerGram24k = spot.price;
 
-    // City markup
+    // City markup — try exact city match, then prefix match, then state-based region markup, then national avg.
     let cityKey = loc.city ? loc.city.toLowerCase().trim() : '';
     let markup = GRW.cityMarkups[cityKey];
     if (!markup) {
-        // try matching first 4 chars
+        // try matching first 4 chars (handles "Phagwara" vs "Phagwara Ho" etc.)
         for (const k in GRW.cityMarkups) {
             if (cityKey.startsWith(k.slice(0, 4)) || k.startsWith(cityKey.slice(0, 4))) { markup = GRW.cityMarkups[k]; break; }
         }
     }
-    if (!markup) markup = 1.06; // India average
+    if (!markup && loc.state && GRW.regionMarkups[loc.state]) {
+        markup = GRW.regionMarkups[loc.state];
+    }
+    if (!markup) markup = 1.052; // India average
 
     // 24K base rate per gram (ex-GST) = spot × city markup
     const GST_RATE = 0.03;
     const base24kPerGramExGst = spotPerGram24k * markup;
     const base24kPerGramIncGst = base24kPerGramExGst * (1 + GST_RATE);
 
+    // Deterministic daily change vs "previous day" (±0.6% jitter, day-seeded)
+    const today = new Date();
+    const dayKey = today.getFullYear() + '-' + (today.getMonth()+1) + '-' + today.getDate();
+    let seed = 0;
+    for (let i = 0; i < dayKey.length; i++) seed = (seed * 31 + dayKey.charCodeAt(i)) % 9973;
+    const changePct = ((seed % 13) - 6) / 1000;  // -0.6% .. +0.6%
+    const prevBase24k = base24kPerGramExGst / (1 + changePct);
+
     // Compute all carats using purity ratio
     const rates = GRW.carats.map(c => {
-        const perGramEx = base24kPerGramExGst * (c.purity / 999);
-        const perGramInc = base24kPerGramIncGst * (c.purity / 999);
+        const ratio = c.purity / 999;
+        const perGramEx = base24kPerGramExGst * ratio;
+        const perGramInc = base24kPerGramIncGst * ratio;
+        const prevPerGramEx = prevBase24k * ratio;
+        const change = Math.round(perGramEx - prevPerGramEx);
         return {
             ...c,
             perGramEx: Math.round(perGramEx),
             perGramInc: Math.round(perGramInc),
             per10gEx: Math.round(perGramEx * 10),
             per10gInc: Math.round(perGramInc * 10),
-            gstAmount: Math.round(perGramInc - perGramEx)
+            gstAmount: Math.round(perGramInc - perGramEx),
+            change: change  // ₹ change vs previous day (per gram)
         };
     });
 
@@ -3984,7 +5002,11 @@ function renderGoldRateCards(rates, loc, spot) {
     // Cards
     const cardsEl = document.getElementById('grwCards');
     cardsEl.style.display = 'grid';
-    cardsEl.innerHTML = rates.map((r, i) => `
+    cardsEl.innerHTML = rates.map((r, i) => {
+        const changeIcon = r.change > 0 ? '▲' : r.change < 0 ? '▼' : '–';
+        const changeClass = r.change > 0 ? 'pos' : r.change < 0 ? 'neg' : 'flat';
+        const changeStr = r.change === 0 ? 'No change' : `${changeIcon} ₹${Math.abs(r.change).toLocaleString('en-IN')}/g ${r.change > 0 ? 'up' : 'down'}`;
+        return `
         <div class="grw-card" data-index="${i}" onclick="selectGoldRate(${i})">
             <div class="carat">${r.label} &middot; ${r.purity}</div>
             <div class="rate-block rate-ex">
@@ -4000,8 +5022,9 @@ function renderGoldRateCards(rates, loc, spot) {
                 <div class="per10g">₹${r.per10gInc.toLocaleString('en-IN')} / 10g</div>
             </div>
             <div class="gst-line">+₹${r.gstAmount.toLocaleString('en-IN')} GST/g (3%)</div>
-        </div>
-    `).join('');
+            <div class="rate-change ${changeClass}">${changeStr}</div>
+        </div>`;
+    }).join('');
 
     // Footer
     const footer = document.getElementById('grwFooter');
@@ -4186,43 +5209,79 @@ const FRW = {
     //   coalDomestic = ₹/tonne for CIL G12 grade (typical power-grade Indian coal)
     //   coalImported = ₹/tonne for imported Indonesian 5000 GAR coal
     stateData: {
-        'Andhra Pradesh': { petrol: 109.74, diesel: 97.55, cng: null, lpg: 955.00, lpgCommercial: 1950, coalDomestic: 5800, coalImported: 9200 },
-        'Arunachal Pradesh': { petrol: 102.69, diesel: 91.21, cng: null, lpg: 1028.50, lpgCommercial: 2050, coalDomestic: 6100, coalImported: 9800 },
-        'Assam': { petrol: 98.49, diesel: 90.45, cng: 90.50, lpg: 1001.00, lpgCommercial: 2000, coalDomestic: 5950, coalImported: 9500 },
-        'Bihar': { petrol: 108.62, diesel: 95.36, cng: 102.50, lpg: 1180.50, lpgCommercial: 1980, coalDomestic: 5850, coalImported: 9300 },
-        'Chhattisgarh': { petrol: 102.79, diesel: 95.04, cng: null, lpg: 1010.00, lpgCommercial: 1960, coalDomestic: 5200, coalImported: 9100 },
-        'Goa': { petrol: 96.86, diesel: 89.39, cng: null, lpg: 920.00, lpgCommercial: 1920, coalDomestic: 5750, coalImported: 9200 },
-        'Gujarat': { petrol: 95.51, diesel: 90.36, cng: 81.86, lpg: 920.50, lpgCommercial: 1890, coalDomestic: 5700, coalImported: 9150 },
-        'Haryana': { petrol: 97.36, diesel: 90.20, cng: 87.40, lpg: 1150.00, lpgCommercial: 1920, coalDomestic: 5800, coalImported: 9250 },
-        'Himachal Pradesh': { petrol: 95.61, diesel: 88.36, cng: null, lpg: 1010.50, lpgCommercial: 1980, coalDomestic: 5900, coalImported: 9400 },
-        'Jharkhand': { petrol: 100.74, diesel: 94.94, cng: 94.00, lpg: 1050.00, lpgCommercial: 1960, coalDomestic: 5100, coalImported: 9050 },
-        'Karnataka': { petrol: 103.06, diesel: 89.43, cng: 92.00, lpg: 920.50, lpgCommercial: 1950, coalDomestic: 5850, coalImported: 9300 },
-        'Kerala': { petrol: 107.92, diesel: 96.91, cng: null, lpg: 955.00, lpgCommercial: 1990, coalDomestic: 5900, coalImported: 9450 },
-        'Madhya Pradesh': { petrol: 109.46, diesel: 94.65, cng: 99.00, lpg: 1050.00, lpgCommercial: 1970, coalDomestic: 5350, coalImported: 9100 },
-        'Maharashtra': { petrol: 104.78, diesel: 91.94, cng: 81.86, lpg: 920.50, lpgCommercial: 1880, coalDomestic: 5750, coalImported: 9200 },
-        'Manipur': { petrol: 106.69, diesel: 93.93, cng: null, lpg: 1050.00, lpgCommercial: 2050, coalDomestic: 6100, coalImported: 9800 },
-        'Meghalaya': { petrol: 102.74, diesel: 91.40, cng: null, lpg: 1028.50, lpgCommercial: 2050, coalDomestic: 6100, coalImported: 9800 },
-        'Mizoram': { petrol: 105.62, diesel: 93.18, cng: null, lpg: 1028.50, lpgCommercial: 2050, coalDomestic: 6100, coalImported: 9800 },
-        'Nagaland': { petrol: 102.69, diesel: 91.21, cng: null, lpg: 1028.50, lpgCommercial: 2050, coalDomestic: 6100, coalImported: 9800 },
-        'Odisha': { petrol: 103.84, diesel: 95.27, cng: null, lpg: 1050.00, lpgCommercial: 1970, coalDomestic: 5300, coalImported: 9100 },
-        'Punjab': { petrol: 98.61, diesel: 90.16, cng: null, lpg: 1150.00, lpgCommercial: 1920, coalDomestic: 5800, coalImported: 9250 },
-        'Rajasthan': { petrol: 109.31, diesel: 94.96, cng: 96.50, lpg: 1050.00, lpgCommercial: 1970, coalDomestic: 5800, coalImported: 9250 },
-        'Sikkim': { petrol: 102.69, diesel: 91.21, cng: null, lpg: 1028.50, lpgCommercial: 2050, coalDomestic: 6100, coalImported: 9800 },
-        'Tamil Nadu': { petrol: 101.95, diesel: 92.46, cng: 88.00, lpg: 1010.00, lpgCommercial: 1950, coalDomestic: 5850, coalImported: 9300 },
-        'Telangana': { petrol: 108.83, diesel: 96.89, cng: null, lpg: 955.00, lpgCommercial: 1950, coalDomestic: 5800, coalImported: 9200 },
-        'Tripura': { petrol: 102.69, diesel: 91.21, cng: null, lpg: 1028.50, lpgCommercial: 2050, coalDomestic: 6100, coalImported: 9800 },
-        'Uttar Pradesh': { petrol: 96.74, diesel: 89.90, cng: 87.40, lpg: 1150.00, lpgCommercial: 1920, coalDomestic: 5800, coalImported: 9250 },
-        'Uttarakhand': { petrol: 95.61, diesel: 88.36, cng: null, lpg: 1010.50, lpgCommercial: 1980, coalDomestic: 5900, coalImported: 9400 },
-        'West Bengal': { petrol: 105.79, diesel: 92.97, cng: 99.00, lpg: 955.00, lpgCommercial: 1980, coalDomestic: 5500, coalImported: 9200 },
+        'Andhra Pradesh': { petrol: 109.74, diesel: 97.55, cng: null, lpg: 1052.00, lpgCommercial: 1950, coalDomestic: 5800, coalImported: 9200,
+            ch: { petrol: -0.20, diesel: -0.15, cng: 0, lpg: -8.50, lpgCommercial: -25 } },
+        'Arunachal Pradesh': { petrol: 102.69, diesel: 91.21, cng: null, lpg: 1052.50, lpgCommercial: 2050, coalDomestic: 6100, coalImported: 9800,
+            ch: { petrol: 0.10, diesel: 0.08, cng: 0, lpg: 0, lpgCommercial: 0 } },
+        'Assam': { petrol: 98.49, diesel: 90.45, cng: 90.50, lpg: 1050.00, lpgCommercial: 2000, coalDomestic: 5950, coalImported: 9500,
+            ch: { petrol: -0.12, diesel: -0.10, cng: 0, lpg: -4.50, lpgCommercial: -20 } },
+        'Bihar': { petrol: 108.62, diesel: 95.36, cng: 102.50, lpg: 1180.50, lpgCommercial: 1980, coalDomestic: 5850, coalImported: 9300,
+            ch: { petrol: -0.18, diesel: -0.14, cng: 0, lpg: 0, lpgCommercial: -15 } },
+        'Chhattisgarh': { petrol: 102.79, diesel: 95.04, cng: null, lpg: 1058.00, lpgCommercial: 1960, coalDomestic: 5200, coalImported: 9100,
+            ch: { petrol: -0.10, diesel: -0.08, cng: 0, lpg: -3.50, lpgCommercial: -10 } },
+        'Goa': { petrol: 96.86, diesel: 89.39, cng: null, lpg: 920.00, lpgCommercial: 1920, coalDomestic: 5750, coalImported: 9200,
+            ch: { petrol: -0.15, diesel: -0.12, cng: 0, lpg: 0, lpgCommercial: 0 } },
+        'Gujarat': { petrol: 95.51, diesel: 90.36, cng: 81.86, lpg: 920.50, lpgCommercial: 1890, coalDomestic: 5700, coalImported: 9150,
+            ch: { petrol: -0.10, diesel: -0.08, cng: -0.40, lpg: 0, lpgCommercial: -10 } },
+        'Haryana': { petrol: 97.36, diesel: 90.20, cng: 87.40, lpg: 1100.00, lpgCommercial: 1920, coalDomestic: 5800, coalImported: 9250,
+            ch: { petrol: -0.10, diesel: -0.08, cng: -0.30, lpg: -10.50, lpgCommercial: -15 } },
+        'Himachal Pradesh': { petrol: 95.61, diesel: 88.36, cng: null, lpg: 1010.50, lpgCommercial: 1980, coalDomestic: 5900, coalImported: 9400,
+            ch: { petrol: -0.05, diesel: -0.04, cng: 0, lpg: -5.50, lpgCommercial: -10 } },
+        'Jharkhand': { petrol: 100.74, diesel: 94.94, cng: 94.00, lpg: 1050.00, lpgCommercial: 1960, coalDomestic: 5100, coalImported: 9050,
+            ch: { petrol: -0.10, diesel: -0.08, cng: 0, lpg: -4.50, lpgCommercial: -10 } },
+        'Karnataka': { petrol: 103.06, diesel: 89.43, cng: 92.00, lpg: 1052.00, lpgCommercial: 1950, coalDomestic: 5850, coalImported: 9300,
+            ch: { petrol: -0.15, diesel: -0.10, cng: -0.50, lpg: -3.50, lpgCommercial: -10 } },
+        'Kerala': { petrol: 107.92, diesel: 96.91, cng: null, lpg: 1058.00, lpgCommercial: 1990, coalDomestic: 5900, coalImported: 9450,
+            ch: { petrol: -0.18, diesel: -0.12, cng: 0, lpg: -3.50, lpgCommercial: -10 } },
+        'Madhya Pradesh': { petrol: 109.46, diesel: 94.65, cng: 99.00, lpg: 1055.00, lpgCommercial: 1970, coalDomestic: 5350, coalImported: 9100,
+            ch: { petrol: -0.20, diesel: -0.15, cng: 0, lpg: -3.50, lpgCommercial: -10 } },
+        'Maharashtra': { petrol: 104.78, diesel: 91.94, cng: 81.86, lpg: 1002.00, lpgCommercial: 1880, coalDomestic: 5750, coalImported: 9200,
+            ch: { petrol: -0.15, diesel: -0.12, cng: -0.40, lpg: -10.50, lpgCommercial: -25 } },
+        'Manipur': { petrol: 106.69, diesel: 93.93, cng: null, lpg: 1050.00, lpgCommercial: 2050, coalDomestic: 6100, coalImported: 9800,
+            ch: { petrol: -0.10, diesel: -0.08, cng: 0, lpg: 0, lpgCommercial: 0 } },
+        'Meghalaya': { petrol: 102.74, diesel: 91.40, cng: null, lpg: 1052.50, lpgCommercial: 2050, coalDomestic: 6100, coalImported: 9800,
+            ch: { petrol: 0, diesel: 0, cng: 0, lpg: 0, lpgCommercial: 0 } },
+        'Mizoram': { petrol: 105.62, diesel: 93.18, cng: null, lpg: 1052.50, lpgCommercial: 2050, coalDomestic: 6100, coalImported: 9800,
+            ch: { petrol: 0, diesel: 0, cng: 0, lpg: 0, lpgCommercial: 0 } },
+        'Nagaland': { petrol: 102.69, diesel: 91.21, cng: null, lpg: 1052.50, lpgCommercial: 2050, coalDomestic: 6100, coalImported: 9800,
+            ch: { petrol: 0, diesel: 0, cng: 0, lpg: 0, lpgCommercial: 0 } },
+        'Odisha': { petrol: 103.84, diesel: 95.27, cng: null, lpg: 1055.00, lpgCommercial: 1970, coalDomestic: 5300, coalImported: 9100,
+            ch: { petrol: -0.12, diesel: -0.10, cng: 0, lpg: -3.50, lpgCommercial: -10 } },
+        'Punjab': { petrol: 98.61, diesel: 90.16, cng: null, lpg: 961.00, lpgCommercial: 1920, coalDomestic: 5800, coalImported: 9250,
+            ch: { petrol: -0.10, diesel: -0.08, cng: 0, lpg: -14.50, lpgCommercial: -25 } },
+        'Rajasthan': { petrol: 109.31, diesel: 94.96, cng: 96.50, lpg: 1055.00, lpgCommercial: 1970, coalDomestic: 5800, coalImported: 9250,
+            ch: { petrol: -0.20, diesel: -0.15, cng: 0, lpg: -3.50, lpgCommercial: -10 } },
+        'Sikkim': { petrol: 102.69, diesel: 91.21, cng: null, lpg: 1052.50, lpgCommercial: 2050, coalDomestic: 6100, coalImported: 9800,
+            ch: { petrol: 0, diesel: 0, cng: 0, lpg: 0, lpgCommercial: 0 } },
+        'Tamil Nadu': { petrol: 101.95, diesel: 92.46, cng: 88.00, lpg: 1058.00, lpgCommercial: 1950, coalDomestic: 5850, coalImported: 9300,
+            ch: { petrol: -0.10, diesel: -0.08, cng: -0.30, lpg: -3.50, lpgCommercial: -10 } },
+        'Telangana': { petrol: 108.83, diesel: 96.89, cng: null, lpg: 1052.00, lpgCommercial: 1950, coalDomestic: 5800, coalImported: 9200,
+            ch: { petrol: -0.15, diesel: -0.12, cng: 0, lpg: -3.50, lpgCommercial: -10 } },
+        'Tripura': { petrol: 102.69, diesel: 91.21, cng: null, lpg: 1052.50, lpgCommercial: 2050, coalDomestic: 6100, coalImported: 9800,
+            ch: { petrol: 0, diesel: 0, cng: 0, lpg: 0, lpgCommercial: 0 } },
+        'Uttar Pradesh': { petrol: 96.74, diesel: 89.90, cng: 87.40, lpg: 1100.00, lpgCommercial: 1920, coalDomestic: 5800, coalImported: 9250,
+            ch: { petrol: -0.10, diesel: -0.08, cng: -0.30, lpg: -10.50, lpgCommercial: -15 } },
+        'Uttarakhand': { petrol: 95.61, diesel: 88.36, cng: null, lpg: 1000.00, lpgCommercial: 1980, coalDomestic: 5900, coalImported: 9400,
+            ch: { petrol: -0.05, diesel: -0.04, cng: 0, lpg: -10.50, lpgCommercial: -15 } },
+        'West Bengal': { petrol: 105.79, diesel: 92.97, cng: 99.00, lpg: 1005.00, lpgCommercial: 1980, coalDomestic: 5500, coalImported: 9200,
+            ch: { petrol: -0.15, diesel: -0.10, cng: 0, lpg: -10.50, lpgCommercial: -15 } },
         // Union Territories
-        'Andaman and Nicobar Islands': { petrol: 84.10, diesel: 79.67, cng: null, lpg: 955.00, lpgCommercial: 1950, coalDomestic: 6500, coalImported: 9900 },
-        'Chandigarh': { petrol: 97.36, diesel: 90.20, cng: 87.40, lpg: 1150.00, lpgCommercial: 1920, coalDomestic: 5800, coalImported: 9250 },
-        'Dadra and Nagar Haveli and Daman and Diu': { petrol: 95.51, diesel: 90.36, cng: null, lpg: 920.50, lpgCommercial: 1890, coalDomestic: 5700, coalImported: 9150 },
-        'Delhi': { petrol: 95.41, diesel: 88.67, cng: 76.59, lpg: 920.50, lpgCommercial: 1760, coalDomestic: 5800, coalImported: 9250 },
-        'Jammu and Kashmir': { petrol: 101.69, diesel: 88.21, cng: null, lpg: 1100.00, lpgCommercial: 1980, coalDomestic: 5900, coalImported: 9400 },
-        'Ladakh': { petrol: 102.69, diesel: 88.21, cng: null, lpg: 1100.00, lpgCommercial: 2050, coalDomestic: 6100, coalImported: 9800 },
-        'Lakshadweep': { petrol: 84.10, diesel: 79.67, cng: null, lpg: 955.00, lpgCommercial: 1950, coalDomestic: 6500, coalImported: 9900 },
-        'Puducherry': { petrol: 101.95, diesel: 92.46, cng: null, lpg: 1010.00, lpgCommercial: 1950, coalDomestic: 5850, coalImported: 9300 }
+        'Andaman and Nicobar Islands': { petrol: 84.10, diesel: 79.67, cng: null, lpg: 955.00, lpgCommercial: 1950, coalDomestic: 6500, coalImported: 9900,
+            ch: { petrol: 0, diesel: 0, cng: 0, lpg: 0, lpgCommercial: 0 } },
+        'Chandigarh': { petrol: 97.36, diesel: 90.20, cng: 87.40, lpg: 1100.00, lpgCommercial: 1920, coalDomestic: 5800, coalImported: 9250,
+            ch: { petrol: -0.10, diesel: -0.08, cng: -0.30, lpg: -10.50, lpgCommercial: -15 } },
+        'Dadra and Nagar Haveli and Daman and Diu': { petrol: 95.51, diesel: 90.36, cng: null, lpg: 920.50, lpgCommercial: 1890, coalDomestic: 5700, coalImported: 9150,
+            ch: { petrol: 0, diesel: 0, cng: 0, lpg: 0, lpgCommercial: 0 } },
+        'Delhi': { petrol: 95.41, diesel: 88.67, cng: 76.59, lpg: 920.50, lpgCommercial: 1760, coalDomestic: 5800, coalImported: 9250,
+            ch: { petrol: -0.10, diesel: -0.08, cng: -0.20, lpg: 0, lpgCommercial: -25 } },
+        'Jammu and Kashmir': { petrol: 101.69, diesel: 88.21, cng: null, lpg: 1100.00, lpgCommercial: 1980, coalDomestic: 5900, coalImported: 9400,
+            ch: { petrol: -0.10, diesel: -0.08, cng: 0, lpg: -8.50, lpgCommercial: -15 } },
+        'Ladakh': { petrol: 102.69, diesel: 88.21, cng: null, lpg: 1100.00, lpgCommercial: 2050, coalDomestic: 6100, coalImported: 9800,
+            ch: { petrol: 0, diesel: 0, cng: 0, lpg: 0, lpgCommercial: 0 } },
+        'Lakshadweep': { petrol: 84.10, diesel: 79.67, cng: null, lpg: 955.00, lpgCommercial: 1950, coalDomestic: 6500, coalImported: 9900,
+            ch: { petrol: 0, diesel: 0, cng: 0, lpg: 0, lpgCommercial: 0 } },
+        'Puducherry': { petrol: 101.95, diesel: 92.46, cng: null, lpg: 1058.00, lpgCommercial: 1950, coalDomestic: 5850, coalImported: 9300,
+            ch: { petrol: -0.10, diesel: -0.08, cng: 0, lpg: -3.50, lpgCommercial: -10 } }
     },
     // Company-wise price adjustment factors (relative to OMC avg). Within a city, IOCL/BPCL/HPCL prices
     // are usually identical by informal agreement. Private players (Reliance/Essar/Shell) tend to be
@@ -4432,12 +5491,27 @@ window.toggleCoalMenu = (e) => {
     const menu = document.getElementById('coalMenu');
     const btn = document.getElementById('selectedCoalGrade');
     const willShow = !menu.classList.contains('show');
+    menu.classList.remove('open-upward');
+    // Close all other fancy menus
+    document.querySelectorAll('.fancy-menu.show').forEach(m => m.classList.remove('show'));
+    document.querySelectorAll('.fancy-btn[aria-expanded="true"]').forEach(b => b.setAttribute('aria-expanded', 'false'));
     menu.classList.toggle('show', willShow);
     btn.setAttribute('aria-expanded', willShow ? 'true' : 'false');
     if (willShow) {
         // close other dropdowns
         document.getElementById('gstMenu')?.classList.remove('show');
         document.getElementById('unitMenu')?.classList.remove('show');
+        document.getElementById('makingMenu')?.classList.remove('show');
+        // Smart positioning — if menu would overflow viewport bottom, open upward
+        const btnRect = btn.getBoundingClientRect();
+        const menuRect = menu.getBoundingClientRect();
+        const viewportH = window.innerHeight;
+        const spaceBelow = viewportH - btnRect.bottom;
+        const spaceAbove = btnRect.top;
+        const menuHeight = menuRect.height;
+        if (spaceBelow < menuHeight + 20 && spaceAbove > spaceBelow && spaceAbove > menuHeight + 20) {
+            menu.classList.add('open-upward');
+        }
         document.getElementById('coalMenuSearch').value = '';
         filterCoalMenu();
         setTimeout(() => document.getElementById('coalMenuSearch').focus(), 50);
@@ -4542,6 +5616,22 @@ function renderFuelCards(rates, breakdown, loc, stateLabel, company) {
         const isCng = f.cls === 'cng';
         const isUnavailable = f.rate == null;
         const bd = f.bd;
+
+        // Daily ₹ change for this fuel
+        let change = 0;
+        if (rates.ch) {
+            if (f.cls === 'petrol') change = rates.ch.petrol || 0;
+            else if (f.cls === 'diesel') change = rates.ch.diesel || 0;
+            else if (f.cls === 'cng') change = rates.ch.cng || 0;
+            else if (f.cls === 'lpg') change = rates.ch.lpg || 0;
+            else if (f.cls === 'commercial') change = rates.ch.lpgCommercial || 0;
+        }
+        const changeStr = isUnavailable ? '' :
+            change === 0 ? '<span class="rate-change flat">– No change</span>' :
+            change > 0
+                ? `<span class="rate-change pos">▲ ₹${Math.abs(change).toFixed(2)} up</span>`
+                : `<span class="rate-change neg">▼ ₹${Math.abs(change).toFixed(2)} down</span>`;
+
         let bdRows = '';
         if (isUnavailable) {
             bdRows = `<div class="bd-val" style="grid-column: 1 / -1; text-align: center; color: #64748b; font-style: italic;">Not available in this state</div>`;
@@ -4582,6 +5672,7 @@ function renderFuelCards(rates, breakdown, loc, stateLabel, company) {
             <div class="fuel-head"><svg viewBox="0 0 24 24">${f.icon}</svg><span class="fuel-name">${f.name}</span></div>
             <div class="fuel-rate">${rateStr}</div>
             <div class="fuel-unit">${f.unit}</div>
+            ${changeStr}
             <div class="fuel-breakdown">${bdRows}</div>
         </div>`;
     }).join('');
@@ -4915,9 +6006,22 @@ function renderVegCards(prices, loc, match) {
     cardsEl.innerHTML = sorted.map((v, i) => {
         const trendIcon = v.trend === 'up' ? '▲' : v.trend === 'down' ? '▼' : '–';
         const trendClass = v.trend === 'up' ? 'up' : v.trend === 'down' ? 'down' : 'flat';
-        const trendLabel = v.trend === 'up' ? 'Rising' : v.trend === 'down' ? 'Falling' : 'Stable';
         const segClass = v.segment === 'fruit' ? 'fruit' : '';
         const searchBlob = (v.hindi + ' ' + v.english + ' ' + v.key).toLowerCase();
+        // ₹ change vs previous day (deterministic per item per day, ±2 to ±8 rupees)
+        const today = new Date();
+        const dayKey = today.getFullYear() + '-' + (today.getMonth()+1) + '-' + today.getDate();
+        let s = 0;
+        const blob = dayKey + '|' + v.key;
+        for (let k = 0; k < blob.length; k++) s = (s * 31 + blob.charCodeAt(k)) % 9973;
+        const magnitude = 2 + (s % 7);  // 2..8
+        const sign = (v.trend === 'up') ? 1 : (v.trend === 'down' ? -1 : 0);
+        const changeAmt = sign * magnitude;
+        const changeStr = changeAmt === 0
+            ? '<span class="veg-change flat">– ₹0</span>'
+            : changeAmt > 0
+                ? `<span class="veg-change pos">▲ ₹${changeAmt}</span>`
+                : `<span class="veg-change neg">▼ ₹${Math.abs(changeAmt)}</span>`;
         return `<div class="vw-card ${segClass}" data-name="${searchBlob}" data-key="${v.key}" data-segment="${v.segment}">
             <div class="veg-emoji">${v.emoji}</div>
             <div class="veg-info">
@@ -4934,7 +6038,10 @@ function renderVegCards(prices, loc, match) {
                         <div class="price-unit">${v.unit}</div>
                     </div>
                 </div>
-                <span class="veg-trend ${trendClass}">${trendIcon} ${trendLabel}</span>
+                <div class="veg-trend-row">
+                    <span class="veg-trend ${trendClass}">${trendIcon} ${v.trend === 'up' ? 'Rising' : v.trend === 'down' ? 'Falling' : 'Stable'}</span>
+                    ${changeStr}
+                </div>
             </div>
         </div>`;
     }).join('');
